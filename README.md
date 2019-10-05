@@ -1,5 +1,5 @@
 # SundeedQLite
-[![Build Status](https://travis-ci.org/SundeedQLite/SundeedQLite.svg?branch=master)](https://travis-ci.org/Alamofire/Alamofire) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite)
+[![Build Status](https://travis-ci.org/noursandid/SundeedQLite.svg?branch=master)](https://travis-ci.org/noursandid/SundeedQLite) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite)
 
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
