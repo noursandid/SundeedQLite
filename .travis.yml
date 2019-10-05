@@ -9,7 +9,7 @@ env:
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
   matrix:
-    - DESTINATION="OS=12.4,name=iPhone XS" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES" BUILD_LIBRARY="YES" POD_LINT="YES"
+    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES" BUILD_LIBRARY="YES" POD_LINT="YES"
 jobs:
   include:
     - stage: Initialize
@@ -43,5 +43,5 @@ jobs:
       script:
           # Run `pod lib lint` if specified
           - if [ $POD_LINT == "YES" ]; then
-                      pod lib lint;
+                      pod lib lint --no-clean;
             fi
