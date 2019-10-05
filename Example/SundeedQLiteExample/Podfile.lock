@@ -1,5 +1,5 @@
 PODS:
-  - SundeedQLite (1.0.0)
+  - SundeedQLite (1.0.2)
 
 DEPENDENCIES:
   - SundeedQLite
@@ -9,7 +9,7 @@ SPEC REPOS:
     - SundeedQLite
 
 SPEC CHECKSUMS:
-  SundeedQLite: b87e807abe59f29a5abe224059641ab648682d1b
+  SundeedQLite: d128f946b57e57180d4582348856848cfb693881
 
 PODFILE CHECKSUM: 4e834afc3d857275b056a2e2473c218d21d866b6
 

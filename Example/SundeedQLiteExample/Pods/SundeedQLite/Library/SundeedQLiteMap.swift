@@ -23,7 +23,7 @@ public class SundeedQLiteMap {
     var isOrdered:Bool = false
     var hasPrimaryKey:Bool = false
     var isSafeToAdd:Bool = true
-    subscript(key:String)->SundeedQLiteMap{
+    public subscript(key:String)->SundeedQLiteMap{
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
         self.key = key
         if map.contains(where: { (key1, value1) -> Bool in

@@ -15,7 +15,6 @@ class Employer: SundeedQLiter {
     var employees: [Employee]?
     
     required init() {}
-    
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         id <~> map["id"]+
         fullName <~> map["fullName"]

@@ -10,11 +10,11 @@ import Foundation
 import SundeedQLite
 
 class Employee: SundeedQLiter {
-    var a: String?
+    var id: String!
+    var firstName: String?
     required init() {}
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
-     a <~> map[""]
+        id <~> map["id"]
+        firstName <~> map["firstName"]
     }
-    
-    
 }

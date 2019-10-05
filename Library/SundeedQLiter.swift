@@ -28,15 +28,15 @@ extension SundeedQLiter{
         return "\(type(of: self))"
     }
     /** saves the object locally */
-    func save(withForeignKey foreignKey:String? = nil) {
+    public func save(withForeignKey foreignKey:String? = nil) {
         SundeedQLite.instance.save(objects: [self],withForeignKey: foreignKey)
     }
     /** deletes the object locally */
-    func delete() throws -> Bool{
+    public func delete() throws -> Bool{
         return try SundeedQLite.instance.deleteFromDB(obj: self)
     }
     /** updates the object locally */
-    func update(columns:SundeedColumn...){
+    public func update(columns:SundeedColumn...){
         SundeedQLite.instance.update(obj: self, columns: columns)
     }
     
@@ -49,7 +49,7 @@ extension SundeedQLiter{
      - filter: (Optional) add a filter to get a specific result
      * e.g: SundeedColumn("id") == "A1B2C3"
      */
-    static func retrieve(withFilter filter:SundeedExpression<Bool>? = nil,orderBy order:SundeedColumn? = nil,ascending asc:Bool = true,completion:((_ data:[Self])->Void)?) {
+    public static func retrieve(withFilter filter:SundeedExpression<Bool>? = nil,orderBy order:SundeedColumn? = nil,ascending asc:Bool = true,completion:((_ data:[Self])->Void)?) {
         SundeedQLite.instance.retrieve(forClass: self as! AnyClass,withFilter: filter,orderBy:order,ascending: asc, completion: { (objects) in
             DispatchQueue.main.async {
                 completion?(objects as! [Self])
@@ -58,12 +58,12 @@ extension SundeedQLiter{
         })
     }
     /** deletes all the objects of this type locally */
-    static func delete(withFilter filter:SundeedExpression<Bool>? = nil) throws -> Bool{
+    public static func delete(withFilter filter:SundeedExpression<Bool>? = nil) throws -> Bool{
         let result = try SundeedQLite.instance.deleteAllFromDB(forClass: self as! AnyClass, withFilter: filter)
         return result
     }
     /** updates specific columns of all objects of this class, or objects with a specific criteria */
-    static func update(changes:SundeedUpdateSetStatement...,withFilter filter:SundeedExpression<Bool>? = nil) throws ->Bool{
+    public static func update(changes:SundeedUpdateSetStatement...,withFilter filter:SundeedExpression<Bool>? = nil) throws ->Bool{
         let result = try SundeedQLite.instance.update(forClass: self as! AnyClass, changes: changes, withFilter: filter)
         return result
     }
@@ -72,7 +72,7 @@ extension SundeedQLiter{
 
 extension Array where Element : SundeedQLiter {
     /** saves the object locally */
-    func save() {
+    public func save() {
         SundeedQLite.instance.save(objects: self)
     }
 }
