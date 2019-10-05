@@ -3,7 +3,6 @@
 
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
----
 - ##### iOS 12.0+
 - ##### XCode 10.3+
 - ##### Swift 5+
@@ -29,38 +28,39 @@ Afterwards, run the following command:
 pod install
 ```
 # Signs
----
 **+** : It's used to mark the primary key in the database.
 *N.B*
 - Primary keys should always be strings.
 - To create a nested object (**e.g: Employee**), **Employer** should have a primary key to link it as a foreign key.
+
 **<<** : It's used to mark the *ASCENDING* sorting method
+
 **>>** : It's used to mark the *DESCENDING* sorting method
+
 # Documentation
----
 ```swift
 import SundeedQLite
 
 class Employer: SundeedQLiter {
-var id: String!
-var fullName: String?
-var employees: [Employee]?
+    var id: String!
+    var fullName: String?
+    var employees: [Employee]?
 
-required init() {}
-func sundeedQLiterMapping(map: SundeedQLiteMap) {
-id <~> map["id"]+
-fullName <~> map["fullName"]<<
-employees <~> map["employees"]
-}
-}
+    required init() {}
+        func sundeedQLiterMapping(map: SundeedQLiteMap) {
+            id <~> map["id"]+
+            fullName <~> map["fullName"]<<
+            employees <~> map["employees"]
+        }
+    }
 class Employee: SundeedQLiter {
-var id: String!
-var firstName: String?
-required init() {}
-func sundeedQLiterMapping(map: SundeedQLiteMap) {
-id <~> map["id"]
-firstName <~> map["firstName"]
-}
+    var id: String!
+    var firstName: String?
+    required init() {}
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        id <~> map["id"]
+        firstName <~> map["firstName"]
+    }
 }
 ```
 
@@ -68,23 +68,22 @@ firstName <~> map["firstName"]
 import UIKit
 
 class ViewController: UIViewController {
-override func viewDidLoad() {
-super.viewDidLoad()
-let employee = Employee()
-employee.firstName = "Nour"
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let employee = Employee()
+        employee.firstName = "Nour"
 
-let employer = Employer()
-employer.id = "ABCD-1234-EFGH-5678"
-employer.fullName = "Nour Sandid"
-employer.employees = [employee]
+        let employer = Employer()
+        employer.id = "ABCD-1234-EFGH-5678"
+        employer.fullName = "Nour Sandid"
+        employer.employees = [employee]
 
-employer.save()
-}
+        employer.save()
+    }
 }
 ```
 
 # CheatSheet
----
 ### To Save
 ```swift
 employer.save()
@@ -92,17 +91,17 @@ employer.save()
 ### To Retrieve
 ```swift
 Employer.retrieve { (employers) in
-for employer in employers {
-print(employer.fullName)
-}
+    for employer in employers {
+        print(employer.fullName)
+    }
 }
 
 Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid",
-orderBy: SundeedColumn("fullName"),
-ascending: true) { (employers) in
-for employer in employers {
-print(employer.fullName)
-}
+                  orderBy: SundeedColumn("fullName"),
+                  ascending: true) { (employers) in
+    for employer in employers {
+        print(employer.fullName)
+    }
 }
 ```
 # Built Using
