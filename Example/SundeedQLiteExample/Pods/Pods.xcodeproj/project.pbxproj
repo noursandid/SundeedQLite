@@ -323,6 +323,43 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		2E0EDC35929BD266762E9CF1A47580DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SundeedQLite/SundeedQLite.modulemap";
+				PRODUCT_MODULE_NAME = SundeedQLite;
+				PRODUCT_NAME = SundeedQLite;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		32B920AF28F80581ACD7FD7DECA5346C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 61F68F981A8496C9604CA00D2B947970 /* Pods-SundeedQLiteExample.debug.xcconfig */;
@@ -361,7 +398,7 @@
 			};
 			name = Debug;
 		};
-		5639134755E13B6D82BD535976B72EFF /* Debug */ = {
+		5CC965B19D89A6B100A77B14D4E7FDA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */;
 			buildSettings = {
@@ -378,7 +415,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -500,43 +537,6 @@
 			};
 			name = Release;
 		};
-		9490BD4F0C5D150506486E26C04076F8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/SundeedQLite/SundeedQLite.modulemap";
-				PRODUCT_MODULE_NAME = SundeedQLite;
-				PRODUCT_NAME = SundeedQLite;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		A27713CB74E99AF202AADC23200A32F4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -603,8 +603,8 @@
 		3B74C03BF1808FE9CFE6CC2A0283C375 /* Build configuration list for PBXNativeTarget "SundeedQLite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5639134755E13B6D82BD535976B72EFF /* Debug */,
-				9490BD4F0C5D150506486E26C04076F8 /* Release */,
+				5CC965B19D89A6B100A77B14D4E7FDA0 /* Debug */,
+				2E0EDC35929BD266762E9CF1A47580DE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
