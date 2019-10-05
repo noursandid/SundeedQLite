@@ -1,0 +1,6 @@
+framework module SundeedQLite {
+  umbrella header "SundeedQLite-umbrella.h"
+
+  export *
+  module * { export * }
+}

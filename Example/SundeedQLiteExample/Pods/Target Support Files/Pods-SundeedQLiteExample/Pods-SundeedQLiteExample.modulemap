@@ -1,0 +1,6 @@
+framework module Pods_SundeedQLiteExample {
+  umbrella header "Pods-SundeedQLiteExample-umbrella.h"
+
+  export *
+  module * { export * }
+}
