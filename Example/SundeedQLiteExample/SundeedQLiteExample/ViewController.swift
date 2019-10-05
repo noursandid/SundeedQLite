@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SundeedQLite
 
 class ViewController: UIViewController {
 
@@ -20,7 +21,6 @@ class ViewController: UIViewController {
         employer.fullName = "Nour Sandid"
         employer.employees = [employee]
         
-        employer.save()
     }
 }
 
