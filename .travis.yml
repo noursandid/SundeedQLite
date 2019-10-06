@@ -15,11 +15,7 @@ jobs:
     - stage: Initialize
       script:
         - set -o pipefail
-    - stage: Initialize
-      script:
         - xcodebuild -version
-    - stage: Initialize
-      script:
         - xcodebuild -showsdks
 
     - stage: Test
