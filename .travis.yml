@@ -8,38 +8,38 @@ env:
   - PROJECT=SundeedQLiteLibrary.xcodeproj
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
-  matrix:
+matrix:
     - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="NO" BUILD_EXAMPLE="NO" BUILD_LIBRARY="NO" POD_LINT="YES"
 jobs:
   include:
-    - stage: Initialize
-      script:
-        - set -o pipefail
-        - xcodebuild -version
-        - xcodebuild -showsdks
-    - stage: Test
-      script:
-        # Build Framework in Release and Run Tests if specified
-        - if [ $RUN_TESTS == "YES" ]; then
-                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
-          fi
-      after_success:
-        - sleep 5
-    - stage: Build Library
-      script:
-          # Build Library
-          - if [ $BUILD_LIBRARY == "YES" ]; then
-                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
-            fi
-    - stage: Build Example
-      script:
-          # Build Example in Debug if specified
-          - if [ $BUILD_EXAMPLE == "YES" ]; then
-                      xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
-            fi
+#    - stage: Initialize
+#     script:
+#        - set -o pipefail
+#        - xcodebuild -version
+#        - xcodebuild -showsdks
+#    - stage: Test
+#      script:
+#        # Build Framework in Release and Run Tests if specified
+#        - if [ $RUN_TESTS == "YES" ]; then
+#                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
+#          fi
+#      after_success:
+#        - sleep 5
+#    - stage: Build Library
+#      script:
+#          # Build Library
+#          - if [ $BUILD_LIBRARY == "YES" ]; then
+#                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+#            fi
+#    - stage: Build Example
+#      script:
+#          # Build Example in Debug if specified
+#          - if [ $BUILD_EXAMPLE == "YES" ]; then
+#                      xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+#            fi
     - stage: Pod Lint
       script:
           # Run `pod lib lint` if specified
           - if [ $POD_LINT == "YES" ]; then
-                      pod lib lint;
+                      pod lib lint --verbose;
             fi
