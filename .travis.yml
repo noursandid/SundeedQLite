@@ -1,5 +1,5 @@
 language: ruby
-osx_image: xcode10
+os: osx
 env:
   global:
   - LC_CTYPE=en_US.UTF-8
