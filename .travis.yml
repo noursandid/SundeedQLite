@@ -9,7 +9,7 @@ env:
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
   matrix:
-    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES" BUILD_LIBRARY="YES" POD_LINT="NO"
+    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="NO" BUILD_EXAMPLE="NO" BUILD_LIBRARY="NO" POD_LINT="YES"
 jobs:
   include:
     - stage: Initialize
@@ -22,8 +22,6 @@ jobs:
         # Build Framework in Release and Run Tests if specified
         - if [ $RUN_TESTS == "YES" ]; then
                 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
-          else
-                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO build | xcpretty;
           fi
       after_success:
         - sleep 5
