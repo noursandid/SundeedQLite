@@ -35,9 +35,6 @@ public class SundeedQLiteMap {
         }
         return self
     }
-//    func add(attribute:String,withObject object:Any){
-//        self.map[attribute] = object
-//    }
     func addColumn<T>(attribute:T,withColumnName columnName:String){
         self.columns[columnName] = attribute as AnyObject
     }
