@@ -31,13 +31,31 @@ pod install
 ```
 # Signs
 **+** : It's used to mark the primary key in the database.
-*N.B*
-- Primary keys should always be strings.
-- To create a nested object (**e.g: Employee**), **Employer** should have a primary key to link it as a foreign key.
-
 **<<** : It's used to mark the *ASCENDING* sorting method
-
 **>>** : It's used to mark the *DESCENDING* sorting method
+**<~>** : It's used to map between objects returned from the database to specific property
+**<\*>** : It's used to state that if this property is returned nil from the database, The whole parent object shall be dropped.
+
+*N.B:*
+-- Primary keys should always be strings.
+-- To create a nested object (**e.g: Employee**), both **Employer** and **Employee** should have primary keys.
+
+# Supported Types
+- SundeedQLiter Objects
+- String
+- Int
+- Double
+- Float
+- Bool
+- Date
+- UIImage
+- Array
+
+*P.S:*
+- *Nested objects will be normally saved*
+- *Optional and non-optional values of the above mentioned types will also be saved*
+- *Arrays of objects or primitive data type will be saved*
+- *No nil returned value from the database shall be added to an array while retrieving*
 
 # Documentation
 ```swift
