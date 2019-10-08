@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'SundeedQLite'
-  s.version = '1.0.4'
+  s.version = '1.0.5'
   s.license = 'MIT'
   s.summary = 'Easiest offline saving in Swift using native SQLite framework'
   s.homepage = 'https://github.com/noursandid/SundeedQLite/'
