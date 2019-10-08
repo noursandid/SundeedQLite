@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06F71DF7234BEB17005554E9 /* ClassesForTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F71DF6234BEB17005554E9 /* ClassesForTesting.swift */; };
+		06F71DF9234BFBDE005554E9 /* SundeedQLiteErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F71DF8234BFBDE005554E9 /* SundeedQLiteErrorTests.swift */; };
 		06F8A17423490848001D1381 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F8A17323490848001D1381 /* ViewController.swift */; };
 		06F8A17723490848001D1381 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06F8A17523490848001D1381 /* Main.storyboard */; };
 		06F8A1792349084B001D1381 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06F8A1782349084B001D1381 /* Assets.xcassets */; };
@@ -20,8 +22,6 @@
 		06F8A19F234908C6001D1381 /* SundeedQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F8A198234908C6001D1381 /* SundeedQLite.swift */; };
 		06F8A1A0234908C6001D1381 /* SundeedQLiterLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F8A199234908C6001D1381 /* SundeedQLiterLibrary.swift */; };
 		06F8A1A1234908C6001D1381 /* SundeedQLiteConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F8A19A234908C6001D1381 /* SundeedQLiteConverter.swift */; };
-		06F8A1A4234908FD001D1381 /* Employer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F8A1A3234908FD001D1381 /* Employer.swift */; };
-		06F8A1A623490934001D1381 /* Employee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F8A1A523490934001D1381 /* Employee.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		06F71DF6234BEB17005554E9 /* ClassesForTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassesForTesting.swift; sourceTree = "<group>"; };
+		06F71DF8234BFBDE005554E9 /* SundeedQLiteErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SundeedQLiteErrorTests.swift; sourceTree = "<group>"; };
 		06F8A16E23490848001D1381 /* SundeedQLiteLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SundeedQLiteLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06F8A17323490848001D1381 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		06F8A17623490848001D1381 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -52,8 +54,6 @@
 		06F8A198234908C6001D1381 /* SundeedQLite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SundeedQLite.swift; sourceTree = "<group>"; };
 		06F8A199234908C6001D1381 /* SundeedQLiterLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SundeedQLiterLibrary.swift; sourceTree = "<group>"; };
 		06F8A19A234908C6001D1381 /* SundeedQLiteConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SundeedQLiteConverter.swift; sourceTree = "<group>"; };
-		06F8A1A3234908FD001D1381 /* Employer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employer.swift; sourceTree = "<group>"; };
-		06F8A1A523490934001D1381 /* Employee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employee.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,7 +96,6 @@
 		06F8A17023490848001D1381 /* SundeedQLiteLibrary */ = {
 			isa = PBXGroup;
 			children = (
-				06F8A1A2234908ED001D1381 /* Classes */,
 				06F8A191234908A5001D1381 /* AppDelegate.swift */,
 				06F8A17323490848001D1381 /* ViewController.swift */,
 				06F8A17523490848001D1381 /* Main.storyboard */,
@@ -112,6 +111,8 @@
 			children = (
 				06F8A1862349084B001D1381 /* SundeedQLiteLibraryTests.swift */,
 				06F8A1882349084B001D1381 /* Info.plist */,
+				06F71DF6234BEB17005554E9 /* ClassesForTesting.swift */,
+				06F71DF8234BFBDE005554E9 /* SundeedQLiteErrorTests.swift */,
 			);
 			path = SundeedQLiteLibraryTests;
 			sourceTree = "<group>";
@@ -128,15 +129,6 @@
 				06F8A19A234908C6001D1381 /* SundeedQLiteConverter.swift */,
 			);
 			path = Library;
-			sourceTree = "<group>";
-		};
-		06F8A1A2234908ED001D1381 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				06F8A1A3234908FD001D1381 /* Employer.swift */,
-				06F8A1A523490934001D1381 /* Employee.swift */,
-			);
-			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -243,13 +235,11 @@
 				06F8A19C234908C6001D1381 /* SundeedQLiteConnectionPool.swift in Sources */,
 				06F8A192234908A5001D1381 /* AppDelegate.swift in Sources */,
 				06F8A19F234908C6001D1381 /* SundeedQLite.swift in Sources */,
-				06F8A1A623490934001D1381 /* Employee.swift in Sources */,
 				06F8A1A0234908C6001D1381 /* SundeedQLiterLibrary.swift in Sources */,
 				06F8A17423490848001D1381 /* ViewController.swift in Sources */,
 				06F8A1A1234908C6001D1381 /* SundeedQLiteConverter.swift in Sources */,
 				06F8A19D234908C6001D1381 /* SundeedQLiter.swift in Sources */,
 				06F8A19B234908C6001D1381 /* SundeedQLiteError.swift in Sources */,
-				06F8A1A4234908FD001D1381 /* Employer.swift in Sources */,
 				06F8A19E234908C6001D1381 /* SundeedQLiteMap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -258,7 +248,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06F71DF9234BFBDE005554E9 /* SundeedQLiteErrorTests.swift in Sources */,
 				06F8A1872349084B001D1381 /* SundeedQLiteLibraryTests.swift in Sources */,
+				06F71DF7234BEB17005554E9 /* ClassesForTesting.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
