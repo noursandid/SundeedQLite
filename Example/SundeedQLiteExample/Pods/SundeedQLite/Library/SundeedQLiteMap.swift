@@ -30,11 +30,10 @@ public class SundeedQLiteMap {
             return key1 == key
         }){
             self.currentValue = map[key]
+        } else {
+            self.currentValue = nil
         }
         return self
-    }
-    func add(attribute:String,withObject object:Any){
-        self.map[attribute] = object
     }
     func addColumn<T>(attribute:T,withColumnName columnName:String){
         self.columns[columnName] = attribute as AnyObject
@@ -71,7 +70,6 @@ public func <~> <T>(left: inout T, right: (SundeedQLiteMap,SundeedQLiteConverter
         right.0.addColumn(attribute: left, withColumnName: right.0.key!)
     }
 }
-
 public func <~> <T>(left: inout T?, right: (SundeedQLiteMap,SundeedQLiteConverter)) {
     if !right.0.fetchingColumns && right.0.currentValue is String{
         left = right.1.fromString(value: right.0.currentValue as! String) as? T
@@ -89,6 +87,14 @@ public func <~> <T>(left: inout [T], right: (SundeedQLiteMap,SundeedQLiteConvert
     }
 }
 public func <~> <T>(left: inout [T?], right: (SundeedQLiteMap,SundeedQLiteConverter)) {
+    if !right.0.fetchingColumns, let currentValue = right.0.currentValue as? [String]{
+        left = currentValue.map({ right.1.fromString(value: $0) }) as! [T]
+    }
+    else{
+        right.0.addColumn(attribute: left, withColumnName: right.0.key!)
+    }
+}
+public func <~> <T>(left: inout [T?]?, right: (SundeedQLiteMap,SundeedQLiteConverter)) {
     if !right.0.fetchingColumns, let currentValue = right.0.currentValue as? [String]{
         left = currentValue.map({ right.1.fromString(value: $0) }) as! [T]
     }
@@ -124,7 +130,7 @@ public func <~> <T:SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {
                         SundeedQLiteMap.addReference(object: object, withPrimaryKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
                         left = object
                     }
-                    
+
                 }
             }
         }
@@ -174,7 +180,7 @@ public func <~> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                         right.isSafeToAdd = false
                     }
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
-                    
+
                     if referencedInstance != nil {
                         array.append(referencedInstance!)
                     }
@@ -264,7 +270,7 @@ public func <~> <T:SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
                         right.isSafeToAdd = false
                     }
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
-                    
+
                     if referencedInstance != nil {
                         array.append(referencedInstance!)
                     }
@@ -291,6 +297,16 @@ public func <~> (left: inout [String], right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <~> (left: inout [String?], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String]{
+            left = value
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <~> (left: inout [String]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String]{
@@ -301,7 +317,7 @@ public func <~> (left: inout [String]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout [String?], right: SundeedQLiteMap) {
+public func <~> (left: inout [String?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String?]{
             left = value
@@ -321,6 +337,16 @@ public func <~> (left: inout [Int], right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <~> (left: inout [Int?], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String] {
+            left = value.map({Int($0)})
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <~> (left: inout [Int]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
@@ -331,10 +357,10 @@ public func <~> (left: inout [Int]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout [Int?], right: SundeedQLiteMap) {
+public func <~> (left: inout [Int?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
-            left = value.compactMap({Int($0)})
+            left = value.map({Int($0)})
         }
     }
     else{
@@ -351,6 +377,16 @@ public func <~> (left: inout [Double], right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <~> (left: inout [Double?], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String] {
+            left = value.map({Double($0)})
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <~> (left: inout [Double]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
@@ -361,10 +397,10 @@ public func <~> (left: inout [Double]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout [Double?], right: SundeedQLiteMap) {
+public func <~> (left: inout [Double?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
-            left = value.compactMap({Double($0)})
+            left = value.map({Double($0)})
         }
     }
     else{
@@ -381,6 +417,16 @@ public func <~> (left: inout [Float], right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <~> (left: inout [Float?], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String] {
+            left = value.map({Float($0)})
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <~> (left: inout [Float]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
@@ -391,10 +437,10 @@ public func <~> (left: inout [Float]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout [Float?], right: SundeedQLiteMap) {
+public func <~> (left: inout [Float?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
-            left = value.compactMap({Float($0)})
+            left = value.map({Float($0)})
         }
     }
     else{
@@ -424,7 +470,7 @@ public func <~> (left: inout [UIImage]?, right: SundeedQLiteMap) {
 public func <~> (left: inout [UIImage?], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String]{
-            left = value.compactMap({ UIImage.fromDatatypeValue(filePath: $0) })
+            left = value.map({ UIImage.fromDatatypeValue(filePath: $0) })
         }
     }
     else{
@@ -434,68 +480,47 @@ public func <~> (left: inout [UIImage?], right: SundeedQLiteMap) {
 public func <~> (left: inout [UIImage?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String]{
-            left = value.compactMap({ UIImage.fromDatatypeValue(filePath: $0) })
+            left = value.map({ UIImage.fromDatatypeValue(filePath: $0) })
         }
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout String, right: SundeedQLiteMap) {
+public func <~> (left: inout [Bool], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? String{
-            left = value
+        if let rightValue = right.currentValue as? [String]{
+            left = rightValue.compactMap({$0 == "1"})
         }
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout String?, right: SundeedQLiteMap) {
+public func <~> (left: inout [Bool]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? String{
-            left = value
+        if let rightValue = right.currentValue as? [String]{
+            left = rightValue.compactMap({$0 == "1"})
         }
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout Int, right: SundeedQLiteMap) {
+public func <~> (left: inout [Bool?], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = Int(rightValue){
-            left = value
+        if let rightValue = right.currentValue as? [String]{
+            left = rightValue.map({$0 == "1"})
         }
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <~> (left: inout Int?, right: SundeedQLiteMap) {
+public func <~> (left: inout [Bool?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = Int(rightValue){
-            left = value
-        }
-    }
-    else{
-        right.addColumn(attribute: left, withColumnName: right.key!)
-    }
-}
-public func <~> (left: inout Date, right: SundeedQLiteMap) {
-    if !right.fetchingColumns {
-        
-        if let rightValue = right.currentValue as? String, let value = right.dateFormatter.date(from: rightValue){
-            left = value
-        }
-    }
-    else{
-        right.addColumn(attribute: left, withColumnName: right.key!)
-    }
-}
-public func <~> (left: inout Date?, right: SundeedQLiteMap) {
-    if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = right.dateFormatter.date(from: rightValue){
-            left = value
+        if let rightValue = right.currentValue as? [String]{
+            left = rightValue.map({$0 == "1"})
         }
     }
     else{
@@ -525,7 +550,7 @@ public func <~> (left: inout [Date]?, right: SundeedQLiteMap) {
 public func <~> (left: inout [Date?], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [String]{
-            left = rightValue.compactMap({right.dateFormatter.date(from: $0)})
+            left = rightValue.map({right.dateFormatter.date(from: $0)})
         }
     }
     else{
@@ -535,7 +560,87 @@ public func <~> (left: inout [Date?], right: SundeedQLiteMap) {
 public func <~> (left: inout [Date?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [String]{
-            left = rightValue.compactMap({right.dateFormatter.date(from: $0)})
+            left = rightValue.map({right.dateFormatter.date(from: $0)})
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout String, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? String{
+            left = value
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout String?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        left = right.currentValue as? String
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Int, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String, let value = Int(rightValue){
+            left = value
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Int?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String {
+            left = Int(rightValue)
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Date, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        
+        if let rightValue = right.currentValue as? String, let value = right.dateFormatter.date(from: rightValue){
+            left = value
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Date?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String{
+            left = right.dateFormatter.date(from: rightValue)
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Bool, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        
+        if let rightValue = right.currentValue as? String {
+            left = rightValue == "1"
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Bool?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String{
+            left = rightValue == "1"
         }
     }
     else{
@@ -554,7 +659,27 @@ public func <~> (left: inout Double, right: SundeedQLiteMap) {
 }
 public func <~> (left: inout Double?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = Double(rightValue){
+        if let rightValue = right.currentValue as? String {
+            left = Double(rightValue)
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Float?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String {
+            left = Float(rightValue)
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Float, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String, let value = Float(rightValue){
             left = value
         }
     }
@@ -564,15 +689,26 @@ public func <~> (left: inout Double?, right: SundeedQLiteMap) {
 }
 public func <~> (left: inout UIImage?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? String {
-            left = UIImage.fromDatatypeValue(filePath: value)
+        if let rightValue = right.currentValue as? String {
+            left = UIImage.fromDatatypeValue(filePath: rightValue)
         }
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-
+public func <~> (left: inout UIImage, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? String,
+            let image = UIImage.fromDatatypeValue(filePath: rightValue) {
+            left = image
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+// if this value does not exist, dont add the whole object
 infix operator <*>
 public func <*> <T>(left: inout T, right: (SundeedQLiteMap,SundeedQLiteConverter)) {
     if !right.0.fetchingColumns && right.0.currentValue is String{
@@ -605,7 +741,7 @@ public func <*> <T:SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {
                         right.isSafeToAdd = false
                     }
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
-                    
+
                     if referencedInstance != nil {
                         left = referencedInstance as! T
                     }
@@ -613,7 +749,7 @@ public func <*> <T:SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {
                         SundeedQLiteMap.addReference(object: object, withPrimaryKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
                         left = object
                     }
-                    
+
                 }
             }
         }
@@ -666,7 +802,7 @@ public func <*> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                         right.isSafeToAdd = false
                     }
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
-                    
+
                     if referencedInstance != nil {
                         array.append(referencedInstance!)
                     }
@@ -762,7 +898,7 @@ public func <*> <T:SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
                         right.isSafeToAdd = false
                     }
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
-                    
+
                     if referencedInstance != nil {
                         array.append(referencedInstance!)
                     }
@@ -774,7 +910,7 @@ public func <*> <T:SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
             }
             left = array as! [T]
         }
-        
+
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)
@@ -882,6 +1018,19 @@ public func <*> (left: inout [String?], right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <*> (left: inout [String?]?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String?]{
+            left = value
+        }
+        if left == nil && right.isSafeToAdd{
+            right.isSafeToAdd = false
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <*> (left: inout [Int], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
@@ -915,7 +1064,30 @@ public func <*> (left: inout [Int?], right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <*> (left: inout [Int?]?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String] {
+            left = value.compactMap({Int($0)})
+        }
+        if left == nil && right.isSafeToAdd{
+            right.isSafeToAdd = false
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <*> (left: inout [Double], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String] {
+            left = value.compactMap({Double($0)})
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <*> (left: inout [Double?], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
             left = value.compactMap({Double($0)})
@@ -938,10 +1110,13 @@ public func <*> (left: inout [Double]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <*> (left: inout [Double?], right: SundeedQLiteMap) {
+public func <*> (left: inout [Double?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
             left = value.compactMap({Double($0)})
+        }
+        if left == nil && right.isSafeToAdd{
+            right.isSafeToAdd = false
         }
     }
     else{
@@ -949,6 +1124,16 @@ public func <*> (left: inout [Double?], right: SundeedQLiteMap) {
     }
 }
 public func <*> (left: inout [Float], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [String] {
+            left = value.compactMap({Float($0)})
+        }
+    }
+    else{
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <*> (left: inout [Float?], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
             left = value.compactMap({Float($0)})
@@ -971,10 +1156,13 @@ public func <*> (left: inout [Float]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-public func <*> (left: inout [Float?], right: SundeedQLiteMap) {
+public func <*> (left: inout [Float?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
             left = value.compactMap({Float($0)})
+        }
+        if left == nil && right.isSafeToAdd{
+            right.isSafeToAdd = false
         }
     }
     else{
@@ -1080,7 +1268,7 @@ public func <**> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                         right.isSafeToAdd = false
                     }
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
-                    
+
                     if referencedInstance != nil {
                         array.append(referencedInstance!)
                     }
@@ -1095,7 +1283,7 @@ public func <**> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                 right.isSafeToAdd = false
             }
         }
-        
+
     }
     else{
         right.addColumn(attribute: left, withColumnName: right.key!)

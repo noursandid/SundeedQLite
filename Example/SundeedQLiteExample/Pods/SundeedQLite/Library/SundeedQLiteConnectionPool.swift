@@ -47,10 +47,7 @@ class SundeedQLiteConnectionPool{
     }
     func execute(query:String,force:Bool = false){
         globalBackgroundSyncronizeDataQueue.async {
-            
             do{
-                
-                
                 if self.canExecute || force{
                     var writeConnection = try self.getConnection(toWrite: true)
                     self.canExecute = false
@@ -109,7 +106,6 @@ class SundeedQLiteConnectionPool{
         } catch {}
     }
     private func moveDatabaseToFilePath(force: Bool = false){
-        
         if self.shouldCopyDatabaseToFilePath() || force{
             let fileManager = FileManager.default
             let destPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
@@ -128,73 +124,6 @@ class SundeedQLiteConnectionPool{
                     }
                 }
             }
-        }
-    }
-    func finishWork(completion:(()->Void)?){
-        do {
-            var writeConnection = try self.getConnection(toWrite: true)
-            let oldQuery = self.sqlStatements.popLast()
-            if oldQuery != nil {
-                self.closeConnection(database: writeConnection)
-                writeConnection = nil
-                
-                self.executeInBackground(query: oldQuery!, force: true) {
-                    
-                }
-            }
-            else{
-                self.closeConnection(database: writeConnection)
-                writeConnection = nil
-                self.canExecute = true
-            }
-        }
-        catch{
-            
-        }
-        completion?()
-        
-    }
-    func executeInBackground(query:String,force:Bool = false,completion:(()->Void)? = nil){
-        do{
-            if self.canExecute || force{
-                var writeConnection = try self.getConnection(toWrite: true)
-                self.canExecute = false
-                var statement: OpaquePointer?
-                let prepare = sqlite3_prepare_v2(writeConnection, query, -1, &statement, nil)
-                if  prepare == SQLITE_OK {
-                    if sqlite3_step(statement) == SQLITE_DONE {
-                        sqlite3_finalize(statement)
-                    } else {
-                        sqlite3_finalize(statement)
-                        self.sqlStatements.insert(query, at: 0)
-                    }
-                }
-                else{
-                    if prepare != SQLITE_ERROR {
-                        sqlite3_finalize(statement)
-                        self.sqlStatements.insert(query, at: 0)
-                    }
-                }
-                let oldQuery = self.sqlStatements.popLast()
-                if oldQuery != nil {
-                    self.closeConnection(database: writeConnection)
-                    statement = nil
-                    writeConnection = nil
-                    self.execute(query: oldQuery!,force: true)
-                }
-                else{
-                    self.closeConnection(database: writeConnection)
-                    statement = nil
-                    writeConnection = nil
-                    self.canExecute = true
-                }
-            }
-            else{
-                self.sqlStatements.insert(query, at: 0)
-            }
-        }
-        catch{
-            self.sqlStatements.insert(query, at: 0)
         }
     }
     /**  returns if we should copy the database to the files again */
