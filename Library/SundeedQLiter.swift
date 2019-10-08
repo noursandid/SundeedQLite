@@ -12,7 +12,6 @@ public protocol SundeedQLiter {
     /** A function that describes all the mappings between database and object */
     func sundeedQLiterMapping(map:SundeedQLiteMap)
     init()
-    
 }
 extension SundeedQLiter{
     subscript(key: String) -> AnyObject? {
@@ -24,6 +23,7 @@ extension SundeedQLiter{
         }
         return nil
     }
+    /** retrieves the tableName of the specific object*/
     func getTableName()->String{
         return "\(type(of: self))"
     }
