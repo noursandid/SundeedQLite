@@ -30,15 +30,15 @@ Afterwards, run the following command:
 pod install
 ```
 # Signs
-**+** : It's used to mark the primary key in the database.
-**<<** : It's used to mark the *ASCENDING* sorting method
-**>>** : It's used to mark the *DESCENDING* sorting method
-**<~>** : It's used to map between objects returned from the database to specific property
-**<\*>** : It's used to state that if this property is returned nil from the database, The whole parent object shall be dropped.
+- **+** : It's used to mark the primary key in the database.
+- **<<** : It's used to mark the *ASCENDING* sorting method
+- **>>** : It's used to mark the *DESCENDING* sorting method
+- **<~>** : It's used to map between objects returned from the database to specific property
+- **<\*>** : It's used to state that if this property is returned nil from the database, The whole parent object shall be dropped.
 
 *N.B:*
--- Primary keys should always be strings.
--- To create a nested object (**e.g: Employee**), both **Employer** and **Employee** should have primary keys.
+- Primary keys should always be strings.
+- To create a nested object (**e.g: Employee**), both **Employer** and **Employee** should have primary keys.
 
 # Supported Types
 - SundeedQLiter Objects
