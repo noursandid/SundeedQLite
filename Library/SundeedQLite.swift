@@ -9,7 +9,7 @@
 import UIKit
 import SQLite3
 
-class SundeedQLite {
+public class SundeedQLite {
     public static var instance:SundeedQLite = SundeedQLite()
     private static var tables:[String] = []
     fileprivate static var connectionPool:SundeedQLiteConnectionPool = SundeedQLiteConnectionPool()
