@@ -748,7 +748,7 @@ class SundeedQLite {
         }
     }
     
-    static func deleteDatabase(){
+    public static func deleteDatabase(){
         SundeedQLite.tables.removeAll()
         SundeedQLite.connectionPool.deleteDatabase()
     }
