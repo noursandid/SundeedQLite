@@ -1,7 +1,7 @@
 ![Sundeed](https://raw.githubusercontent.com/noursandid/SundeedQLite/master/SundeedLogo.png)
 
 # SundeedQLite
-[![Build Status](https://travis-ci.org/noursandid/SundeedQLite.svg?branch=master)](https://travis-ci.org/noursandid/SundeedQLite) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite)
+[![Build Status](https://travis-ci.org/noursandid/SundeedQLite.svg?branch=master)](https://travis-ci.org/noursandid/SundeedQLite) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite) [![Language](https://img.shields.io/badge/Language-Swift-brightgreen)](https://github.com/apple/swift) [![Last Commit](https://img.shields.io/github/last-commit/noursandid/SundeedQLite?style=flat)](https://github.com/noursandid/SundeedQLite)
 
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
@@ -50,6 +50,7 @@ pod install
 - Date
 - UIImage
 - Array
+- enum/struct (see below documentation)
 
 *P.S:*
 - *Nested objects will be normally saved*
@@ -102,6 +103,31 @@ class ViewController: UIViewController {
     }
 }
 ```
+### Custom Types
+To save variables with custom types like enum or struct, you can use SundeedQLiteConverter
+```swift
+class TypeConverter: SundeedQLiteConverter {
+    func fromString(value: String) -> Any? {
+       return Type(rawValue: value)
+    }
+    func toString(value: Any?) -> String? {
+        return (value as? Type)?.rawValue
+    }
+}
+
+enum Type: String {
+    case manager
+    case ceo
+}
+
+class Employer: SundeedQLiter {
+    var type: Type?
+    
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        type <~> (map["type"], TypeConverter())
+    }
+}
+```
 
 # CheatSheet
 ### To Save
@@ -124,15 +150,14 @@ Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid",
     }
 }
 ```
+### To Reset The Database
+```swift
+SundeedQLite.deleteDatabase()
+```
 # Built Using
 *SQLite3*
 
-
-
 License
 --------
-
 MIT
 
-
-**Free Software, Hell Yeah!**

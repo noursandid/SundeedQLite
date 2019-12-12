@@ -67,7 +67,8 @@ public func <~> <T>(left: inout T, right: (SundeedQLiteMap,SundeedQLiteConverter
         left = right.1.fromString(value: right.0.currentValue as! String) as! T
     }
     else{
-        right.0.addColumn(attribute: left, withColumnName: right.0.key!)
+        let attribute = right.1.toString(value: left)
+        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
     }
 }
 public func <~> <T>(left: inout T?, right: (SundeedQLiteMap,SundeedQLiteConverter)) {
@@ -75,7 +76,8 @@ public func <~> <T>(left: inout T?, right: (SundeedQLiteMap,SundeedQLiteConverte
         left = right.1.fromString(value: right.0.currentValue as! String) as? T
     }
     else{
-        right.0.addColumn(attribute: left, withColumnName: right.0.key!)
+        let attribute = right.1.toString(value: left)
+        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
     }
 }
 public func <~> <T>(left: inout [T], right: (SundeedQLiteMap,SundeedQLiteConverter)) {
@@ -715,7 +717,8 @@ public func <*> <T>(left: inout T, right: (SundeedQLiteMap,SundeedQLiteConverter
         left = right.1.fromString(value: right.0.currentValue as! String) as! T
     }
     else{
-        right.0.addColumn(attribute: left, withColumnName: right.0.key!)
+        let attribute = right.1.toString(value: left)
+        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
     }
 }
 public func <*> <T>(left: inout T?, right: (SundeedQLiteMap,SundeedQLiteConverter)) {
@@ -726,7 +729,8 @@ public func <*> <T>(left: inout T?, right: (SundeedQLiteMap,SundeedQLiteConverte
         }
     }
     else{
-        right.0.addColumn(attribute: left, withColumnName: right.0.key!)
+        let attribute = right.1.toString(value: left)
+        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
     }
 }
 public func <*> <T:SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {

@@ -105,6 +105,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
     }
     
     private func checkEmployer(_ employer: EmployerForTesting) {
+        XCTAssertEqual(employer.type, Type.manager)
         XCTAssertEqual(employer.string, "string")
         XCTAssertEqual(employer.optionalString, "optionalString")
         XCTAssertNotNil(employer.object)

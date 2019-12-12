@@ -21,7 +21,22 @@ class EmployeeForTesting: SundeedQLiter {
     }
 }
 
+class TypeConverter: SundeedQLiteConverter {
+    func fromString(value: String) -> Any? {
+       return Type(rawValue: value)
+    }
+    func toString(value: Any?) -> String? {
+        return (value as? Type)?.rawValue
+    }
+}
+
+enum Type: String {
+    case manager
+    case ceo
+}
+
 class EmployerForTesting: SundeedQLiter {
+    var type: Type?
     var string: String = ""
     var optionalString: String?
     var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456")
@@ -109,6 +124,7 @@ class EmployerForTesting: SundeedQLiter {
     
     required init() {}
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        type <~> (map["type"], TypeConverter())
         string <~> map["string"]+
         optionalString <~> map["optionalString"]
         object <~> map["object"]
@@ -205,7 +221,7 @@ class EmployerForTesting: SundeedQLiter {
             employee.firstName = "Nour\(i)"
             employees.append(employee)
         }
-        
+        type = .manager
         string = "string"
         optionalString = "optionalString"
         object = employees[0]

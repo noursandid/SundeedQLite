@@ -9,5 +9,6 @@
 import Foundation
 
 public protocol SundeedQLiteConverter:class{
+    func toString(value: Any?) -> String?
     func fromString(value:String)->Any?
 }
