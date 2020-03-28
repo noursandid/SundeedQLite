@@ -101,8 +101,6 @@ class SundeedQLiteConnectionPool{
                 self.sqlStatements.removeAll()
                 try filemManager.removeItem(at: fullDestPath!)
             }
-            else{
-            }
         } catch {}
     }
     private func moveDatabaseToFilePath(force: Bool = false){
@@ -133,11 +131,8 @@ class SundeedQLiteConnectionPool{
                 UserDefaults.standard.set(false, forKey: "shouldCopyDatabaseToFilePath")
                 return true
             }
-            else{
-                return false
-            }
-        }
-        else{
+            return false
+        } else {
             UserDefaults.standard.set(false, forKey: "shouldCopyDatabaseToFilePath")
             return true
         }

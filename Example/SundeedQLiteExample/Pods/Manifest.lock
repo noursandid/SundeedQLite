@@ -1,16 +1,16 @@
 PODS:
-  - SundeedQLite (1.0.5)
+  - SundeedQLite (1.0.9)
 
 DEPENDENCIES:
-  - SundeedQLite (~> 1.0.5)
+  - SundeedQLite (~> 1.0.9)
 
 SPEC REPOS:
   trunk:
     - SundeedQLite
 
 SPEC CHECKSUMS:
-  SundeedQLite: 9c2b635f4bde36dcfc33efc74457c971a943d802
+  SundeedQLite: e630016773bf7a8a0b1192824b7b3de49e9febd0
 
-PODFILE CHECKSUM: 0d033286b9006bd17a22c4269826a4ada6bb01fc
+PODFILE CHECKSUM: e4a774892173ea94b4614a533550d9f1dc97c287
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.8.4
