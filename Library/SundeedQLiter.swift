@@ -32,6 +32,7 @@ extension SundeedQLiter{
         SundeedQLite.instance.save(objects: [self],withForeignKey: foreignKey)
     }
     /** deletes the object locally */
+    @discardableResult
     public func delete() throws -> Bool{
         return try SundeedQLite.instance.deleteFromDB(obj: self)
     }
@@ -54,10 +55,10 @@ extension SundeedQLiter{
             DispatchQueue.main.async {
                 completion?(objects as! [Self])
             }
-            
         })
     }
     /** deletes all the objects of this type locally */
+    @discardableResult
     public static func delete(withFilter filter:SundeedExpression<Bool>? = nil) throws -> Bool{
         let result = try SundeedQLite.instance.deleteAllFromDB(forClass: self as! AnyClass, withFilter: filter)
         return result

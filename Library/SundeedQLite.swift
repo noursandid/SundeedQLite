@@ -22,18 +22,14 @@ public class SundeedQLite {
         if object != nil {
             return object is String || object is String? || object is Int || object is Int? || object is Double || object is Double? || object is Float || object is Float? || object is Bool || object is Bool? || object is Date || object is Date? || object is UIImage || object is UIImage?
         }
-        else{
-            return false
-        }
+        return false
     }
     /** Converts the swift datatype to sqlite datatype */
     private func convertTypeToSQL(object: SundeedQLiter,attribute:AnyObject?) throws ->String{
         if attribute is SundeedQLiter || attribute is [SundeedQLiter] || attribute is SundeedQLiter? || attribute is [SundeedQLiter]? || attribute is [SundeedQLiter?]? || attribute is String || attribute is Date || attribute is Date? || attribute is String? || attribute is Int || attribute is Bool || attribute is Int? || attribute is Bool? || attribute is Double || attribute is Float || attribute is Double? || attribute is Float? || attribute is UIImage || attribute is UIImage?{
             return "TEXT"
         }
-        else {
-            throw SundeedQLiteError.UnsupportedType(object: object, attribute: "\(type(of: attribute))")
-        }
+        throw SundeedQLiteError.UnsupportedType(object: object, attribute: "\(type(of: attribute))")
     }
     
     /** Try to create table if not already exists */
@@ -44,70 +40,59 @@ public class SundeedQLite {
                 object.sundeedQLiterMapping(map: map)
                 var createTableStatement = "CREATE TABLE IF NOT EXISTS \(object.getTableName()) (SUNDEED_OFFLINE_ID INTEGER PRIMARY KEY, SUNDEED_FOREIGN_KEY TEXT"
                 for (columnName,attribute) in map.columns{
-                    if attribute is SundeedQLiter {
-                        try createTable(forObject: ((attribute as! SundeedQLiter)))
+                    if let attribute = attribute as? SundeedQLiter {
+                        try createTable(forObject: attribute)
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [SundeedQLiter?] {
-                        if (attribute as! [SundeedQLiter?]).count > 0 {
-                            try createTable(forObject: ((attribute as! [Swift.Optional<SundeedQLiter>]).first!))
+                    } else if let attribute = attribute as? [SundeedQLiter?] {
+                        if let firstAttribute = attribute.first {
+                            try createTable(forObject: firstAttribute)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [String?] {
-                        if (attribute as! [String?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [String?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [Int?] {
-                        if (attribute as! [Int?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [Int?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [Double?] {
-                        if (attribute as! [Double?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [Double?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [Float?] {
-                        if (attribute as! [Float?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [Float?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [Date?] {
-                        if (attribute as! [Date?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [Date?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [Bool?] {
-                        if (attribute as! [Bool?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [Bool?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if attribute is [UIImage?] {
-                        if (attribute as! [UIImage?]).compactMap({$0}).count > 0 {
+                    } else if let attribute = attribute as? [UIImage?] {
+                        if attribute.compactMap({$0}).count > 0 {
                             try createTableForPrimitiveDataTypes(withTableName: columnName)
                         }
                         createTableStatement += ",\(columnName) TEXT"
-                    }
-                    else if acceptDataType(forObject: attribute as AnyObject) {
+                    } else if acceptDataType(forObject: attribute as AnyObject) {
                         if columnName == "index" {
                             throw SundeedQLiteError.CantUseNameIndex(object: object)
                         }
-                        if columnName == map.primaryKey{
+                        if columnName == map.primaryKey {
+                            createTableStatement += ",\(columnName) \(try convertTypeToSQL(object: object, attribute: attribute))"
+                        } else {
                             createTableStatement += ",\(columnName) \(try convertTypeToSQL(object: object, attribute: attribute))"
                         }
-                        else{
-                            createTableStatement += ",\(columnName) \(try convertTypeToSQL(object: object, attribute: attribute))"
-                        }
-                    }
-                    else{
+                    } else{
                         throw SundeedQLiteError.UnsupportedType(object: object, attribute: "\(type(of: attribute))")
                     }
                 }
@@ -134,35 +119,26 @@ public class SundeedQLite {
                         objectsArray.append(object)
                     }
                 }
-                if order != nil && objectsArray.count > 0{
+                if let order = order, objectsArray.count > 0{
                     objectsArray.sort { (object1, object2) -> Bool in
                         if !asc {
-                            if object1[order!.value] is String? {
-                                return (object1[order!.value] as! String) > (object2[order!.value] as! String)
+                            if let obj1 = object1[order.value] as? String, let obj2 = object2[order.value] as? String {
+                                return obj1 > obj2
+                            } else if let obj1 = object1[order.value] as? Int, let obj2 = object2[order.value] as? Int {
+                                return obj1 > obj2
+                            } else if let obj1 = object1[order.value] as? Date, let obj2 = object2[order.value] as? Date {
+                                return obj1 > obj2
                             }
-                            else if object1[order!.value] is Int?{
-                                return (object1[order!.value] as! Int) > (object2[order!.value] as! Int)
+                            return false
+                        } else {
+                            if let obj1 = object1[order.value] as? String, let obj2 = object2[order.value] as? String {
+                                return obj1 < obj2
+                            } else if let obj1 = object1[order.value] as? Int, let obj2 = object2[order.value] as? Int {
+                                return obj1 < obj2
+                            } else if let obj1 = object1[order.value] as? Date, let obj2 = object2[order.value] as? Date {
+                                return obj1 < obj2
                             }
-                            else if object1[order!.value] is Date?{
-                                return (object1[order!.value] as! Date) > (object2[order!.value] as! Date)
-                            }
-                            else{
-                                return false
-                            }
-                        }
-                        else{
-                            if object1[order!.value] is String? {
-                                return (object1[order!.value] as! String) < (object2[order!.value] as! String)
-                            }
-                            else if object1[order!.value] is Int?{
-                                return (object1[order!.value] as! Int) < (object2[order!.value] as! Int)
-                            }
-                            else if object1[order!.value] is Date?{
-                                return (object1[order!.value] as! Date) < (object2[order!.value] as! Date)
-                            }
-                            else{
-                                return false
-                            }
+                            return false
                         }
                     }
                 }
@@ -174,188 +150,165 @@ public class SundeedQLite {
         globalBackgroundSyncronizeDataQueue.async {
             do {
                 try self.createTable(forObject: objects.first)
-                
                 for object in objects {
-                    
                     let map = SundeedQLiteMap(fetchingColumns: true)
                     object.sundeedQLiterMapping(map: map)
                     var insertStatement:String = "REPLACE INTO \(object.getTableName()) (SUNDEED_FOREIGN_KEY,"
                     var values = "\(foreignKey == nil ? "\"\"," : "\"\(foreignKey!)\",")"
                     var index = 0
                     for (columnName,attribute) in map.columns{
-                        if attribute is SundeedQLiter {
+                        if let attribute = attribute as? SundeedQLiter {
                             insertStatement += "\(index==0 ? "" : ",")\(columnName)"
-                            values += "\(index==0 ? "" : ",")\"SUNDEED_FOREIGN|\((attribute as! SundeedQLiter))\""
+                            values += "\(index==0 ? "" : ",")\"SUNDEED_FOREIGN|\(attribute)\""
                             if map.hasPrimaryKey {
-                                self.save(objects: [attribute as! SundeedQLiter],withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
-                            }
-                            else{
+                                self.save(objects: [attribute],withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                            } else {
                                 throw SundeedQLiteError.PrimaryKeyError(object: object)
                             }
                             index += 1
-                        }
-                        else if attribute is [SundeedQLiter?]{
-                            if (attribute as! [SundeedQLiter?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? [SundeedQLiter?]{
+                            if let firstAttribute = attribute.compactMap({$0}).first {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
-                                values += "\(index==0 ? "" : ",")\"SUNDEED_FOREIGN|\((attribute as! [SundeedQLiter?]).compactMap({$0}).first!)\""
+                                values += "\(index==0 ? "" : ",")\"SUNDEED_FOREIGN|\(firstAttribute)\""
                                 if map.hasPrimaryKey {
-                                    self.save(objects: (attribute as! [SundeedQLiter?]).compactMap({$0}),withForeignKey:String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.save(objects: attribute.compactMap({$0}),withForeignKey:String(describing:      map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is UIImage{
-                            insertStatement += "\(index==0 ? "" : ",")\(columnName)"
-                            values += "\(index==0 ? "" : ",")\"\((attribute as! UIImage).dataTypeValue(forObjectID: map.columns[map.primaryKey] as! String))\""
-                            index += 1
-                        }
-                        else if attribute is Date{
-                            self.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-                            insertStatement += "\(index==0 ? "" : ",")\(columnName)"
-                            values += "\(index==0 ? "" : ",")\"\(self.dateFormatter.string(from:attribute as! Date))\""
-                            index += 1
-                        }
-                        else if attribute is [String?]{
-                            if (attribute as! [String?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? UIImage {
+                            if map.hasPrimaryKey {
+                                insertStatement += "\(index==0 ? "" : ",")\(columnName)"
+                                values += "\(index==0 ? "" : ",")\"\(attribute.dataTypeValue(forObjectID: map.columns[map.primaryKey] as! String))\""
+                                index += 1
+                            } else {
+                                throw SundeedQLiteError.PrimaryKeyError(object: object)
+                            }
+                        } else if let attribute = attribute as? Date{
+                            if map.hasPrimaryKey {
+                                self.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+                                insertStatement += "\(index==0 ? "" : ",")\(columnName)"
+                                values += "\(index==0 ? "" : ",")\"\(self.dateFormatter.string(from:attribute))\""
+                                index += 1
+                            } else {
+                                throw SundeedQLiteError.PrimaryKeyError(object: object)
+                            }
+                        } else if let attribute = attribute as? [String?]{
+                            if attribute.compactMap({$0}).count > 0 {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute as! [String?], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is [Int?]{
-                            if (attribute as! [Int?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? [Int?]{
+                            if attribute.compactMap({$0}).count > 0 {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute as! [Int?], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is [Double?]{
-                            if (attribute as! [Double?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? [Double?]{
+                            if attribute.compactMap({$0}).count > 0 {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute as! [Double?], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is [Float?]{
-                            if (attribute as! [Float?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? [Float?]{
+                            if attribute.compactMap({$0}).count > 0 {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute as! [Float?], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is [Date?]{
-                            if (attribute as! [Date?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? [Date?]{
+                            if attribute.compactMap({$0}).count > 0 {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute as! [Date?], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is [Bool?]{
-                            if (attribute as! [Bool?]).compactMap({$0}).count > 0 {
+                        } else if let attribute = attribute as? [Bool?]{
+                            if attribute.compactMap({$0}).count > 0 {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute as! [String], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
+                                } else{
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if attribute is [UIImage?]{
-                            if (attribute as! [UIImage?]).compactMap({$0}).count > 0 {
-                                let attribute = (attribute as? [UIImage?])?.compactMap({$0?.dataTypeValue(forObjectID: "\(String(describing: map.columns[map.primaryKey] as AnyObject))\(columnName)\(String(describing: (attribute as! [UIImage?]).compactMap({$0}).firstIndex(of: $0)!))")})
+                        } else if let attribute = attribute as? [UIImage?]{
+                            if attribute.compactMap({$0}).count > 0 {
+                                let attribute = attribute.compactMap({$0?.dataTypeValue(forObjectID: "\(String(describing: map.columns[map.primaryKey] as AnyObject))\(columnName)\(String(describing: attribute.compactMap({$0}).firstIndex(of: $0)!))")})
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"SUNDEED_PRIMITIVE_FOREIGN|\(columnName)\""
                                 if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute!, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
+                                    self.saveArrayOfPrimitives(tableName: columnName, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                                } else {
                                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                                 }
                                 index += 1
-                            }
-                            else{
+                            } else {
                                 insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                                 values += "\(index==0 ? "" : ",")\"\""
                                 index += 1
                             }
-                        }
-                        else if self.acceptDataType(forObject: attribute as AnyObject){
+                        } else if self.acceptDataType(forObject: attribute as AnyObject){
                             insertStatement += "\(index==0 ? "" : ",")\(columnName)"
                             if String(describing:attribute as AnyObject).contains("\""){
                                 values += "\(index==0 ? "" : ",")\'\(attribute as AnyObject)\'"
-                            }
-                            else{
+                            } else{
                                 values += "\(index==0 ? "" : ",")\"\(attribute as AnyObject)\""
                             }
                             index += 1
@@ -364,10 +317,7 @@ public class SundeedQLite {
                     insertStatement += ") VALUES (\(values));"
                     SundeedQLite.connectionPool.execute(query: insertStatement)
                 }
-            }
-            catch{
-                print(error)
-            }
+            } catch {}
         }
     }
     
@@ -391,9 +341,7 @@ public class SundeedQLite {
                     SundeedQLite.connectionPool.execute(query: insertStatement)
                 }
             }
-            catch {
-                
-            }
+            catch {}
         }
     }
     
@@ -410,7 +358,7 @@ public class SundeedQLite {
                     var statement: OpaquePointer?
                     
                     if sqlite3_prepare_v2(database, "SELECT * FROM \(table) \(filter != nil ? filter!.toWhereStatement() : "") ORDER BY \(map.isOrdered ? "\"\(map.orderBy)\" COLLATE NOCASE \(map.asc ? "ASC" : "DESC")" : "\"SUNDEED_OFFLINE_ID\" ASC");", -1, &statement, nil) != SQLITE_OK {
-                       
+                        
                     }
                     
                     while sqlite3_step(statement) == SQLITE_ROW {
@@ -440,8 +388,7 @@ public class SundeedQLite {
                                     let embededElementTable = configurations[1]
                                     if map.hasPrimaryKey{
                                         dictionary[row.key] = self.getDictionaryValues(forClass: NSClassFromString(String(describing:embededElementTable))!,withFilter: SundeedColumn("SUNDEED_FOREIGN_KEY") == primaryKey)
-                                    }
-                                    else{
+                                    } else {
                                         throw SundeedQLiteError.PrimaryKeyError(object: instance)
                                     }
                                 } else if value.starts(with: "SUNDEED_PRIMITIVE_FOREIGN|"){
@@ -449,8 +396,7 @@ public class SundeedQLite {
                                     let embededElementTable = configurations[1]
                                     if map.hasPrimaryKey{
                                         dictionary[row.key] = self.getDictionaryValuesForPrimitives(forTable: String(embededElementTable),withFilter: (SundeedColumn("SUNDEED_FOREIGN_KEY") == primaryKey)!)
-                                    }
-                                    else{
+                                    } else {
                                         throw SundeedQLiteError.PrimaryKeyError(object: instance)
                                     }
                                 }
@@ -462,18 +408,14 @@ public class SundeedQLite {
                     statement = nil
                     database = nil
                     return array
-                }
-                else{
+                } else {
                     database = nil
                     return []
                 }
-                
-            }else{
+            } else {
                 return []
             }
-            
-        }
-        catch{
+        } catch{
             return []
         }
     }
@@ -497,8 +439,7 @@ public class SundeedQLite {
                 }
                 return array
             }
-        } catch {
-        }
+        } catch {}
         return nil
     }
     
@@ -516,29 +457,25 @@ public class SundeedQLite {
                         let name = String(cString: columnName)
                         dictionary[index] = name
                         index += 1
-                    } else {}
+                    }
                 }
                 columnsStatement = nil
                 SundeedQLite.connectionPool.closeConnection(database: database)
                 return dictionary
-            }
-            else{
+            } else {
                 return nil
             }
-        }
-        catch{
+        } catch {
             return nil
         }
     }
     func update(obj:Any?,columns:[SundeedColumn]){
-        //        DispatchQueue.global().async {
         do {
             if let object = obj as? SundeedQLiter {
                 try self.createTable(forObject: object)
-                //                    let db = try SundeedQLite.connectionPool.getConnectionToWrite()
                 let map = SundeedQLiteMap(fetchingColumns: true)
                 object.sundeedQLiterMapping(map: map)
-                if !map.hasPrimaryKey {
+                guard map.hasPrimaryKey else {
                     throw SundeedQLiteError.PrimaryKeyError(object: object)
                 }
                 var updateStatement = "UPDATE \(object.getTableName()) SET "
@@ -547,120 +484,67 @@ public class SundeedQLite {
                     if map.columns.contains(where: { (arg0) -> Bool in
                         let (key,_) = arg0
                         return key == column.value
-                    }){
+                    }) {
                         let attribute = map.columns[column.value]
-                        if attribute is SundeedQLiter {
-                            if attribute != nil{
-                                if map.hasPrimaryKey {
-                                    self.save(objects: [attribute as! SundeedQLiter],withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
-                                updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_FOREIGN|\((attribute as! SundeedQLiter))\" "
-                            }
-                            
-                        }
-                        else if attribute is [SundeedQLiter]{
-                            if (attribute as! [SundeedQLiter]).count > 0 {
-                                if map.hasPrimaryKey {
-                                    self.save(objects: attribute as! [SundeedQLiter],withForeignKey:String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
-                                updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_FOREIGN|\((attribute as! [SundeedQLiter]).first!)\" "
+                        if let attribute = attribute as? SundeedQLiter {
+                            self.save(objects: [attribute],withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
+                            updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_FOREIGN|\(attribute)\" "
+                        } else if let attribute = attribute as? [SundeedQLiter]{
+                            if let firstAttribute = attribute.first {
+                                self.save(objects: attribute,withForeignKey:String(describing:      map.columns[map.primaryKey] as AnyObject))
+                                updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_FOREIGN|\(firstAttribute)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is [String] {
-                            if (attribute as! [String]).count > 0 {
-                                if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: column.value, objects: attribute as! [String], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
+                        } else if let attribute = attribute as? [String] {
+                            if attribute.count > 0 {
+                                self.saveArrayOfPrimitives(tableName: column.value, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
                                 updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_PRIMITIVE_FOREIGN|\(column.value)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is [Int] {
-                            if (attribute as! [Int]).count > 0 {
-                                if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: column.value, objects: attribute as! [Int], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
+                        } else if let attribute = attribute as? [Int] {
+                            if attribute.count > 0 {
+                                self.saveArrayOfPrimitives(tableName: column.value, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
                                 updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_PRIMITIVE_FOREIGN|\(column.value)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is [Double] {
-                            if (attribute as! [Double]).count > 0 {
-                                if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: column.value, objects: attribute as! [Double], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
+                        } else if let attribute = attribute as? [Double] {
+                            if attribute.count > 0 {
+                                self.saveArrayOfPrimitives(tableName: column.value, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
                                 updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_PRIMITIVE_FOREIGN|\(column.value)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is [Float] {
-                            if (attribute as! [Float]).count > 0 {
-                                if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: column.value, objects: attribute as! [Float], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
+                        } else if let attribute = attribute as? [Float] {
+                            if attribute.count > 0 {
+                                self.saveArrayOfPrimitives(tableName: column.value, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
                                 updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_PRIMITIVE_FOREIGN|\(column.value)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is [Date] {
-                            if (attribute as! [Date]).count > 0 {
-                                if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: column.value, objects: attribute as! [Date], withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
+                        } else if let attribute = attribute as? [Date] {
+                            if attribute.count > 0 {
+                                self.saveArrayOfPrimitives(tableName: column.value, objects: attribute, withForeignKey: String(describing: map.columns[map.primaryKey] as AnyObject))
                                 updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_PRIMITIVE_FOREIGN|\(column.value)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is [UIImage] {
-                            if (attribute as! [UIImage]).count > 0 {
-                                let attribute = (attribute as? [UIImage])?.map({$0.dataTypeValue(forObjectID: "\(String(describing: map.columns[map.primaryKey] as AnyObject))\(column.value)\(String(describing: (attribute as! [UIImage]).firstIndex(of: $0)!))")})
-                                if map.hasPrimaryKey {
-                                    self.saveArrayOfPrimitives(tableName: column.value, objects: attribute! , withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
-                                }
-                                else{
-                                    throw SundeedQLiteError.PrimaryKeyError(object: object)
-                                }
+                        } else if let attribute = attribute as? [UIImage] {
+                            if attribute.count > 0 {
+                                let attribute = attribute.map({$0.dataTypeValue(forObjectID: "\(String(describing: map.columns[map.primaryKey] as AnyObject))\(column.value)\(String(describing: attribute.firstIndex(of: $0)!))")})
+                                
+                                self.saveArrayOfPrimitives(tableName: column.value, objects: attribute , withForeignKey: String(describing:      map.columns[map.primaryKey] as AnyObject))
                                 updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"SUNDEED_PRIMITIVE_FOREIGN|\(column.value)\" "
                                 index += 1
                             }
-                        }
-                        else if attribute is UIImage{
-                            updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"\((attribute as! UIImage).dataTypeValue(forObjectID: map.columns[map.primaryKey] as! String))\" "
+                        } else if let attribute = attribute as? UIImage {
+                            updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"\(attribute.dataTypeValue(forObjectID: map.columns[map.primaryKey] as! String))\" "
                             index += 1
-                        }
-                        else if attribute is Date{
+                        } else if let attribute = attribute as? Date{
                             self.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-                            updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"\(self.dateFormatter.string(from:attribute as! Date))\" "
+                            updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"\(self.dateFormatter.string(from: attribute))\" "
                             index += 1
-                        }
-                        else{
+                        } else {
                             updateStatement += "\(index != 0 ? "," : "")\(column.value) = \"\(attribute ?? "" as AnyObject)\" "
                             index += 1
                         }
-                    }
-                    else{
+                    } else {
                         throw SundeedQLiteError.NoColumnWithThisName(object: object, columnName: column.value)
                     }
                 }
@@ -669,8 +553,7 @@ public class SundeedQLite {
                     SundeedQLite.connectionPool.execute(query: updateStatement)
                 }
             }
-        }
-        catch{}
+        } catch{}
     }
     func update(forClass sundeedClass:AnyClass,changes:[SundeedUpdateSetStatement],withFilter filter:SundeedExpression<Bool>?) throws ->Bool{
         if let sundeed = sundeedClass as? SundeedQLiter.Type {
@@ -685,22 +568,15 @@ public class SundeedQLite {
             for change in changes {
                 if map.columns.contains(where: { (column) -> Bool in
                     return change.column.value == column.key
-                }){
+                }) {
                     updateStatement += "\(index != 0 ? "," : "")\(change.column.value) = \"\(change.value)\" "
                     index += 1
-                }
-                else{
+                } else {
                     throw SundeedQLiteError.NoColumnWithThisName(object: object, columnName: change.column.value)
                 }
             }
-            if filter != nil {
-                updateStatement += "WHERE \(filter!.toQuery());"
-            } else {
-                updateStatement += ";"
-            }
-            
+            updateStatement += "WHERE \(filter != nil ? filter!.toQuery() : "1" )"
             if index > 0 {
-                //                try db.execute(updateStatement)
                 SundeedQLite.connectionPool.execute(query: updateStatement)
             }
             return true
@@ -711,16 +587,13 @@ public class SundeedQLite {
         if let object = obj as? SundeedQLiter {
             let map = SundeedQLiteMap(fetchingColumns: true)
             object.sundeedQLiterMapping(map: map)
-            if map.hasPrimaryKey {
-                let deleteStatement = "DELETE FROM \(object.getTableName()) WHERE \(map.primaryKey) = \"\(map.columns[map.primaryKey]!)\""
-                SundeedQLite.connectionPool.execute(query: deleteStatement)
-                return true
-            }
-            else{
+            guard map.hasPrimaryKey else {
                 throw SundeedQLiteError.PrimaryKeyError(object: object)
             }
-        }
-        else{
+            let deleteStatement = "DELETE FROM \(object.getTableName()) WHERE \(map.primaryKey) = \"\(map.columns[map.primaryKey]!)\""
+            SundeedQLite.connectionPool.execute(query: deleteStatement)
+            return true
+        } else{
             return false
         }
     }
@@ -737,13 +610,11 @@ public class SundeedQLite {
                 let deleteStatement = "DELETE FROM \(object.getTableName()) WHERE \(filter == nil ? "1" : filter!.toQuery())"
                 SundeedQLite.connectionPool.execute(query: deleteStatement)
                 return true
-            }
-            else{
+            } else {
                 throw SundeedQLiteError.PrimaryKeyError(object: object)
             }
             
-        }
-        else{
+        } else {
             return false
         }
     }
@@ -756,29 +627,24 @@ public class SundeedQLite {
 extension UIImage {
     static func fromDatatypeValue(filePath : String) -> UIImage? {
         do {
-            let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            guard  let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                return nil
+            }
             let fileURL = documentsDirectoryURL.appendingPathComponent(filePath)
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 let data = try Data(contentsOf: fileURL)
                 return  UIImage(data: data)
-            }
-            else{
+            } else {
                 return nil
             }
-            
-        }
-        catch{
+        } catch{
             return nil
         }
-        
-        
     }
-    func dataTypeValue(forObjectID id:String)->String{
-        let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    func dataTypeValue(forObjectID id:String) -> String {
+        guard let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { fatalError() }
         let fileURL = documentsDirectoryURL.appendingPathComponent("\(id).png")
-            do {
-                try self.pngData()!.write(to: fileURL)
-            } catch {}
+        try? self.pngData()!.write(to: fileURL)
         return fileURL.lastPathComponent
     }
 }

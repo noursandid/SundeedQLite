@@ -129,7 +129,7 @@ class EmployerForTesting: SundeedQLiter {
         optionalString <~> map["optionalString"]
         object <~> map["object"]
         optionalObject <~> map["optionalObject"]
-        integer <~> map["integer"]
+        integer <~> map["integer"]>>
         optionalInteger <~> map["optionalInteger"]
         double <~> map["double"]
         optionalDouble <~> map["optionalDouble"]
