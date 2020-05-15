@@ -15,7 +15,6 @@ public class SundeedQLiteMap {
     var fetchingColumns:Bool = false
     fileprivate var key:String?
     var currentValue:Any?
-    fileprivate var dateFormatter:DateFormatter = DateFormatter()
     fileprivate static var references:[String:[String:SundeedQLiter]] = [:]
     var primaryKey:String = ""
     var orderBy:String = ""
@@ -24,7 +23,6 @@ public class SundeedQLiteMap {
     var hasPrimaryKey:Bool = false
     var isSafeToAdd:Bool = true
     public subscript(key:String)->SundeedQLiteMap{
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
         self.key = key
         if map.contains(where: { (key1, value1) -> Bool in
             return key1 == key
@@ -37,6 +35,9 @@ public class SundeedQLiteMap {
     }
     func addColumn<T>(attribute:T,withColumnName columnName:String){
         self.columns[columnName] = attribute as AnyObject
+        if hasPrimaryKey && columnName == primaryKey {
+            self.columns[Sundeed.shared.primaryKey] = attribute as AnyObject
+        }
     }
     init(fetchingColumns:Bool) {
         self.fetchingColumns = fetchingColumns
@@ -126,6 +127,8 @@ public func <~> <T:SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         left = referencedInstance as! T
                     }
                     else{
@@ -155,6 +158,8 @@ public func <~> <T:SundeedQLiter>(left: inout T?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
                     
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         left = referencedInstance as? T
                     }
                     else{
@@ -184,6 +189,8 @@ public func <~> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -214,6 +221,8 @@ public func <~> <T:SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
                     
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -244,6 +253,8 @@ public func <~> <T:SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
                     
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -274,6 +285,8 @@ public func <~> <T:SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -532,7 +545,7 @@ public func <~> (left: inout [Bool?]?, right: SundeedQLiteMap) {
 public func <~> (left: inout [Date], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [String]{
-            left = rightValue.compactMap({right.dateFormatter.date(from: $0)})
+            left = rightValue.compactMap({Sundeed.shared.dateFormatter.date(from: $0)})
         }
     }
     else{
@@ -542,7 +555,7 @@ public func <~> (left: inout [Date], right: SundeedQLiteMap) {
 public func <~> (left: inout [Date]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [String]{
-            left = rightValue.compactMap({right.dateFormatter.date(from: $0)})
+            left = rightValue.compactMap({Sundeed.shared.dateFormatter.date(from: $0)})
         }
     }
     else{
@@ -552,7 +565,7 @@ public func <~> (left: inout [Date]?, right: SundeedQLiteMap) {
 public func <~> (left: inout [Date?], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [String]{
-            left = rightValue.map({right.dateFormatter.date(from: $0)})
+            left = rightValue.map({Sundeed.shared.dateFormatter.date(from: $0)})
         }
     }
     else{
@@ -562,7 +575,7 @@ public func <~> (left: inout [Date?], right: SundeedQLiteMap) {
 public func <~> (left: inout [Date?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [String]{
-            left = rightValue.map({right.dateFormatter.date(from: $0)})
+            left = rightValue.map({Sundeed.shared.dateFormatter.date(from: $0)})
         }
     }
     else{
@@ -610,7 +623,8 @@ public func <~> (left: inout Int?, right: SundeedQLiteMap) {
 public func <~> (left: inout Date, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         
-        if let rightValue = right.currentValue as? String, let value = right.dateFormatter.date(from: rightValue){
+        if let rightValue = right.currentValue as? String,
+            let value = Sundeed.shared.dateFormatter.date(from: rightValue){
             left = value
         }
     }
@@ -621,7 +635,7 @@ public func <~> (left: inout Date, right: SundeedQLiteMap) {
 public func <~> (left: inout Date?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? String{
-            left = right.dateFormatter.date(from: rightValue)
+            left = Sundeed.shared.dateFormatter.date(from: rightValue)
         }
     }
     else{
@@ -747,6 +761,8 @@ public func <*> <T:SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         left = referencedInstance as! T
                     }
                     else{
@@ -776,6 +792,8 @@ public func <*> <T:SundeedQLiter>(left: inout T?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         left = referencedInstance as? T
                     }
                     else{
@@ -808,6 +826,8 @@ public func <*> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -838,6 +858,8 @@ public func <*> <T:SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -871,6 +893,8 @@ public func <*> <T:SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -904,6 +928,8 @@ public func <*> <T:SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -968,7 +994,8 @@ public func <*> (left: inout Int?, right: SundeedQLiteMap) {
 }
 public func <*> (left: inout Date, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = right.dateFormatter.date(from: rightValue){
+        if let rightValue = right.currentValue as? String,
+            let value = Sundeed.shared.dateFormatter.date(from: rightValue){
             left = value
         }
     }
@@ -978,7 +1005,8 @@ public func <*> (left: inout Date, right: SundeedQLiteMap) {
 }
 public func <*> (left: inout Date?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = right.dateFormatter.date(from: rightValue){
+        if let rightValue = right.currentValue as? String,
+            let value = Sundeed.shared.dateFormatter.date(from: rightValue){
             left = value
         }
         if left == nil && right.isSafeToAdd{
@@ -1274,6 +1302,8 @@ public func <**> <T:SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -1308,6 +1338,8 @@ public func <**> <T:SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -1344,6 +1376,8 @@ public func <**> <T:SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{
@@ -1380,6 +1414,8 @@ public func <**> <T:SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
                     let referencedInstance = SundeedQLiteMap.getReference(forKey: map.primaryKey, andValue: map[map.primaryKey].currentValue as AnyObject, andClassName: "\(T.self)")
 
                     if referencedInstance != nil {
+                        let map = SundeedQLiteMap(dictionnary: value as! [String:Any])
+                        referencedInstance?.sundeedQLiterMapping(map: map)
                         array.append(referencedInstance!)
                     }
                     else{

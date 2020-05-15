@@ -52,3 +52,27 @@ public struct SundeedUpdateSetStatement{
     }
 }
 
+extension UIImage {
+    static func fromDatatypeValue(filePath : String) -> UIImage? {
+        do {
+            guard  let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                return nil
+            }
+            let fileURL = documentsDirectoryURL.appendingPathComponent(filePath)
+            if FileManager.default.fileExists(atPath: fileURL.path) {
+                let data = try Data(contentsOf: fileURL)
+                return  UIImage(data: data)
+            } else {
+                return nil
+            }
+        } catch{
+            return nil
+        }
+    }
+    func dataTypeValue(forObjectID id:String) -> String {
+        guard let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { fatalError() }
+        let fileURL = documentsDirectoryURL.appendingPathComponent("\(id).png")
+        try? self.pngData()!.write(to: fileURL)
+        return fileURL.lastPathComponent
+    }
+}

@@ -7,19 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D2C810B4D42708A00E76443E28EE4B0 /* SundeedQLiteConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92C7DCAAA51B44131635A40D5CC5D1D /* SundeedQLiteConnectionPool.swift */; };
-		30941FF20417B81070F7E9D36AC07A8C /* SundeedQLite-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F641A74A6CA0A5E98E877DD4764112 /* SundeedQLite-dummy.m */; };
-		44E1171C29589FB94CBA56603CA4371B /* SundeedQLite-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E82439DCC32167AB0155CC4F8762739 /* SundeedQLite-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1656480762890C07B47EAA340091C262 /* DeleteStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91979DB32147482307374B410987589F /* DeleteStatement.swift */; };
+		18A3BA64D57B71E2BCA5501250FBD234 /* SaveProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8218DEBBBDD46D8E592F9E63630876C0 /* SaveProcessor.swift */; };
+		332B0E78D5A82EA55BB623E5D8DA65C6 /* InsertStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28075E0EDBD3B4322590D56C6CB7922C /* InsertStatement.swift */; };
+		3D1C854664D5B43AD7218A3AE0220E81 /* SundeedQLiteError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A58D50A0503EDD52E2990BCBDC5A009 /* SundeedQLiteError.swift */; };
+		5F4683EFCBB02AA298EEF402885D60A5 /* ObjectWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39A91A3C969A1FEB13F3886809CBB4C /* ObjectWrapper.swift */; };
+		647253D8E5BFC3E86F38A662A7BD98A4 /* SundeedQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5224C77DAF25C2F2F43741AB6ACA51C0 /* SundeedQLite.swift */; };
+		673DF4C6E297EDBBB50E62D706E43D8E /* Sundeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B769EF920C253A93D402E3BD20F43967 /* Sundeed.swift */; };
 		6916337BEFB7877DA997EEFB16FC8B8D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DE354DA182454A49972F1EA0BAB0B3E /* Foundation.framework */; };
-		71FB8865EF99B2010B5591394C3A0F87 /* SundeedQLiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40294999B0C74C22253081B0C74F3B0D /* SundeedQLiter.swift */; };
-		74A94399604BF8F1ACD7468BF7CBC14E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DE354DA182454A49972F1EA0BAB0B3E /* Foundation.framework */; };
-		79BDE5611062967F3D7F0A78F7730D9D /* SundeedQLiteMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBC8771981CE6BC484EEE42F056AEF8 /* SundeedQLiteMap.swift */; };
-		79ED0DA3F6910F9499363F580C3265E8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE4F7799189C352E1D9346617C1FCFED /* SystemConfiguration.framework */; };
-		94EB582EB7A900A175A321B39FC44D00 /* SundeedQLiterLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B379CD9032FF48A8E90EB90B4C3CFE /* SundeedQLiterLibrary.swift */; };
-		9897D4BB5418A2FDA5269A6D6E5B2CE0 /* SundeedQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3163848B29A45D0F1B70941C59710DA1 /* SundeedQLite.swift */; };
+		6AB8713604E38DDD490EDDD20CF0DB81 /* StatementBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D71E43CE89604C6D6E69485ABF0CB8AF /* StatementBuilder.swift */; };
+		6C52B6C87B58C9EDAF25C1281ADA0F40 /* SundeedQLiteMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7F1D1BA930A9F0D6B26983A8C8CBFA /* SundeedQLiteMap.swift */; };
+		87A9D8456B673C1C7EA5153C6F63FC61 /* SundeedQLiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B24929202BB9A70E8B8CE1B84F908A /* SundeedQLiter.swift */; };
+		8A1F0701A4F82CD70CA02CAB3776D2F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DE354DA182454A49972F1EA0BAB0B3E /* Foundation.framework */; };
+		933E11F75311E965E8DFDB4BE3CF9F6F /* SelectStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88B79E56BF646A0056DE1F217A06846 /* SelectStatement.swift */; };
+		95762EFD6B9144D14FD2C13062D35821 /* Processor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB6D47F2A41E2CAFDAA37088255D1F /* Processor.swift */; };
+		95EA6915FAC5314A6715AA7AEDB1D49D /* UpdateProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21157EAD94B8A88890FA1D8C8B0D752C /* UpdateProcessor.swift */; };
+		9AFA65FDE71D601BE1B1C34C7AD7DD99 /* CreateTableStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A215A04D29CE2ABA60BE9BED9AE6BAB /* CreateTableStatement.swift */; };
+		A93AD79A51F959141D335E5582C1923F /* UpdateStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD298B0D39B156EC6DAAD7ED2B484ECA /* UpdateStatement.swift */; };
+		B3483C6B4EB018B2E2D44DCB5AD0552D /* CreateTableProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AFEC1F6AECABE513174ACC627E209E /* CreateTableProcessor.swift */; };
+		BC434C47A689F640E3D9A1283B631537 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D14843F29D4AFB743FB76CFFE2C058 /* Statement.swift */; };
 		CBD9CE856A79D68D459E65362A2EFB80 /* Pods-SundeedQLiteExample-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 76E5F185A4E3FB73DDBE10EDFD901D90 /* Pods-SundeedQLiteExample-dummy.m */; };
-		F2CC25F99CCCDE6FFE45401D2E998855 /* SundeedQLiteConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048ECA2C4F554947031B24C90EE2BC83 /* SundeedQLiteConverter.swift */; };
-		FE9D7D7320D4761FB1D32094E5CD82D3 /* SundeedQLiteError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46AE0DC414E6531BD0EA2A1B6526E2F6 /* SundeedQLiteError.swift */; };
+		D0D912E58486F018A9EDF17C3D813B9D /* SundeedQLite-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 765B443E970AA5DC89E0A85C5EDC408D /* SundeedQLite-dummy.m */; };
+		D6FE7865C1BF7DCF1FFD4658AF9C1308 /* SundeedQLiterLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07972D0C1AF14F698D442FA211EFFD79 /* SundeedQLiterLibrary.swift */; };
+		DB062634E01A0C53C839184BA270E91F /* RetrieveProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1706949972253BC9BBD435814166C6F8 /* RetrieveProcessor.swift */; };
+		DFEB00B088802F99B5708A3F25A04A92 /* SundeedQLite-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E530DD7E7170EBC341C7D78ECEE0F799 /* SundeedQLite-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E71C375DCF97B8A3FFD230119701EFFA /* SundeedQLiteConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13119BBB5F0A16EE997DD9EECEC8D79B /* SundeedQLiteConverter.swift */; };
+		ECC03381D62D286036FC4D8960041162 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE4F7799189C352E1D9346617C1FCFED /* SystemConfiguration.framework */; };
+		F8B427369F771CAB2B5AE3B3223ECDCB /* SundeedQLiteConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B78F52837CA7779726BEBCADC733F1 /* SundeedQLiteConnection.swift */; };
 		FFAA570405221E4296E8BBB48690F37A /* Pods-SundeedQLiteExample-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B86BA49F4D2650343A022CD543B2DAB4 /* Pods-SundeedQLiteExample-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -34,33 +48,47 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		048ECA2C4F554947031B24C90EE2BC83 /* SundeedQLiteConverter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteConverter.swift; path = Library/SundeedQLiteConverter.swift; sourceTree = "<group>"; };
+		03B78F52837CA7779726BEBCADC733F1 /* SundeedQLiteConnection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteConnection.swift; path = Library/Main/SundeedQLiteConnection.swift; sourceTree = "<group>"; };
+		06BB6D47F2A41E2CAFDAA37088255D1F /* Processor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Processor.swift; path = Library/Main/Processor/Processor.swift; sourceTree = "<group>"; };
+		07972D0C1AF14F698D442FA211EFFD79 /* SundeedQLiterLibrary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiterLibrary.swift; path = Library/Main/SundeedQLiterLibrary.swift; sourceTree = "<group>"; };
 		103BDDA568184D08771096C934A9C78C /* Pods-SundeedQLiteExample-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-SundeedQLiteExample-frameworks.sh"; sourceTree = "<group>"; };
-		10F641A74A6CA0A5E98E877DD4764112 /* SundeedQLite-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SundeedQLite-dummy.m"; sourceTree = "<group>"; };
+		13119BBB5F0A16EE997DD9EECEC8D79B /* SundeedQLiteConverter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteConverter.swift; path = Library/ClassHandler/SundeedQLiteConverter.swift; sourceTree = "<group>"; };
+		1706949972253BC9BBD435814166C6F8 /* RetrieveProcessor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RetrieveProcessor.swift; path = Library/Main/Processor/Processors/RetrieveProcessor.swift; sourceTree = "<group>"; };
 		1DE354DA182454A49972F1EA0BAB0B3E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		2075647BE88F78C25DA3AB35010F232D /* SundeedQLite-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SundeedQLite-prefix.pch"; sourceTree = "<group>"; };
 		20AFBB233FC9BC5A79E1ED40A3B04E3F /* Pods-SundeedQLiteExample-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SundeedQLiteExample-acknowledgements.plist"; sourceTree = "<group>"; };
-		2E82439DCC32167AB0155CC4F8762739 /* SundeedQLite-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SundeedQLite-umbrella.h"; sourceTree = "<group>"; };
-		2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SundeedQLite.xcconfig; sourceTree = "<group>"; };
-		3163848B29A45D0F1B70941C59710DA1 /* SundeedQLite.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLite.swift; path = Library/SundeedQLite.swift; sourceTree = "<group>"; };
-		40294999B0C74C22253081B0C74F3B0D /* SundeedQLiter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiter.swift; path = Library/SundeedQLiter.swift; sourceTree = "<group>"; };
-		46AE0DC414E6531BD0EA2A1B6526E2F6 /* SundeedQLiteError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteError.swift; path = Library/SundeedQLiteError.swift; sourceTree = "<group>"; };
-		4CBC8771981CE6BC484EEE42F056AEF8 /* SundeedQLiteMap.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteMap.swift; path = Library/SundeedQLiteMap.swift; sourceTree = "<group>"; };
+		21157EAD94B8A88890FA1D8C8B0D752C /* UpdateProcessor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateProcessor.swift; path = Library/Main/Processor/Processors/UpdateProcessor.swift; sourceTree = "<group>"; };
+		28075E0EDBD3B4322590D56C6CB7922C /* InsertStatement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InsertStatement.swift; path = Library/Main/Statements/InsertStatement.swift; sourceTree = "<group>"; };
+		2A215A04D29CE2ABA60BE9BED9AE6BAB /* CreateTableStatement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CreateTableStatement.swift; path = Library/Main/Statements/CreateTableStatement.swift; sourceTree = "<group>"; };
+		5224C77DAF25C2F2F43741AB6ACA51C0 /* SundeedQLite.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLite.swift; path = Library/ClassHandler/SundeedQLite.swift; sourceTree = "<group>"; };
+		570CB0B66EA32D67104FDF2F19D7E55C /* SundeedQLite-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SundeedQLite-Info.plist"; sourceTree = "<group>"; };
 		61F68F981A8496C9604CA00D2B947970 /* Pods-SundeedQLiteExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SundeedQLiteExample.debug.xcconfig"; sourceTree = "<group>"; };
+		62FB474E622773B6F9ED31FD5D7722BA /* SundeedQLite.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SundeedQLite.modulemap; sourceTree = "<group>"; };
 		6D14D8E487B7197A3E0F64FA7619FE76 /* Pods-SundeedQLiteExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SundeedQLiteExample.release.xcconfig"; sourceTree = "<group>"; };
 		6DBA698A8C11A3E9EA928CD324F92365 /* SundeedQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SundeedQLite.framework; path = SundeedQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		74AFEC1F6AECABE513174ACC627E209E /* CreateTableProcessor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CreateTableProcessor.swift; path = Library/Main/Processor/Processors/CreateTableProcessor.swift; sourceTree = "<group>"; };
+		765B443E970AA5DC89E0A85C5EDC408D /* SundeedQLite-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SundeedQLite-dummy.m"; sourceTree = "<group>"; };
 		76E5F185A4E3FB73DDBE10EDFD901D90 /* Pods-SundeedQLiteExample-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SundeedQLiteExample-dummy.m"; sourceTree = "<group>"; };
 		77D91B8735018D9C3D07C5313AE8DA90 /* Pods_SundeedQLiteExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_SundeedQLiteExample.framework; path = "Pods-SundeedQLiteExample.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F7F1D1BA930A9F0D6B26983A8C8CBFA /* SundeedQLiteMap.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteMap.swift; path = Library/ClassHandler/SundeedQLiteMap.swift; sourceTree = "<group>"; };
+		8218DEBBBDD46D8E592F9E63630876C0 /* SaveProcessor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SaveProcessor.swift; path = Library/Main/Processor/Processors/SaveProcessor.swift; sourceTree = "<group>"; };
+		91979DB32147482307374B410987589F /* DeleteStatement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DeleteStatement.swift; path = Library/Main/Statements/DeleteStatement.swift; sourceTree = "<group>"; };
+		9A58D50A0503EDD52E2990BCBDC5A009 /* SundeedQLiteError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteError.swift; path = Library/Main/SundeedQLiteError.swift; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A2B379CD9032FF48A8E90EB90B4C3CFE /* SundeedQLiterLibrary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiterLibrary.swift; path = Library/SundeedQLiterLibrary.swift; sourceTree = "<group>"; };
 		A4E721284943969DB570485652CDD6E5 /* Pods-SundeedQLiteExample-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SundeedQLiteExample-Info.plist"; sourceTree = "<group>"; };
-		A92C7DCAAA51B44131635A40D5CC5D1D /* SundeedQLiteConnectionPool.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiteConnectionPool.swift; path = Library/SundeedQLiteConnectionPool.swift; sourceTree = "<group>"; };
+		A88B79E56BF646A0056DE1F217A06846 /* SelectStatement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectStatement.swift; path = Library/Main/Statements/SelectStatement.swift; sourceTree = "<group>"; };
 		AFB89B50451921BC731A231EE2C4004A /* Pods-SundeedQLiteExample-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-SundeedQLiteExample-acknowledgements.markdown"; sourceTree = "<group>"; };
+		B769EF920C253A93D402E3BD20F43967 /* Sundeed.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Sundeed.swift; path = Library/Main/Sundeed.swift; sourceTree = "<group>"; };
 		B86BA49F4D2650343A022CD543B2DAB4 /* Pods-SundeedQLiteExample-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-SundeedQLiteExample-umbrella.h"; sourceTree = "<group>"; };
+		C5D14843F29D4AFB743FB76CFFE2C058 /* Statement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Statement.swift; path = Library/Main/Statements/Statement.swift; sourceTree = "<group>"; };
+		C9B24929202BB9A70E8B8CE1B84F908A /* SundeedQLiter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SundeedQLiter.swift; path = Library/ClassHandler/SundeedQLiter.swift; sourceTree = "<group>"; };
+		CD298B0D39B156EC6DAAD7ED2B484ECA /* UpdateStatement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateStatement.swift; path = Library/Main/Statements/UpdateStatement.swift; sourceTree = "<group>"; };
 		CE4F7799189C352E1D9346617C1FCFED /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		D71E43CE89604C6D6E69485ABF0CB8AF /* StatementBuilder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StatementBuilder.swift; path = Library/Main/Statements/StatementBuilder.swift; sourceTree = "<group>"; };
+		DD191473A8E34B6E934456E786A38BFF /* SundeedQLite-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SundeedQLite-prefix.pch"; sourceTree = "<group>"; };
 		E102E4E9353A6AD74A143ADE0B518677 /* Pods-SundeedQLiteExample.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-SundeedQLiteExample.modulemap"; sourceTree = "<group>"; };
-		E47B42F97177A7B572BC24D245A47D29 /* SundeedQLite-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SundeedQLite-Info.plist"; sourceTree = "<group>"; };
-		FF24A87335EB30383CD5DB2AD3E03E1C /* SundeedQLite.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SundeedQLite.modulemap; sourceTree = "<group>"; };
+		E39A91A3C969A1FEB13F3886809CBB4C /* ObjectWrapper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ObjectWrapper.swift; path = Library/Main/Processor/ObjectWrapper.swift; sourceTree = "<group>"; };
+		E530DD7E7170EBC341C7D78ECEE0F799 /* SundeedQLite-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SundeedQLite-umbrella.h"; sourceTree = "<group>"; };
+		E8D6297B25209B100AC57B47BB32CCA0 /* SundeedQLite.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SundeedQLite.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,32 +100,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C453E6D8FC1BA0430ECC71E27394B23D /* Frameworks */ = {
+		B9B7ACD83499496F9E8B9BE4B7B9DFB7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74A94399604BF8F1ACD7468BF7CBC14E /* Foundation.framework in Frameworks */,
-				79ED0DA3F6910F9499363F580C3265E8 /* SystemConfiguration.framework in Frameworks */,
+				8A1F0701A4F82CD70CA02CAB3776D2F5 /* Foundation.framework in Frameworks */,
+				ECC03381D62D286036FC4D8960041162 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		038C7B701EEE020BFE070519881BBBDB /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				FF24A87335EB30383CD5DB2AD3E03E1C /* SundeedQLite.modulemap */,
-				2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */,
-				10F641A74A6CA0A5E98E877DD4764112 /* SundeedQLite-dummy.m */,
-				E47B42F97177A7B572BC24D245A47D29 /* SundeedQLite-Info.plist */,
-				2075647BE88F78C25DA3AB35010F232D /* SundeedQLite-prefix.pch */,
-				2E82439DCC32167AB0155CC4F8762739 /* SundeedQLite-umbrella.h */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/SundeedQLite";
-			sourceTree = "<group>";
-		};
 		13A507570ACEB1BBB206B72F39663C83 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +137,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		48566AD5DD930731A8AD07DF12E1DFED /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F56AB6A1F5DEC28761B12B5437842F13 /* SundeedQLite */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		4967FE92CBE43E4E42B7D4FD0847F41B /* Pods-SundeedQLiteExample */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,28 +162,18 @@
 			path = "Target Support Files/Pods-SundeedQLiteExample";
 			sourceTree = "<group>";
 		};
-		6467D62ACB4BA7A8F4DBCAC2BDACA275 /* Pods */ = {
+		BFD87C69A0685668F852F2EB478F8052 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				A3FA7FC570E671098FBEAAAAE5E52A1D /* SundeedQLite */,
+				62FB474E622773B6F9ED31FD5D7722BA /* SundeedQLite.modulemap */,
+				E8D6297B25209B100AC57B47BB32CCA0 /* SundeedQLite.xcconfig */,
+				765B443E970AA5DC89E0A85C5EDC408D /* SundeedQLite-dummy.m */,
+				570CB0B66EA32D67104FDF2F19D7E55C /* SundeedQLite-Info.plist */,
+				DD191473A8E34B6E934456E786A38BFF /* SundeedQLite-prefix.pch */,
+				E530DD7E7170EBC341C7D78ECEE0F799 /* SundeedQLite-umbrella.h */,
 			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		A3FA7FC570E671098FBEAAAAE5E52A1D /* SundeedQLite */ = {
-			isa = PBXGroup;
-			children = (
-				3163848B29A45D0F1B70941C59710DA1 /* SundeedQLite.swift */,
-				A92C7DCAAA51B44131635A40D5CC5D1D /* SundeedQLiteConnectionPool.swift */,
-				048ECA2C4F554947031B24C90EE2BC83 /* SundeedQLiteConverter.swift */,
-				46AE0DC414E6531BD0EA2A1B6526E2F6 /* SundeedQLiteError.swift */,
-				4CBC8771981CE6BC484EEE42F056AEF8 /* SundeedQLiteMap.swift */,
-				40294999B0C74C22253081B0C74F3B0D /* SundeedQLiter.swift */,
-				A2B379CD9032FF48A8E90EB90B4C3CFE /* SundeedQLiterLibrary.swift */,
-				038C7B701EEE020BFE070519881BBBDB /* Support Files */,
-			);
-			name = SundeedQLite;
-			path = SundeedQLite;
+			name = "Support Files";
+			path = "../Target Support Files/SundeedQLite";
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -169,7 +181,7 @@
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				1628BF05B4CAFDCC3549A101F5A10A17 /* Frameworks */,
-				6467D62ACB4BA7A8F4DBCAC2BDACA275 /* Pods */,
+				48566AD5DD930731A8AD07DF12E1DFED /* Pods */,
 				41241671BE0350A9D2DCCC1C3F58B901 /* Products */,
 				13A507570ACEB1BBB206B72F39663C83 /* Targets Support Files */,
 			);
@@ -184,6 +196,36 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		F56AB6A1F5DEC28761B12B5437842F13 /* SundeedQLite */ = {
+			isa = PBXGroup;
+			children = (
+				74AFEC1F6AECABE513174ACC627E209E /* CreateTableProcessor.swift */,
+				2A215A04D29CE2ABA60BE9BED9AE6BAB /* CreateTableStatement.swift */,
+				91979DB32147482307374B410987589F /* DeleteStatement.swift */,
+				28075E0EDBD3B4322590D56C6CB7922C /* InsertStatement.swift */,
+				E39A91A3C969A1FEB13F3886809CBB4C /* ObjectWrapper.swift */,
+				06BB6D47F2A41E2CAFDAA37088255D1F /* Processor.swift */,
+				1706949972253BC9BBD435814166C6F8 /* RetrieveProcessor.swift */,
+				8218DEBBBDD46D8E592F9E63630876C0 /* SaveProcessor.swift */,
+				A88B79E56BF646A0056DE1F217A06846 /* SelectStatement.swift */,
+				C5D14843F29D4AFB743FB76CFFE2C058 /* Statement.swift */,
+				D71E43CE89604C6D6E69485ABF0CB8AF /* StatementBuilder.swift */,
+				B769EF920C253A93D402E3BD20F43967 /* Sundeed.swift */,
+				5224C77DAF25C2F2F43741AB6ACA51C0 /* SundeedQLite.swift */,
+				03B78F52837CA7779726BEBCADC733F1 /* SundeedQLiteConnection.swift */,
+				13119BBB5F0A16EE997DD9EECEC8D79B /* SundeedQLiteConverter.swift */,
+				9A58D50A0503EDD52E2990BCBDC5A009 /* SundeedQLiteError.swift */,
+				7F7F1D1BA930A9F0D6B26983A8C8CBFA /* SundeedQLiteMap.swift */,
+				C9B24929202BB9A70E8B8CE1B84F908A /* SundeedQLiter.swift */,
+				07972D0C1AF14F698D442FA211EFFD79 /* SundeedQLiterLibrary.swift */,
+				21157EAD94B8A88890FA1D8C8B0D752C /* UpdateProcessor.swift */,
+				CD298B0D39B156EC6DAAD7ED2B484ECA /* UpdateStatement.swift */,
+				BFD87C69A0685668F852F2EB478F8052 /* Support Files */,
+			);
+			name = SundeedQLite;
+			path = SundeedQLite;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -195,11 +237,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C7D12353FA3D3971EDB33D9936D7A270 /* Headers */ = {
+		90F64B2EA6332237493813416AAC716D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44E1171C29589FB94CBA56603CA4371B /* SundeedQLite-umbrella.h in Headers */,
+				DFEB00B088802F99B5708A3F25A04A92 /* SundeedQLite-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,12 +250,12 @@
 /* Begin PBXNativeTarget section */
 		7FD39C755305280038E4C5B47EBB3A9B /* SundeedQLite */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3B74C03BF1808FE9CFE6CC2A0283C375 /* Build configuration list for PBXNativeTarget "SundeedQLite" */;
+			buildConfigurationList = 2962E9C13F75434032E7835610C6379B /* Build configuration list for PBXNativeTarget "SundeedQLite" */;
 			buildPhases = (
-				C7D12353FA3D3971EDB33D9936D7A270 /* Headers */,
-				46D5B3E21BE2A75BB34A6D61ECE109E9 /* Sources */,
-				C453E6D8FC1BA0430ECC71E27394B23D /* Frameworks */,
-				40AF1962F91717E91FDDBBC7CC0BF52D /* Resources */,
+				90F64B2EA6332237493813416AAC716D /* Headers */,
+				1015C2D5EDBE8A0173BCB5788D9DB538 /* Sources */,
+				B9B7ACD83499496F9E8B9BE4B7B9DFB7 /* Frameworks */,
+				452448FB05B3572539BBDAFA51921F45 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -279,7 +321,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		40AF1962F91717E91FDDBBC7CC0BF52D /* Resources */ = {
+		452448FB05B3572539BBDAFA51921F45 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -289,18 +331,32 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		46D5B3E21BE2A75BB34A6D61ECE109E9 /* Sources */ = {
+		1015C2D5EDBE8A0173BCB5788D9DB538 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30941FF20417B81070F7E9D36AC07A8C /* SundeedQLite-dummy.m in Sources */,
-				9897D4BB5418A2FDA5269A6D6E5B2CE0 /* SundeedQLite.swift in Sources */,
-				1D2C810B4D42708A00E76443E28EE4B0 /* SundeedQLiteConnectionPool.swift in Sources */,
-				F2CC25F99CCCDE6FFE45401D2E998855 /* SundeedQLiteConverter.swift in Sources */,
-				FE9D7D7320D4761FB1D32094E5CD82D3 /* SundeedQLiteError.swift in Sources */,
-				79BDE5611062967F3D7F0A78F7730D9D /* SundeedQLiteMap.swift in Sources */,
-				71FB8865EF99B2010B5591394C3A0F87 /* SundeedQLiter.swift in Sources */,
-				94EB582EB7A900A175A321B39FC44D00 /* SundeedQLiterLibrary.swift in Sources */,
+				B3483C6B4EB018B2E2D44DCB5AD0552D /* CreateTableProcessor.swift in Sources */,
+				9AFA65FDE71D601BE1B1C34C7AD7DD99 /* CreateTableStatement.swift in Sources */,
+				1656480762890C07B47EAA340091C262 /* DeleteStatement.swift in Sources */,
+				332B0E78D5A82EA55BB623E5D8DA65C6 /* InsertStatement.swift in Sources */,
+				5F4683EFCBB02AA298EEF402885D60A5 /* ObjectWrapper.swift in Sources */,
+				95762EFD6B9144D14FD2C13062D35821 /* Processor.swift in Sources */,
+				DB062634E01A0C53C839184BA270E91F /* RetrieveProcessor.swift in Sources */,
+				18A3BA64D57B71E2BCA5501250FBD234 /* SaveProcessor.swift in Sources */,
+				933E11F75311E965E8DFDB4BE3CF9F6F /* SelectStatement.swift in Sources */,
+				BC434C47A689F640E3D9A1283B631537 /* Statement.swift in Sources */,
+				6AB8713604E38DDD490EDDD20CF0DB81 /* StatementBuilder.swift in Sources */,
+				673DF4C6E297EDBBB50E62D706E43D8E /* Sundeed.swift in Sources */,
+				D0D912E58486F018A9EDF17C3D813B9D /* SundeedQLite-dummy.m in Sources */,
+				647253D8E5BFC3E86F38A662A7BD98A4 /* SundeedQLite.swift in Sources */,
+				F8B427369F771CAB2B5AE3B3223ECDCB /* SundeedQLiteConnection.swift in Sources */,
+				E71C375DCF97B8A3FFD230119701EFFA /* SundeedQLiteConverter.swift in Sources */,
+				3D1C854664D5B43AD7218A3AE0220E81 /* SundeedQLiteError.swift in Sources */,
+				6C52B6C87B58C9EDAF25C1281ADA0F40 /* SundeedQLiteMap.swift in Sources */,
+				87A9D8456B673C1C7EA5153C6F63FC61 /* SundeedQLiter.swift in Sources */,
+				D6FE7865C1BF7DCF1FFD4658AF9C1308 /* SundeedQLiterLibrary.swift in Sources */,
+				95EA6915FAC5314A6715AA7AEDB1D49D /* UpdateProcessor.swift in Sources */,
+				A93AD79A51F959141D335E5582C1923F /* UpdateStatement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,43 +380,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		2E0EDC35929BD266762E9CF1A47580DE /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/SundeedQLite/SundeedQLite.modulemap";
-				PRODUCT_MODULE_NAME = SundeedQLite;
-				PRODUCT_NAME = SundeedQLite;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		32B920AF28F80581ACD7FD7DECA5346C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 61F68F981A8496C9604CA00D2B947970 /* Pods-SundeedQLiteExample.debug.xcconfig */;
@@ -393,42 +412,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		5CC965B19D89A6B100A77B14D4E7FDA0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F0A99CA730BED9010095DCD110C69FD /* SundeedQLite.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/SundeedQLite/SundeedQLite.modulemap";
-				PRODUCT_MODULE_NAME = SundeedQLite;
-				PRODUCT_NAME = SundeedQLite;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -598,14 +581,87 @@
 			};
 			name = Release;
 		};
+		ED059C5B75FA764B6F6E7466582AD3CF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E8D6297B25209B100AC57B47BB32CCA0 /* SundeedQLite.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SundeedQLite/SundeedQLite.modulemap";
+				PRODUCT_MODULE_NAME = SundeedQLite;
+				PRODUCT_NAME = SundeedQLite;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		F4E7295B3E36C8DEEAA517AAB5E145C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E8D6297B25209B100AC57B47BB32CCA0 /* SundeedQLite.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SundeedQLite/SundeedQLite-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SundeedQLite/SundeedQLite-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SundeedQLite/SundeedQLite.modulemap";
+				PRODUCT_MODULE_NAME = SundeedQLite;
+				PRODUCT_NAME = SundeedQLite;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3B74C03BF1808FE9CFE6CC2A0283C375 /* Build configuration list for PBXNativeTarget "SundeedQLite" */ = {
+		2962E9C13F75434032E7835610C6379B /* Build configuration list for PBXNativeTarget "SundeedQLite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5CC965B19D89A6B100A77B14D4E7FDA0 /* Debug */,
-				2E0EDC35929BD266762E9CF1A47580DE /* Release */,
+				F4E7295B3E36C8DEEAA517AAB5E145C8 /* Debug */,
+				ED059C5B75FA764B6F6E7466582AD3CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

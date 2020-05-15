@@ -6,5 +6,5 @@ target 'SundeedQLiteExample' do
   use_frameworks!
 
   # Pods for SundeedQLiteExample
-	pod 'SundeedQLite', '~> 1.0.9'
+	pod 'SundeedQLite', '~> 1.1.1'
 end
