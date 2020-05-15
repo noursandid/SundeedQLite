@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
   s.documentation_url = 'https://github.com/noursandid/SundeedQLite/'
   s.ios.deployment_target = '11.0'
   s.swift_version = '5.0'
-  s.source_files = 'Library/*.swift'
+  s.source_files = 'Library/**/*.swift'
   s.framework = 'SystemConfiguration'
 end

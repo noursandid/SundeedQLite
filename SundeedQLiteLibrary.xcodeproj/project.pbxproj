@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		06EF758A2467266E00BDA118 /* Processor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF75892467266E00BDA118 /* Processor.swift */; };
-		06EF758D246727CB00BDA118 /* SundeedStatements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758C246727CB00BDA118 /* SundeedStatements.swift */; };
+		06EF758D246727CB00BDA118 /* StatementBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758C246727CB00BDA118 /* StatementBuilder.swift */; };
 		06EF758F2467291500BDA118 /* CreateTableStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758E2467291500BDA118 /* CreateTableStatement.swift */; };
 		06EF7594246771FC00BDA118 /* Sundeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF7593246771FC00BDA118 /* Sundeed.swift */; };
 		06EF759624677A0000BDA118 /* DeleteStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF759524677A0000BDA118 /* DeleteStatement.swift */; };
@@ -50,7 +50,7 @@
 
 /* Begin PBXFileReference section */
 		06EF75892467266E00BDA118 /* Processor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Processor.swift; sourceTree = "<group>"; };
-		06EF758C246727CB00BDA118 /* SundeedStatements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SundeedStatements.swift; sourceTree = "<group>"; };
+		06EF758C246727CB00BDA118 /* StatementBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementBuilder.swift; sourceTree = "<group>"; };
 		06EF758E2467291500BDA118 /* CreateTableStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTableStatement.swift; sourceTree = "<group>"; };
 		06EF7593246771FC00BDA118 /* Sundeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sundeed.swift; sourceTree = "<group>"; };
 		06EF759524677A0000BDA118 /* DeleteStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteStatement.swift; sourceTree = "<group>"; };
@@ -130,7 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				06EF759F24684C5E00BDA118 /* Statement.swift */,
-				06EF758C246727CB00BDA118 /* SundeedStatements.swift */,
+				06EF758C246727CB00BDA118 /* StatementBuilder.swift */,
 				06EF758E2467291500BDA118 /* CreateTableStatement.swift */,
 				06EF759524677A0000BDA118 /* DeleteStatement.swift */,
 				06EF75972467848600BDA118 /* InsertStatement.swift */,
@@ -333,7 +333,7 @@
 				06F8A19B234908C6001D1381 /* SundeedQLiteError.swift in Sources */,
 				06EF75A82469740500BDA118 /* SaveProcessor.swift in Sources */,
 				06EF75A024684C5E00BDA118 /* Statement.swift in Sources */,
-				06EF758D246727CB00BDA118 /* SundeedStatements.swift in Sources */,
+				06EF758D246727CB00BDA118 /* StatementBuilder.swift in Sources */,
 				06EF759624677A0000BDA118 /* DeleteStatement.swift in Sources */,
 				06F8A19E234908C6001D1381 /* SundeedQLiteMap.swift in Sources */,
 				06EF759A2468123200BDA118 /* UpdateStatement.swift in Sources */,
