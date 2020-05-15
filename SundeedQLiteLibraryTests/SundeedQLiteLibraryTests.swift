@@ -22,7 +22,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
     
     func testDeleting() {
         let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             do {
                 if try !(self.employer?.delete() ?? false) {
                     XCTFail("Couldn't delete class")
@@ -32,17 +32,19 @@ class SundeedQLiteLibraryTests: XCTestCase {
             } catch {
                 XCTFail("Couldn't delete class")
             }
-            EmployerForTesting.retrieve(completion: { (allEmployers) in
-                XCTAssert(allEmployers.isEmpty)
-                expectation.fulfill()
-            })
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                EmployerForTesting.retrieve(completion: { (allEmployers) in
+                    XCTAssert(allEmployers.isEmpty)
+                    expectation.fulfill()
+                })
+            }
         }
-        wait(for: [expectation], timeout: 4.0)
+        wait(for: [expectation], timeout: 6.0)
     }
     
     func testRetrieve() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             EmployerForTesting.retrieve(completion: { (allEmployers) in
                 guard let employer = allEmployers.first else {
                     XCTFail("Couldn't Retrieve From Database")
@@ -57,7 +59,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
     
     func testRetrieveWithFilter() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
                                         completion: { (allEmployers) in
                                             guard let employer = allEmployers.first else {
@@ -73,7 +75,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
     
     func testRetrieveWithWrongFilter() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "ABCD",
                                         completion: { (allEmployers) in
                                             XCTAssertEqual(allEmployers.count, 0)
@@ -85,13 +87,13 @@ class SundeedQLiteLibraryTests: XCTestCase {
     
     func testGlobalUpdate() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             do {
                 if try !EmployerForTesting.update(changes: SundeedColumn("optionalString") <~ "test",
                                                   withFilter: SundeedColumn("string") == "string") {
                     XCTFail("Couldn't update Global Employer Table")
                 } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
                                                     completion: { (allEmployers) in
                                                         guard let employer = allEmployers.first else {
@@ -111,21 +113,25 @@ class SundeedQLiteLibraryTests: XCTestCase {
     }
     
     func testUpdate() {
-        employer?.optionalString = "test"
-        employer?.update(columns: SundeedColumn("optionalString"))
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
-                                        completion: { (allEmployers) in
-                                            guard let employer1 = allEmployers.first else {
-                                                XCTFail("Couldn't Retrieve From Database")
-                                                return
-                                            }
-                                            XCTAssert(employer1.optionalString == "test")
-                                            expectation.fulfill()
-            })
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.employer?.optionalString = "test"
+            self.employer?.object.firstName = "testtt"
+            self.employer?.update(columns: SundeedColumn("optionalString"),
+                                  SundeedColumn("object"))
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                EmployerForTesting.retrieve(completion: { (allEmployers) in
+                                                guard let employer1 = allEmployers.first else {
+                                                    XCTFail("Couldn't Retrieve From Database")
+                                                    return
+                                                }
+                                                XCTAssert(employer1.optionalString == "test")
+                                                XCTAssert(employer1.object.firstName == "testtt")
+                                                expectation.fulfill()
+                })
+            }
         }
-        wait(for: [expectation], timeout: 4.0)
+        wait(for: [expectation], timeout: 5.0)
     }
     
     func testArraySaving() {
@@ -139,18 +145,19 @@ class SundeedQLiteLibraryTests: XCTestCase {
         employer2.integer = 2
         [employer2,employer].save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             EmployerForTesting.retrieve(completion: { (allEmployers) in
                                             guard let employer1 = allEmployers.first else {
                                                 XCTFail("Couldn't Retrieve From Database")
                                                 return
                                             }
+                self.checkEmployer(allEmployers[1])
                 XCTAssert(employer1.integer == 2)
                 XCTAssert(employer1.string == "string1")
                                             expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 8.0)
+        wait(for: [expectation], timeout: 1)
         
     }
     

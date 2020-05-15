@@ -29,7 +29,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .PrimaryKeyError(object: employer)
+        error = .PrimaryKeyError(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n No Primary Key \n - To add a primary key add a '+' sign in the mapping function in the class after the designated primary map \n  e.g: self.id = map[\"ID\"]+"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -39,7 +39,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .UnsupportedType(object: employer, attribute: "Test")
+        error = .UnsupportedType(tableName: employer.getTableName(), attribute: "Test")
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Unsupported Type Test \n - Try to change the type of this attribute, or send us a suggestion so we can add it"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -49,7 +49,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .NoColumnWithThisName(object: employer, columnName: "Test")
+        error = .NoColumnWithThisName(tableName: employer.getTableName(), columnName: "Test")
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n No Column With Title Test \n - Try to change the column name and try again"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -59,7 +59,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .CantUseNameIndex(object: employer)
+        error = .CantUseNameIndex(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Unsupported column name \"index\" because it is reserved \n - Try to change it and try again"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -69,7 +69,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .NoChangesMade(object: employer)
+        error = .NoChangesMade(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Trying to perform global update statement with no changes \n - Try to add some changes and try again"
         XCTAssertEqual(error?.description, errorString)
     }
