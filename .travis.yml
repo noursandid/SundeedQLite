@@ -9,7 +9,7 @@ env:
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
 matrix:
-    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES" BUILD_LIBRARY="YES"
+    - DESTINATION="platform=iOS Simulator,OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES" BUILD_LIBRARY="YES"
 jobs:
   include:
     - stage: Initialize
@@ -40,6 +40,6 @@ jobs:
 
     - stage: Push To CodCoverage
       script:
-          - xcodebuild -scheme SwiftExample -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone X,OS=12.1' build test
+          - xcodebuild -scheme "$SCHEME" -sdk iphonesimulator -destination "$DESTINATION" build test
       after_success:
-          - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary'
+          - bash <(curl -s https://codecov.io/bash) -J "$SCHEME"
