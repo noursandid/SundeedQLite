@@ -1,5 +1,4 @@
-language:
-  - swift
+language: ruby
 os: osx
 env:
   global:
@@ -19,9 +18,28 @@ jobs:
         - xcodebuild -version
         - xcodebuild -showsdks
 
+    - stage: Test
+      script:
+        - if [ $RUN_TESTS == "YES" ]; then
+                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
+          fi
+      after_success:
+        - sleep 5
+
+    - stage: Build Library
+      script:
+          - if [ $BUILD_LIBRARY == "YES" ]; then
+                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+            fi
+
+    - stage: Build Example
+      script:
+          - if [ $BUILD_EXAMPLE == "YES" ]; then
+                      xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+            fi
 
     - stage: Push To CodCoverage
       script:
-          - xcodebuild -scheme "$SCHEME" -destination "$DESTINATION" build test
+          - xcodebuild -scheme 'SundeedQLiteLibrary' -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone X,OS=12.1' build test
       after_success:
-          - bash <(curl -s https://codecov.io/bash) -J "$SCHEME"
+          - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary'
