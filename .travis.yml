@@ -41,6 +41,6 @@ jobs:
 
     - stage: Push To CodCoverage
       script:
-          - xcodebuild -scheme "$SCHEME" -sdk iphonesimulator -destination "$DESTINATION" build test
+          - xcodebuild -scheme "$SCHEME" -destination "$DESTINATION" build test
       after_success:
           - bash <(curl -s https://codecov.io/bash) -J "$SCHEME"
