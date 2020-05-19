@@ -38,3 +38,6 @@ jobs:
                       xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
             fi
 
+    - stage: Push To CodeCov
+      script:
+          - bash <(curl -s https://codecov.io/bash)

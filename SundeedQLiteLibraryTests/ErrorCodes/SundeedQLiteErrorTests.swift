@@ -29,7 +29,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .PrimaryKeyError(tableName: employer.getTableName())
+        error = .primaryKeyError(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n No Primary Key \n - To add a primary key add a '+' sign in the mapping function in the class after the designated primary map \n  e.g: self.id = map[\"ID\"]+"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -39,7 +39,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .UnsupportedType(tableName: employer.getTableName(), attribute: "Test")
+        error = .unsupportedType(tableName: employer.getTableName(), attribute: "Test")
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Unsupported Type Test \n - Try to change the type of this attribute, or send us a suggestion so we can add it"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -49,7 +49,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .NoColumnWithThisName(tableName: employer.getTableName(), columnName: "Test")
+        error = .noColumnWithThisName(tableName: employer.getTableName(), columnName: "Test")
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n No Column With Title Test \n - Try to change the column name and try again"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -59,7 +59,7 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .CantUseNameIndex(tableName: employer.getTableName())
+        error = .cantUseNameIndex(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Unsupported column name \"index\" because it is reserved \n - Try to change it and try again"
         XCTAssertEqual(error?.description, errorString)
     }
@@ -69,13 +69,19 @@ class SundeedQLiteErrorTests: XCTestCase {
             XCTFail("Employer nil")
             return
         }
-        error = .NoChangesMade(tableName: employer.getTableName())
+        error = .noChangesMade(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Trying to perform global update statement with no changes \n - Try to add some changes and try again"
         XCTAssertEqual(error?.description, errorString)
     }
     
+    func testErrorInNoObjectError() {
+        error = .noObjectPassed
+        let errorString = "SundeedQLiteError no object passed to handle"
+        XCTAssertEqual(error?.description, errorString)
+    }
+    
     func testErrorInConnectionError() {
-        error = .ErrorInConnection
+        error = .errorInConnection
         let errorString = "SundeedQLiteError with Connection : \n Unable to create a connection to the local database \n Make sure that you have access and permissions to device's files"
         XCTAssertEqual(error?.description, errorString)
     }

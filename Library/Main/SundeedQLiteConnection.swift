@@ -9,18 +9,17 @@
 import UIKit
 import SQLite3
 
-class SundeedQLiteConnection{
+class SundeedQLiteConnection {
     static var pool: SundeedQLiteConnection = SundeedQLiteConnection()
-    private var sqlStatements:[String] = []
-    private var canExecute:Bool = true
+    var sqlStatements: [String] = []
+    var canExecute: Bool = true
     let fileManager = FileManager.default
     let destPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
                                                        .userDomainMask,
                                                        true).first!
     lazy var fullDestPath = NSURL(fileURLWithPath: destPath)
         .appendingPathComponent(Sundeed.shared.databaseFileName)
-    
-    func getConnection(toWrite:Bool = false) throws -> OpaquePointer?{
+    func getConnection(toWrite: Bool = false) throws -> OpaquePointer? {
         moveDatabaseToFilePath()
         let fileURL = try FileManager
             .default.url(for: .documentDirectory,
@@ -36,23 +35,22 @@ class SundeedQLiteConnection{
                            &database,
                            flags,
                            nil) != SQLITE_OK {
-            throw SundeedQLiteError.ErrorInConnection
+            throw SundeedQLiteError.errorInConnection
         }
         return database
     }
-    func closeConnection(database:OpaquePointer?){
+    func closeConnection(database: OpaquePointer?) {
         let rc2 = sqlite3_close(database)
         if rc2 == SQLITE_BUSY {
-            while let stmt = sqlite3_next_stmt(database,nil)
-            {
-                let _ = sqlite3_finalize(stmt)
+            while let stmt = sqlite3_next_stmt(database, nil) {
+                sqlite3_finalize(stmt)
             }
             sqlite3_close(database)
         }
     }
     func execute(query: String, force: Bool = false) {
         Sundeed.shared.backgroundQueue.async {
-            do{
+            do {
                 if self.canExecute || force {
                     var writeConnection = try self.getConnection(toWrite: true)
                     self.canExecute = false
@@ -91,31 +89,25 @@ class SundeedQLiteConnection{
             }
         }
     }
-    
-    func deleteDatabase(){
-        if fullDestPath != nil {
-            UserDefaults.standard.set(true,
-                                      forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
-            self.sqlStatements.removeAll()
-            try? fileManager.removeItem(at: fullDestPath!)
-        }
+    func deleteDatabase() {
+        guard let fullDestinationPath = fullDestPath else { return }
+        UserDefaults.standard.set(true,
+                                  forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
+        self.sqlStatements.removeAll()
+        try? fileManager.removeItem(at: fullDestinationPath)
     }
-    
-    private func moveDatabaseToFilePath(force: Bool = false){
-        if self.shouldCopyDatabaseToFilePath() || force{
-            if fullDestPath != nil {
-                let fullDestPathString = fullDestPath!.path
-                if !fileManager.fileExists(atPath: fullDestPathString) {
-                    guard let fullDestinationPath = fullDestPath else { return }
-                    try? "".write(to: fullDestinationPath, atomically: false, encoding: .utf8)
-                    moveDatabaseToFilePath(force: true)
-                }
+    private func moveDatabaseToFilePath(force: Bool = false) {
+        if self.shouldCopyDatabaseToFilePath() || force {
+            guard let fullDestinationPath = fullDestPath else { return }
+            let fullDestPathString = fullDestPath!.path
+            if !fileManager.fileExists(atPath: fullDestPathString) {
+                try? "".write(to: fullDestinationPath, atomically: false, encoding: .utf8)
+                moveDatabaseToFilePath(force: true)
             }
         }
     }
-    
     /**  returns if we should copy the database to the files again */
-    private func shouldCopyDatabaseToFilePath()->Bool{
+    private func shouldCopyDatabaseToFilePath() -> Bool {
         let shouldCopy = (UserDefaults.standard
         .value(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey) as? Bool) ?? true
         if shouldCopy {
@@ -126,4 +118,3 @@ class SundeedQLiteConnection{
         return false
     }
 }
-

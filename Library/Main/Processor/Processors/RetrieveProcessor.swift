@@ -11,114 +11,111 @@ import SQLite3
 
 class RetrieveProcessor {
     func retrieve(objectWrapper: ObjectWrapper,
-                  withFilter filters:SundeedExpression<Bool>?...,
-        subObjectHandler: (_ objectType: String)->ObjectWrapper?) -> [SundeedObject]{
-        do {
-            if let table = objectWrapper.tableName {
-                var database = try SundeedQLiteConnection.pool.getConnection()
-                if let columns = getDatabaseColumns(forTable: table),
-                    !columns.isEmpty {
-                    var array:[[String:Any]] = []
-                    var statement: OpaquePointer?
-                    
-                    let selectStatement = StatementBuilder()
-                        .selectStatement(tableName: table)
-                        .isOrdered(objectWrapper.isOrdered)
-                        .orderBy(columnName: objectWrapper.orderBy)
-                        .isAscending(objectWrapper.asc)
-                        .isCaseInsensitive(true)
-                        .withFilters(filters)
-                        .build()
-                    
-                    sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil)
-                    
-                    while sqlite3_step(statement) == SQLITE_ROW {
-                        var dictionary:[String:Any] = [:]
-                        var primaryValue:String!
-                        for column in columns{
-                            if let columnValue = sqlite3_column_text(statement, Int32(column.key)) {
-                                let value:String = String(cString: columnValue)
-                                if value != "<null>" {
-                                    dictionary[column.value] = value.replacingOccurrences(of: "\\\"", with: "\"")
-                                }
-                            }
-                        }
-                        if objectWrapper.hasPrimaryKey,
-                            columns.contains(where: { $0.value == Sundeed.shared.primaryKey}) {
-                            let column = columns.first { (column) -> Bool in
-                                return column.value == Sundeed.shared.primaryKey
-                                }!
-                            if let columnValue = sqlite3_column_text(statement, Int32(column.key)) {
-                                let value:String = String(cString: columnValue)
-                                primaryValue = value.replacingOccurrences(of: "\\\"", with: "\"")
-                            }
-                        }
-                        for row in dictionary {
-                            if let value = row.value as? String {
-                                if value.starts(with: Sundeed.shared.foreignPrefix){
-                                    let configurations = value.split(separator: "|")
-                                    let embededElementTable = String(describing: configurations[1])
-                                    let embededElementPrimaryKey = String(configurations.last ?? "")
-                                    
-                                    if objectWrapper.hasPrimaryKey,
-                                        let subObject = subObjectHandler(embededElementTable) {
-                                        let filter1 = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
-                                        let filter2 = SundeedColumn(Sundeed.shared.primaryKey) == String(embededElementPrimaryKey)
-                                        dictionary[row.key] = self
-                                            .retrieve(objectWrapper: subObject,
-                                                                 withFilter: filter1, filter2,
-                                                                 subObjectHandler: subObjectHandler)
-                                    } else {
-                                        throw SundeedQLiteError.PrimaryKeyError(tableName: objectWrapper.tableName ?? "")
-                                    }
-                                } else if value.starts(with: Sundeed.shared.foreignPrimitivePrefix) {
-                                    let configurations = value.split(separator: "|")
-                                    let embededElementTable = configurations[1]
-                                    if objectWrapper.hasPrimaryKey {
-                                        dictionary[row.key] = self.getDictionaryValuesForPrimitives(forTable: String(embededElementTable),
-                                                                                                    withFilter: SundeedColumn(Sundeed.shared.foreignKey) == primaryValue)
-                                        
-                                    } else {
-                                        throw SundeedQLiteError.PrimaryKeyError(tableName: objectWrapper.tableName ?? "")
-                                    }
-                                }
-                            }
-                        }
-                        array.append(dictionary)
-                    }
-                    SundeedQLiteConnection.pool.closeConnection(database: database)
-                    statement = nil
-                    database = nil
-                    return array
-                } else {
-                    database = nil
-                    return []
-                }
-            } else {
-                
-                return []
-            }
-        } catch{
-            return []
+                  withFilter filters: SundeedExpression<Bool>?...,
+        subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
+        var database: OpaquePointer? = try? SundeedQLiteConnection.pool.getConnection()
+        let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
+        if !columns.isEmpty {
+            var statement: OpaquePointer?
+            let selectStatement: String = StatementBuilder()
+                .selectStatement(tableName: objectWrapper.tableName)
+                .isOrdered(objectWrapper.isOrdered)
+                .orderBy(columnName: objectWrapper.orderBy)
+                .isAscending(objectWrapper.asc)
+                .isCaseInsensitive(true)
+                .withFilters(filters)
+                .build()
+            
+            sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil)
+            let array: [[String: Any]] = fetchStatementResult(statement: statement,
+                                 columns: columns,
+                                 objectWrapper: objectWrapper,
+                                 subObjectHandler: subObjectHandler)
+            SundeedQLiteConnection.pool.closeConnection(database: database)
+            statement = nil
+            database = nil
+            return array
         }
+        return []
     }
     
-    private func getDictionaryValuesForPrimitives(forTable table: String, withFilter filter: SundeedExpression<Bool>?) -> [String]?{
-        do {
-            let database = try SundeedQLiteConnection.pool.getConnection()
+    func fetchStatementResult(statement: OpaquePointer?,
+                              columns: [Int : String],
+                              objectWrapper: ObjectWrapper,
+                              subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [[String: Any]] {
+        var array: [[String: Any]] = []
+        while sqlite3_step(statement) == SQLITE_ROW {
+            var dictionary: [String: Any] = [:]
+            var primaryValue: String?
+            for column in columns {
+                if let databaseValue = sqlite3_column_text(statement, Int32(column.key)) {
+                    let value: String = normalizeColumnValue(databaseValue)
+                    let columnName = column.value
+                    if value != Sundeed.shared.databaseNull {
+                        dictionary[columnName] = value
+                    }
+                    if columnName == Sundeed.shared.primaryKey {
+                        primaryValue = value
+                    }
+                }
+            }
+            fetchForeignObjects(withObject: objectWrapper,
+                                primaryValue: primaryValue,
+                                inDictionary: &dictionary,
+                                subObjectHandler: subObjectHandler)
+            array.append(dictionary)
+        }
+        return array
+    }
+    
+    func fetchForeignObjects(withObject objectWrapper: ObjectWrapper,
+                                     primaryValue: String?,
+                                     inDictionary dictionary: inout [String: Any],
+                                     subObjectHandler: (_ objectType: String) -> ObjectWrapper?) {
+        guard let primaryValue = primaryValue else { return }
+        for row in dictionary {
+            if let value = row.value as? String {
+                if value.starts(with: Sundeed.shared.foreignPrefix) {
+                    let configurations = value.split(separator: "|")
+                    let embededElementTable = String(describing: configurations[1])
+                    let embededElementFieldNameLink = String(configurations[2])
+                    if let subObject = subObjectHandler(embededElementTable) {
+                        let filter1 = SundeedColumn(Sundeed
+                            .shared.foreignKey) == primaryValue
+                        let filter2 = SundeedColumn(Sundeed.shared
+                            .fieldNameLink) == embededElementFieldNameLink
+                        dictionary[row.key] = self
+                            .retrieve(objectWrapper: subObject,
+                                      withFilter: filter1, filter2,
+                                      subObjectHandler: subObjectHandler)
+                    }
+                } else if value.starts(with: Sundeed.shared.foreignPrimitivePrefix) {
+                    let configurations = value.split(separator: "|")
+                    let embededElementTable = String(configurations[1])
+                        let filter = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
+                        dictionary[row.key] = self
+                            .getPrimitiveValues(forTable: embededElementTable,
+                                                withFilter: filter)
+                }
+            }
+        }
+    }
+    func getPrimitiveValues(forTable table: String,
+                                    withFilter filter: SundeedExpression<Bool>?) -> [String]? {
+            let database = try? SundeedQLiteConnection.pool.getConnection()
             var statement: OpaquePointer?
             let selectStatement = StatementBuilder()
                 .selectStatement(tableName: table)
                 .withFilters(filter)
                 .build()
-            if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK,
-                let columns = getDatabaseColumns(forTable: table) {
+        if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK {
+                let columns = getDatabaseColumns(forTable: table)
                 var array: [String] = []
-                for column in columns where column.value == "VALUE" {
+            for column in columns where column.value == Sundeed.shared.valueColumnName {
                     while sqlite3_step(statement) == SQLITE_ROW {
                         if let columnValue = sqlite3_column_text(statement, Int32(column.key)) {
-                            let value:String = String(cString: columnValue)
-                            if value != "<null>" {
+                            let value: String = String(cString: columnValue)
+                            if value != Sundeed.shared.databaseNull {
                                 array.append(value.replacingOccurrences(of: "\\\"", with: "\""))
                             }
                         }
@@ -126,34 +123,27 @@ class RetrieveProcessor {
                 }
                 return array
             }
-        } catch {}
         return nil
     }
-    
-    private func getDatabaseColumns(forTable table:String)->[Int:String]?{
-        do {
-            if let database = try SundeedQLiteConnection.pool.getConnection(toWrite: true) {
-                var columnsStatement: OpaquePointer?
-                var dictionary:[Int:String] = [:]
-                sqlite3_prepare_v2(database,
-                                   "PRAGMA table_info(\(table));",
-                    -1,
-                    &columnsStatement, nil)
-                var index = 0
-                while sqlite3_step(columnsStatement) == SQLITE_ROW {
-                    if let columnName = sqlite3_column_text(columnsStatement, 1) {
-                        dictionary[index] = String(cString: columnName)
-                        index += 1
-                    }
-                }
-                columnsStatement = nil
-                SundeedQLiteConnection.pool.closeConnection(database: database)
-                return dictionary
-            } else {
-                return nil
+    func getDatabaseColumns(forTable table: String) -> [Int: String] {
+        let database = try? SundeedQLiteConnection.pool.getConnection(toWrite: true)
+        var columnsStatement: OpaquePointer?
+        var array: [String] = []
+        var dictionary: [Int: String] = [:]
+        sqlite3_prepare_v2(database,
+                           "PRAGMA table_info(\(table));",-1,
+                           &columnsStatement, nil)
+        while sqlite3_step(columnsStatement) == SQLITE_ROW {
+            if let columnName = sqlite3_column_text(columnsStatement, 1) {
+                array.append(String(cString: columnName))
             }
-        } catch {
-            return nil
         }
+        array.enumerated().forEach({dictionary[$0] = $1})
+        columnsStatement = nil
+        SundeedQLiteConnection.pool.closeConnection(database: database)
+        return dictionary
+    }
+    func normalizeColumnValue(_ columnValue: UnsafePointer<UInt8>) -> String {
+        String(cString: columnValue).replacingOccurrences(of: "\\\"", with: "\"")
     }
 }

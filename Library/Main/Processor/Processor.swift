@@ -12,17 +12,13 @@ class Processor {
     var createTableProcessor: CreateTableProcessor {
         CreateTableProcessor()
     }
-    
     var saveProcessor: SaveProcessor {
         SaveProcessor()
     }
-    
     var retrieveProcessor: RetrieveProcessor {
         RetrieveProcessor()
     }
-    
     var updateProcessor: UpdateProcessor {
         UpdateProcessor()
     }
-    
 }

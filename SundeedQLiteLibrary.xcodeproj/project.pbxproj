@@ -7,7 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061146572470787400E522A6 /* SundeedQLiteMap+Ordering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061146562470787400E522A6 /* SundeedQLiteMap+Ordering.swift */; };
+		061146592470794000E522A6 /* SundeedQLiteMap+Normal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061146582470794000E522A6 /* SundeedQLiteMap+Normal.swift */; };
+		0611465B247079D700E522A6 /* SundeedQLiteMap+Mandatory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0611465A247079D700E522A6 /* SundeedQLiteMap+Mandatory.swift */; };
+		0611465D24707A1000E522A6 /* SundeedQLiteMap+ArrayMandatory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0611465C24707A1000E522A6 /* SundeedQLiteMap+ArrayMandatory.swift */; };
+		0611465F24707A3000E522A6 /* SundeedQLiteMap+Primary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0611465E24707A3000E522A6 /* SundeedQLiteMap+Primary.swift */; };
+		0611466124707E9900E522A6 /* OperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0611466024707E9900E522A6 /* OperationTests.swift */; };
+		06114663247081EF00E522A6 /* OperationTestsWithoutPrimaryKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06114662247081EF00E522A6 /* OperationTestsWithoutPrimaryKey.swift */; };
 		062EE091246F2E410095C956 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062EE090246F2E410095C956 /* Statement.swift */; };
+		06BB09E92474559600BB668B /* MandatoryOperatorTestWithoutData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09E82474559600BB668B /* MandatoryOperatorTestWithoutData.swift */; };
+		06BB09EB247455E400BB668B /* MandatoryOperatorTestWithData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09EA247455E400BB668B /* MandatoryOperatorTestWithData.swift */; };
+		06BB09EE2474679500BB668B /* MandatoryClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09ED2474679500BB668B /* MandatoryClasses.swift */; };
+		06BB09F12474682600BB668B /* UpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09F02474682600BB668B /* UpdateTests.swift */; };
+		06BB09F424746B3800BB668B /* ArrayMandatoryClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09F324746B3800BB668B /* ArrayMandatoryClasses.swift */; };
+		06BB09F624746BF800BB668B /* ArrayMandatoryTestWithData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09F524746BF800BB668B /* ArrayMandatoryTestWithData.swift */; };
+		06BB09F824746CDA00BB668B /* ArrayMandatoryTestWithNil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09F724746CDA00BB668B /* ArrayMandatoryTestWithNil.swift */; };
+		06BB09FA24746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09F924746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift */; };
+		06BB09FD2474723900BB668B /* NoPrimariesClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09FC2474723900BB668B /* NoPrimariesClasses.swift */; };
+		06BB0A052474742E00BB668B /* Listeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB0A042474742E00BB668B /* Listeners.swift */; };
 		06EF758A2467266E00BDA118 /* Processor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF75892467266E00BDA118 /* Processor.swift */; };
 		06EF758D246727CB00BDA118 /* StatementBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758C246727CB00BDA118 /* StatementBuilder.swift */; };
 		06EF758F2467291500BDA118 /* CreateTableStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758E2467291500BDA118 /* CreateTableStatement.swift */; };
@@ -49,7 +66,24 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		061146562470787400E522A6 /* SundeedQLiteMap+Ordering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SundeedQLiteMap+Ordering.swift"; sourceTree = "<group>"; };
+		061146582470794000E522A6 /* SundeedQLiteMap+Normal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SundeedQLiteMap+Normal.swift"; sourceTree = "<group>"; };
+		0611465A247079D700E522A6 /* SundeedQLiteMap+Mandatory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SundeedQLiteMap+Mandatory.swift"; sourceTree = "<group>"; };
+		0611465C24707A1000E522A6 /* SundeedQLiteMap+ArrayMandatory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SundeedQLiteMap+ArrayMandatory.swift"; sourceTree = "<group>"; };
+		0611465E24707A3000E522A6 /* SundeedQLiteMap+Primary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SundeedQLiteMap+Primary.swift"; sourceTree = "<group>"; };
+		0611466024707E9900E522A6 /* OperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTests.swift; sourceTree = "<group>"; };
+		06114662247081EF00E522A6 /* OperationTestsWithoutPrimaryKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTestsWithoutPrimaryKey.swift; sourceTree = "<group>"; };
 		062EE090246F2E410095C956 /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
+		06BB09E82474559600BB668B /* MandatoryOperatorTestWithoutData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandatoryOperatorTestWithoutData.swift; sourceTree = "<group>"; };
+		06BB09EA247455E400BB668B /* MandatoryOperatorTestWithData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandatoryOperatorTestWithData.swift; sourceTree = "<group>"; };
+		06BB09ED2474679500BB668B /* MandatoryClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandatoryClasses.swift; sourceTree = "<group>"; };
+		06BB09F02474682600BB668B /* UpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateTests.swift; sourceTree = "<group>"; };
+		06BB09F324746B3800BB668B /* ArrayMandatoryClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayMandatoryClasses.swift; sourceTree = "<group>"; };
+		06BB09F524746BF800BB668B /* ArrayMandatoryTestWithData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayMandatoryTestWithData.swift; sourceTree = "<group>"; };
+		06BB09F724746CDA00BB668B /* ArrayMandatoryTestWithNil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayMandatoryTestWithNil.swift; sourceTree = "<group>"; };
+		06BB09F924746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayMandatoryTestWithEmpty.swift; sourceTree = "<group>"; };
+		06BB09FC2474723900BB668B /* NoPrimariesClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoPrimariesClasses.swift; sourceTree = "<group>"; };
+		06BB0A042474742E00BB668B /* Listeners.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Listeners.swift; sourceTree = "<group>"; };
 		06EF75892467266E00BDA118 /* Processor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Processor.swift; sourceTree = "<group>"; };
 		06EF758C246727CB00BDA118 /* StatementBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementBuilder.swift; sourceTree = "<group>"; };
 		06EF758E2467291500BDA118 /* CreateTableStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTableStatement.swift; sourceTree = "<group>"; };
@@ -102,6 +136,89 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		061146552470786000E522A6 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				06F8A197234908C6001D1381 /* SundeedQLiteMap.swift */,
+				061146562470787400E522A6 /* SundeedQLiteMap+Ordering.swift */,
+				061146582470794000E522A6 /* SundeedQLiteMap+Normal.swift */,
+				0611465A247079D700E522A6 /* SundeedQLiteMap+Mandatory.swift */,
+				0611465C24707A1000E522A6 /* SundeedQLiteMap+ArrayMandatory.swift */,
+				0611465E24707A3000E522A6 /* SundeedQLiteMap+Primary.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		06BB09EC2474676800BB668B /* Mandatory Operator */ = {
+			isa = PBXGroup;
+			children = (
+				06BB09E82474559600BB668B /* MandatoryOperatorTestWithoutData.swift */,
+				06BB09EA247455E400BB668B /* MandatoryOperatorTestWithData.swift */,
+				06BB09ED2474679500BB668B /* MandatoryClasses.swift */,
+			);
+			path = "Mandatory Operator";
+			sourceTree = "<group>";
+		};
+		06BB09EF2474681100BB668B /* Updates */ = {
+			isa = PBXGroup;
+			children = (
+				06BB09F02474682600BB668B /* UpdateTests.swift */,
+			);
+			path = Updates;
+			sourceTree = "<group>";
+		};
+		06BB09F224746AB500BB668B /* Mandatory Array Operator */ = {
+			isa = PBXGroup;
+			children = (
+				06BB09F324746B3800BB668B /* ArrayMandatoryClasses.swift */,
+				06BB09F524746BF800BB668B /* ArrayMandatoryTestWithData.swift */,
+				06BB09F724746CDA00BB668B /* ArrayMandatoryTestWithNil.swift */,
+				06BB09F924746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift */,
+			);
+			path = "Mandatory Array Operator";
+			sourceTree = "<group>";
+		};
+		06BB09FB2474720000BB668B /* No Primary Keys */ = {
+			isa = PBXGroup;
+			children = (
+				06114662247081EF00E522A6 /* OperationTestsWithoutPrimaryKey.swift */,
+				06BB09FC2474723900BB668B /* NoPrimariesClasses.swift */,
+			);
+			path = "No Primary Keys";
+			sourceTree = "<group>";
+		};
+		06BB09FE2474728500BB668B /* Listeners */ = {
+			isa = PBXGroup;
+			children = (
+				06BB0A042474742E00BB668B /* Listeners.swift */,
+			);
+			path = Listeners;
+			sourceTree = "<group>";
+		};
+		06BB0A012474736100BB668B /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				06F8A1862349084B001D1381 /* SundeedQLiteLibraryTests.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		06BB0A022474736800BB668B /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				0611466024707E9900E522A6 /* OperationTests.swift */,
+			);
+			path = Operations;
+			sourceTree = "<group>";
+		};
+		06BB0A032474737500BB668B /* ErrorCodes */ = {
+			isa = PBXGroup;
+			children = (
+				06F71DF8234BFBDE005554E9 /* SundeedQLiteErrorTests.swift */,
+			);
+			path = ErrorCodes;
+			sourceTree = "<group>";
+		};
 		06CCAB262465B00900DDBA83 /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,9 +235,9 @@
 		06CCAB272465B03800DDBA83 /* ClassHandler */ = {
 			isa = PBXGroup;
 			children = (
+				061146552470786000E522A6 /* Map */,
 				06F8A19A234908C6001D1381 /* SundeedQLiteConverter.swift */,
 				06F8A198234908C6001D1381 /* SundeedQLite.swift */,
-				06F8A197234908C6001D1381 /* SundeedQLiteMap.swift */,
 				06F8A196234908C6001D1381 /* SundeedQLiter.swift */,
 			);
 			path = ClassHandler;
@@ -196,10 +313,16 @@
 		06F8A1852349084B001D1381 /* SundeedQLiteLibraryTests */ = {
 			isa = PBXGroup;
 			children = (
-				06F8A1862349084B001D1381 /* SundeedQLiteLibraryTests.swift */,
+				06BB0A032474737500BB668B /* ErrorCodes */,
+				06BB0A022474736800BB668B /* Operations */,
+				06BB0A012474736100BB668B /* Main */,
+				06BB09FE2474728500BB668B /* Listeners */,
+				06BB09FB2474720000BB668B /* No Primary Keys */,
+				06BB09F224746AB500BB668B /* Mandatory Array Operator */,
+				06BB09EF2474681100BB668B /* Updates */,
+				06BB09EC2474676800BB668B /* Mandatory Operator */,
 				06F8A1882349084B001D1381 /* Info.plist */,
 				06F71DF6234BEB17005554E9 /* ClassesForTesting.swift */,
-				06F71DF8234BFBDE005554E9 /* SundeedQLiteErrorTests.swift */,
 			);
 			path = SundeedQLiteLibraryTests;
 			sourceTree = "<group>";
@@ -317,13 +440,17 @@
 				06EF75AA2469741500BDA118 /* CreateTableProcessor.swift in Sources */,
 				062EE091246F2E410095C956 /* Statement.swift in Sources */,
 				06EF75AC2469742000BDA118 /* RetrieveProcessor.swift in Sources */,
+				061146572470787400E522A6 /* SundeedQLiteMap+Ordering.swift in Sources */,
 				06EF75AE24697F2100BDA118 /* UpdateProcessor.swift in Sources */,
 				06F8A19C234908C6001D1381 /* SundeedQLiteConnection.swift in Sources */,
 				06F8A192234908A5001D1381 /* AppDelegate.swift in Sources */,
 				06EF758F2467291500BDA118 /* CreateTableStatement.swift in Sources */,
+				0611465F24707A3000E522A6 /* SundeedQLiteMap+Primary.swift in Sources */,
 				06EF75A5246973C600BDA118 /* ObjectWrapper.swift in Sources */,
 				06EF7594246771FC00BDA118 /* Sundeed.swift in Sources */,
+				0611465D24707A1000E522A6 /* SundeedQLiteMap+ArrayMandatory.swift in Sources */,
 				06F8A19F234908C6001D1381 /* SundeedQLite.swift in Sources */,
+				061146592470794000E522A6 /* SundeedQLiteMap+Normal.swift in Sources */,
 				06EF758A2467266E00BDA118 /* Processor.swift in Sources */,
 				06EF759C24681EBD00BDA118 /* SelectStatement.swift in Sources */,
 				06F8A1A0234908C6001D1381 /* SundeedQLiterLibrary.swift in Sources */,
@@ -331,6 +458,7 @@
 				06F8A17423490848001D1381 /* ViewController.swift in Sources */,
 				06F8A1A1234908C6001D1381 /* SundeedQLiteConverter.swift in Sources */,
 				06F8A19D234908C6001D1381 /* SundeedQLiter.swift in Sources */,
+				0611465B247079D700E522A6 /* SundeedQLiteMap+Mandatory.swift in Sources */,
 				06F8A19B234908C6001D1381 /* SundeedQLiteError.swift in Sources */,
 				06EF75A82469740500BDA118 /* SaveProcessor.swift in Sources */,
 				06EF758D246727CB00BDA118 /* StatementBuilder.swift in Sources */,
@@ -344,9 +472,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06BB09EB247455E400BB668B /* MandatoryOperatorTestWithData.swift in Sources */,
+				06BB09FA24746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift in Sources */,
+				06BB09FD2474723900BB668B /* NoPrimariesClasses.swift in Sources */,
 				06F71DF9234BFBDE005554E9 /* SundeedQLiteErrorTests.swift in Sources */,
+				06BB09F624746BF800BB668B /* ArrayMandatoryTestWithData.swift in Sources */,
+				06BB0A052474742E00BB668B /* Listeners.swift in Sources */,
+				06BB09F424746B3800BB668B /* ArrayMandatoryClasses.swift in Sources */,
+				06BB09F12474682600BB668B /* UpdateTests.swift in Sources */,
 				06F8A1872349084B001D1381 /* SundeedQLiteLibraryTests.swift in Sources */,
 				06F71DF7234BEB17005554E9 /* ClassesForTesting.swift in Sources */,
+				06BB09E92474559600BB668B /* MandatoryOperatorTestWithoutData.swift in Sources */,
+				06114663247081EF00E522A6 /* OperationTestsWithoutPrimaryKey.swift in Sources */,
+				06BB09EE2474679500BB668B /* MandatoryClasses.swift in Sources */,
+				0611466124707E9900E522A6 /* OperationTests.swift in Sources */,
+				06BB09F824746CDA00BB668B /* ArrayMandatoryTestWithNil.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

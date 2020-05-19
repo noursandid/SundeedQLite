@@ -11,23 +11,19 @@ import Foundation
 class InsertStatement: Statement {
     private var tableName: String
     private var keyValues: [(String, String?)] = []
-    
     init(with tableName: String) {
         self.tableName = tableName
     }
-    
     @discardableResult
     func add(key: String, value: String?) -> Self {
         keyValues.append((key, value))
         return self
     }
-    
     func build() -> String {
         var statement: String = "REPLACE INTO \(tableName) ("
         addKeysAndValues(toStatement: &statement)
         return statement
     }
-    
     private func addKeysAndValues(toStatement statement: inout String) {
         var valuesStatement: String = ") VALUES ("
         for (index, (key, value)) in keyValues.enumerated() {
@@ -42,11 +38,8 @@ class InsertStatement: Statement {
             addSeparatorIfNeeded(separator: ", ",
                                  forStatement: &valuesStatement,
                                  needed: needed)
-            
         }
         valuesStatement.append(");")
         statement = "\(statement)\(valuesStatement)"
     }
-    
-    
 }
