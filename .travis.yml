@@ -1,4 +1,4 @@
-language: ruby
+language: swift
 os: osx
 env:
   global:
@@ -25,7 +25,6 @@ jobs:
           fi
       after_success:
         - sleep 5
-        - bash <(curl -s https://codecov.io/bash)
 
     - stage: Build Library
       script:
@@ -39,3 +38,8 @@ jobs:
                       xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
             fi
 
+    - stage: Push To CodCoverage
+       script:
+           - xcodebuild -scheme SwiftExample -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone X,OS=12.1' build test
+       after_success:
+           - bash <(curl -s https://codecov.io/bash)
