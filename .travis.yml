@@ -40,6 +40,6 @@ jobs:
 
     - stage: Push To CodCoverage
       script:
-          - xcodebuild -scheme 'SundeedQLiteLibrary' -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone X,OS=12.1' build test
+          - xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk iphonesimulator -destination "$DESTINATION" build test
       after_success:
           - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary'
