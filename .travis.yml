@@ -24,15 +24,9 @@ jobs:
                 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" build test;
           fi
       after_success:
-        - bash <(curl -s https://codecov.io/bash) -J 'Library';
+        - bash <(curl -s https://codecov.io/bash);
         - sleep 5
-
-    - stage: Build Library
-      script:
-          - if [ $BUILD_LIBRARY == "YES" ]; then
-                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
-            fi
-
+        
     - stage: Build Example
       script:
           - if [ $BUILD_EXAMPLE == "YES" ]; then
