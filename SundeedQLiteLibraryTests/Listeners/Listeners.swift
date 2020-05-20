@@ -58,16 +58,18 @@ class Listeners: XCTestCase {
     }
     
     func testSpecificOnRetrieveListener() {
-        employer?.save()
         let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
         let listener = self.employer?.onRetrieveEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            EmployerForTesting.retrieve(completion: { _ in })
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.employer?.save()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                EmployerForTesting.retrieve(completion: { _ in })
+            }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
         listener?.stop()
     }
     
@@ -118,16 +120,18 @@ class Listeners: XCTestCase {
     }
     
     func testGlobalOnRetrieveListener() {
-        employer?.save()
         let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
         let listener = EmployerForTesting.onRetrieveEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            EmployerForTesting.retrieve(completion: { _ in })
+            self.employer?.save()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                EmployerForTesting.retrieve(completion: { _ in })
+            }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
         listener.stop()
     }
     

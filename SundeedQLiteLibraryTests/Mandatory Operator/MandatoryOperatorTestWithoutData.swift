@@ -156,14 +156,14 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         let mainClass = ClassWithMandatoryOptionalArrayOfDoubles()
         mainClass.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithMandatoryOptionalArrayOfDoubles.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 ClassWithMandatoryOptionalArrayOfDoubles.delete()
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testClassWithMandatoryOptionalArrayOfOptionalDoubles() {
