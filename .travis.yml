@@ -21,7 +21,7 @@ jobs:
     - stage: Test
       script:
         - if [ $RUN_TESTS == "YES" ]; then
-                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" build test
+                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" build test;
           fi
       after_success:
         - bash <(curl -s https://codecov.io/bash) -J 'Library';
