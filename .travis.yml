@@ -10,7 +10,7 @@ env:
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
 matrix:
-  - DESTINATION="OS=13.4,name=iPhone 11" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES"
+  - DESTINATION="platform=iOS Simulator,OS=13.4,name=iPhone 11" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES"
 install:
   - gem install xcpretty
 jobs:
@@ -23,6 +23,6 @@ jobs:
 
     - stage: Test
       script:
-        - xcodebuild clean build test -project "$PROJECT" -scheme "$SCHEME" -destination '$DESTINATION' -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES | xcpretty -c;
+        - xcodebuild clean build test -project "$PROJECT" -scheme "$SCHEME" -destination "platform=iOS Simulator,OS=13.4,name=iPhone 11" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES | xcpretty -c;
       after_success:
         - bash <(curl -s https://codecov.io/bash) -t 0e41b45b-4602-419e-8787-dd492a6dfc80;
