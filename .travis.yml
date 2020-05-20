@@ -9,8 +9,7 @@ env:
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
 matrix:
-    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="NO" CODE_COV="YES"
-    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$EXAMPLE_SCHEME" RUN_TESTS="NO" BUILD_EXAMPLE="YES" CODE_COV="NO"
+    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" CODE_COV="YES"
 jobs:
   include:
     - stage: Initialize
