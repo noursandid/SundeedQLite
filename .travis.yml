@@ -21,6 +21,6 @@ jobs:
 
     - stage: Test
       script:
-        - xcodebuild clean build test -project "$PROJECT" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,OS=13.4.1,name=iPhone 11 Pro" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES | xcpretty -c;
+        - xcodebuild clean build test -project "$PROJECT" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,OS=13.4.1,name=iPhone 11 Pro" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES;
       after_success:
         - bash <(curl -s https://codecov.io/bash) -t 0e41b45b-4602-419e-8787-dd492a6dfc80;
