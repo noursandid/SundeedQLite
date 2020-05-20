@@ -18,8 +18,23 @@ jobs:
         - xcodebuild -version
         - xcodebuild -showsdks
 
-    - stage: Push To CodCoverage
+    - stage: Test
       script:
-          - xcodebuild -project SundeedQLiteLibrary.xcodeproj -scheme SundeedQLiteLibrary -destination 'OS=11.4,name=iPhone X' test;
+        - if [ $RUN_TESTS == "YES" ]; then
+                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
+          fi
       after_success:
-          - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary';
+        - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary';
+        - sleep 5
+
+    - stage: Build Library
+      script:
+          - if [ $BUILD_LIBRARY == "YES" ]; then
+                xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+            fi
+
+    - stage: Build Example
+      script:
+          - if [ $BUILD_EXAMPLE == "YES" ]; then
+                      xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
+            fi
