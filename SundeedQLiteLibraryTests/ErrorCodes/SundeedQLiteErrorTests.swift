@@ -19,7 +19,7 @@ class SundeedQLiteErrorTests: XCTestCase {
     }
     
     override func tearDown() {
-//        SundeedQLite.deleteDatabase()
+        SundeedQLite.deleteDatabase()
         error = nil
         employer = nil
     }

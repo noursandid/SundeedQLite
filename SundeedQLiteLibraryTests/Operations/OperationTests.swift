@@ -19,7 +19,7 @@ class OperationTests: XCTestCase {
         employer?.save()
     }
     override class func tearDown() {
-//        SundeedQLite.deleteDatabase()
+        SundeedQLite.deleteDatabase()
         UserDefaults.standard.removeObject(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
     }
     
