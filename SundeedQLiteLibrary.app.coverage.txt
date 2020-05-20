@@ -1,0 +1,2948 @@
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/Map/SundeedQLiteMap+ArrayMandatory.swift:
+    1|       |//
+    2|       |//  SundeedQLiteMap+ArrayMandatory.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/16/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |infix operator <**>
+   12|       |public func <**> <T: SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
+   13|       |    if !right.fetchingColumns {
+   14|       |            var array: [SundeedQLiter] = []
+   15|       |        if let values = right.currentValue as? NSArray {
+   16|       |            for value in values where value is [String: Any] {
+   17|       |                if let value = value as? [String: Any] {
+   18|       |                    let object = T()
+   19|       |                    let map = SundeedQLiteMap(dictionnary: value)
+   20|       |                    object.sundeedQLiterMapping(map: map)
+   21|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+   22|       |                        right.isSafeToAdd = false
+   23|       |                    }
+   24|       |                    let referencedInstance = SundeedQLiteMap
+   25|       |                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+   26|       |                                      andClassName: "\(T.self)")
+   27|       |                    if let referencedInstance = referencedInstance {
+   28|       |                        let map = SundeedQLiteMap(dictionnary: value)
+   29|       |                        referencedInstance.sundeedQLiterMapping(map: map)
+   30|       |                        array.append(referencedInstance)
+   31|       |                    } else {
+   32|       |                        SundeedQLiteMap.addReference(object: object,
+   33|       |                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+   34|       |                                                     andClassName: "\(T.self)")
+   35|       |                        array.append(object)
+   36|       |                    }
+   37|       |                }
+   38|       |            }
+   39|       |        }
+   40|       |        if let array = array as? [T] {
+   41|       |            left = array
+   42|       |        }
+   43|      0|        if (array.count == 0) && right.isSafeToAdd {
+   44|       |            right.isSafeToAdd = false
+   45|       |        }
+   46|       |    } else {
+   47|       |        if let key = right.key {
+   48|       |            right.addColumn(attribute: left, withColumnName: key)
+   49|       |        }
+   50|       |    }
+   51|       |}
+   52|       |public func <**> <T: SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
+   53|       |    if !right.fetchingColumns {
+   54|       |        if let values = right.currentValue as? NSArray {
+   55|       |            var array: [SundeedQLiter] = []
+   56|       |            for value in values where value is [String: Any] {
+   57|       |                if let value = value as? [String: Any] {
+   58|       |                    let object = T()
+   59|       |                    let map = SundeedQLiteMap(dictionnary: value)
+   60|       |                    object.sundeedQLiterMapping(map: map)
+   61|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+   62|       |                        right.isSafeToAdd = false
+   63|       |                    }
+   64|       |                    let referencedInstance = SundeedQLiteMap
+   65|       |                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+   66|       |                                      andClassName: "\(T.self)")
+   67|       |                    if let referencedInstance = referencedInstance {
+   68|       |                        let map = SundeedQLiteMap(dictionnary: value)
+   69|       |                        referencedInstance.sundeedQLiterMapping(map: map)
+   70|       |                        array.append(referencedInstance)
+   71|       |                    } else {
+   72|       |                        SundeedQLiteMap.addReference(object: object,
+   73|       |                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+   74|       |                                                     andClassName: "\(T.self)")
+   75|       |                        array.append(object)
+   76|       |                    }
+   77|       |                }
+   78|       |            }
+   79|       |            left = array as? [T]
+   80|      0|            if (array.count == 0) && right.isSafeToAdd {
+   81|       |                right.isSafeToAdd = false
+   82|       |            }
+   83|       |        }
+   84|      0|        if (left == nil) && right.isSafeToAdd {
+   85|       |            right.isSafeToAdd = false
+   86|       |        }
+   87|       |    } else {
+   88|       |        if let key = right.key {
+   89|       |            right.addColumn(attribute: left, withColumnName: key)
+   90|       |        }
+   91|       |    }
+   92|       |}
+   93|       |public func <**> <T: SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
+   94|       |    if !right.fetchingColumns {
+   95|       |        if let values = right.currentValue as? NSArray {
+   96|       |            var array: [SundeedQLiter] = []
+   97|       |            for value in values where value is [String: Any] {
+   98|       |                if let value = value as? [String: Any] {
+   99|       |                    let object = T()
+  100|       |                    let map = SundeedQLiteMap(dictionnary: value)
+  101|       |                    object.sundeedQLiterMapping(map: map)
+  102|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  103|       |                        right.isSafeToAdd = false
+  104|       |                    }
+  105|       |                    let referencedInstance = SundeedQLiteMap
+  106|       |                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  107|       |                                      andClassName: "\(T.self)")
+  108|       |                    if let referencedInstance = referencedInstance {
+  109|       |                        let map = SundeedQLiteMap(dictionnary: value)
+  110|       |                        referencedInstance.sundeedQLiterMapping(map: map)
+  111|       |                        array.append(referencedInstance)
+  112|       |                    } else {
+  113|       |                        SundeedQLiteMap.addReference(object: object,
+  114|       |                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  115|       |                                                     andClassName: "\(T.self)")
+  116|       |                        array.append(object)
+  117|       |                    }
+  118|       |                }
+  119|       |            }
+  120|       |            left = array as? [T]
+  121|      0|            if (array.count == 0) && right.isSafeToAdd {
+  122|       |                right.isSafeToAdd = false
+  123|       |            }
+  124|       |        }
+  125|      0|        if (left == nil) && right.isSafeToAdd {
+  126|       |            right.isSafeToAdd = false
+  127|       |        }
+  128|       |    } else {
+  129|       |        if let key = right.key {
+  130|       |            right.addColumn(attribute: left, withColumnName: key)
+  131|       |        }
+  132|       |    }
+  133|       |}
+  134|       |public func <**> <T: SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
+  135|       |    if !right.fetchingColumns {
+  136|       |        var array: [SundeedQLiter] = []
+  137|       |        if let values = right.currentValue as? NSArray {
+  138|       |            for value in values where value is [String: Any] {
+  139|       |                if let value = value as? [String: Any] {
+  140|       |                    let object = T()
+  141|       |                    let map = SundeedQLiteMap(dictionnary: value)
+  142|       |                    object.sundeedQLiterMapping(map: map)
+  143|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  144|       |                        right.isSafeToAdd = false
+  145|       |                    }
+  146|       |                    let referencedInstance = SundeedQLiteMap
+  147|       |                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  148|       |                                      andClassName: "\(T.self)")
+  149|       |                    if referencedInstance != nil {
+  150|       |                        let map = SundeedQLiteMap(dictionnary: value)
+  151|       |                        referencedInstance?.sundeedQLiterMapping(map: map)
+  152|       |                        array.append(referencedInstance!)
+  153|       |                    } else {
+  154|       |                        SundeedQLiteMap.addReference(object: object,
+  155|       |                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  156|       |                                                     andClassName: "\(T.self)")
+  157|       |                        array.append(object)
+  158|       |                    }
+  159|       |                }
+  160|       |            }
+  161|       |            if let array = array as? [T] {
+  162|       |                left = array
+  163|       |            }
+  164|       |        }
+  165|      0|        if (array.count == 0) && right.isSafeToAdd {
+  166|       |            right.isSafeToAdd = false
+  167|       |        }
+  168|       |    } else {
+  169|       |        if let key = right.key {
+  170|       |            right.addColumn(attribute: left, withColumnName: key)
+  171|       |        }
+  172|       |    }
+  173|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/Map/SundeedQLiteMap+Mandatory.swift:
+    1|       |//
+    2|       |//  SundeedQLiteMap+Mandatory.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/16/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |// if this value does not exist, dont add the whole object
+   11|       |infix operator <*>
+   12|      0|public func <*> <T>(left: inout T?, right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   13|      0|    if !right.0.fetchingColumns && right.0.currentValue is String,
+   14|      0|        let currentValue = right.0.currentValue as? String {
+   15|      0|        left = right.1.fromString(value: currentValue) as? T
+   16|      0|        if left == nil && right.0.isSafeToAdd {
+   17|      0|            right.0.isSafeToAdd = false
+   18|      0|        }
+   19|      0|    } else {
+   20|      0|        let attribute = right.1.toString(value: left)
+   21|      0|        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
+   22|      0|    }
+   23|      0|}
+   24|      0|public func <*> <T: SundeedQLiter>(left: inout T?, right: SundeedQLiteMap) {
+   25|      0|    if !right.fetchingColumns {
+   26|      0|        if let values = right.currentValue as? NSArray {
+   27|      0|            if let value = values.firstObject {
+   28|      0|                if let value = value as? [String: Any] {
+   29|      0|                    let object = T()
+   30|      0|                    let map = SundeedQLiteMap(dictionnary: value)
+   31|      0|                    object.sundeedQLiterMapping(map: map)
+   32|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+   33|      0|                        right.isSafeToAdd = false
+   34|      0|                    }
+   35|      0|                    let referencedInstance = SundeedQLiteMap
+   36|      0|                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+   37|      0|                                      andClassName: "\(T.self)")
+   38|      0|                    if referencedInstance != nil {
+   39|      0|                        let map = SundeedQLiteMap(dictionnary: value)
+   40|      0|                        referencedInstance?.sundeedQLiterMapping(map: map)
+   41|      0|                        left = referencedInstance as? T
+   42|      0|                    } else {
+   43|      0|                        SundeedQLiteMap.addReference(object: object,
+   44|      0|                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+   45|      0|                                                     andClassName: "\(T.self)")
+   46|      0|                        left = object
+   47|      0|                    }
+   48|      0|                }
+   49|      0|            }
+   50|      0|        }
+   51|      0|        if left == nil && right.isSafeToAdd {
+   52|      0|            right.isSafeToAdd = false
+   53|      0|        }
+   54|      0|    } else {
+   55|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+   56|      0|    }
+   57|      0|}
+   58|      0|public func <*> <T: SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
+   59|      0|    if !right.fetchingColumns {
+   60|      0|        if let values = right.currentValue as? NSArray {
+   61|      0|            var array: [SundeedQLiter] = []
+   62|      0|            for value in values where value is [String: Any] {
+   63|      0|                if let value = value as? [String: Any] {
+   64|      0|                    let object = T()
+   65|      0|                    let map = SundeedQLiteMap(dictionnary: value)
+   66|      0|                    object.sundeedQLiterMapping(map: map)
+   67|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+   68|      0|                        right.isSafeToAdd = false
+   69|      0|                    }
+   70|      0|                    let referencedInstance = SundeedQLiteMap
+   71|      0|                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+   72|      0|                                      andClassName: "\(T.self)")
+   73|      0|                    if let referencedInstance = referencedInstance {
+   74|      0|                        let map = SundeedQLiteMap(dictionnary: value)
+   75|      0|                        referencedInstance.sundeedQLiterMapping(map: map)
+   76|      0|                        array.append(referencedInstance)
+   77|      0|                    } else {
+   78|      0|                        SundeedQLiteMap.addReference(object: object,
+   79|      0|                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+   80|      0|                                                     andClassName: "\(T.self)")
+   81|      0|                        array.append(object)
+   82|      0|                    }
+   83|      0|                }
+   84|      0|            }
+   85|      0|            left = array as? [T]
+   86|      0|        }
+   87|      0|        if left == nil && right.isSafeToAdd {
+   88|      0|            right.isSafeToAdd = false
+   89|      0|        }
+   90|      0|    } else {
+   91|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+   92|      0|    }
+   93|      0|}
+   94|      0|public func <*> <T: SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
+   95|      0|    if !right.fetchingColumns {
+   96|      0|        if let values = right.currentValue as? NSArray {
+   97|      0|            var array: [SundeedQLiter] = []
+   98|      0|            for value in values where value is [String: Any] {
+   99|      0|                if let value = value as? [String: Any] {
+  100|      0|                    let object = T()
+  101|      0|                    let map = SundeedQLiteMap(dictionnary: value)
+  102|      0|                    object.sundeedQLiterMapping(map: map)
+  103|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  104|      0|                        right.isSafeToAdd = false
+  105|      0|                    }
+  106|      0|                    let referencedInstance = SundeedQLiteMap
+  107|      0|                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  108|      0|                                      andClassName: "\(T.self)")
+  109|      0|                    if let referencedInstance = referencedInstance {
+  110|      0|                        let map = SundeedQLiteMap(dictionnary: value)
+  111|      0|                        referencedInstance.sundeedQLiterMapping(map: map)
+  112|      0|                        array.append(referencedInstance)
+  113|      0|                    } else {
+  114|      0|                        SundeedQLiteMap.addReference(object: object,
+  115|      0|                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  116|      0|                                                     andClassName: "\(T.self)")
+  117|      0|                        array.append(object)
+  118|      0|                    }
+  119|      0|                }
+  120|      0|            }
+  121|      0|            left = array as? [T]
+  122|      0|        }
+  123|      0|        if left == nil && right.isSafeToAdd {
+  124|      0|            right.isSafeToAdd = false
+  125|      0|        }
+  126|      0|    } else {
+  127|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  128|      0|    }
+  129|      0|}
+  130|      0|public func <*> (left: inout String?, right: SundeedQLiteMap) {
+  131|      0|    if !right.fetchingColumns {
+  132|      0|        if let value = right.currentValue as? String {
+  133|      0|            left = value
+  134|      0|        }
+  135|      0|        if left == nil && right.isSafeToAdd {
+  136|      0|            right.isSafeToAdd = false
+  137|      0|        }
+  138|      0|    } else {
+  139|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  140|      0|    }
+  141|      0|}
+  142|      0|public func <*> (left: inout Int?, right: SundeedQLiteMap) {
+  143|      0|    if !right.fetchingColumns {
+  144|      0|        if let rightValue = right.currentValue as? String, let value = Int(rightValue) {
+  145|      0|            left = value
+  146|      0|        }
+  147|      0|        if left == nil && right.isSafeToAdd {
+  148|      0|            right.isSafeToAdd = false
+  149|      0|        }
+  150|      0|    } else {
+  151|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  152|      0|    }
+  153|      0|}
+  154|      0|public func <*> (left: inout Date?, right: SundeedQLiteMap) {
+  155|      0|    if !right.fetchingColumns {
+  156|      0|        if let rightValue = right.currentValue as? String,
+  157|      0|            let value = Sundeed.shared.dateFormatter.date(from: rightValue) {
+  158|      0|            left = value
+  159|      0|        }
+  160|      0|        if left == nil && right.isSafeToAdd {
+  161|      0|            right.isSafeToAdd = false
+  162|      0|        }
+  163|      0|    } else {
+  164|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  165|      0|    }
+  166|      0|}
+  167|      0|public func <*> (left: inout [String]?, right: SundeedQLiteMap) {
+  168|      0|    if !right.fetchingColumns {
+  169|      0|        if let value = right.currentValue as? [String] {
+  170|      0|            left = value
+  171|      0|        }
+  172|      0|        if left == nil && right.isSafeToAdd {
+  173|      0|            right.isSafeToAdd = false
+  174|      0|        }
+  175|      0|    } else {
+  176|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  177|      0|    }
+  178|      0|}
+  179|      0|public func <*> (left: inout [String?]?, right: SundeedQLiteMap) {
+  180|      0|    if !right.fetchingColumns {
+  181|      0|        if let value = right.currentValue as? [String?] {
+  182|      0|            left = value
+  183|      0|        }
+  184|      0|        if left == nil && right.isSafeToAdd {
+  185|      0|            right.isSafeToAdd = false
+  186|      0|        }
+  187|      0|    } else {
+  188|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  189|      0|    }
+  190|      0|}
+  191|      0|public func <*> (left: inout [Int]?, right: SundeedQLiteMap) {
+  192|      0|    if !right.fetchingColumns {
+  193|      0|        if let value = right.currentValue as? [String] {
+  194|      0|            left = value.compactMap({Int($0)})
+  195|      0|        }
+  196|      0|        if left == nil && right.isSafeToAdd {
+  197|      0|            right.isSafeToAdd = false
+  198|      0|        }
+  199|      0|    } else {
+  200|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  201|      0|    }
+  202|      0|}
+  203|      0|public func <*> (left: inout [Int?]?, right: SundeedQLiteMap) {
+  204|      0|    if !right.fetchingColumns {
+  205|      0|        if let value = right.currentValue as? [String] {
+  206|      0|            left = value.compactMap({Int($0)})
+  207|      0|        }
+  208|      0|        if left == nil && right.isSafeToAdd {
+  209|      0|            right.isSafeToAdd = false
+  210|      0|        }
+  211|      0|    } else {
+  212|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  213|      0|    }
+  214|      0|}
+  215|      0|public func <*> (left: inout [Double]?, right: SundeedQLiteMap) {
+  216|      0|    if !right.fetchingColumns {
+  217|      0|        if let value = right.currentValue as? [String] {
+  218|      0|            left = value.compactMap({Double($0)})
+  219|      0|        }
+  220|      0|        if left == nil && right.isSafeToAdd {
+  221|      0|            right.isSafeToAdd = false
+  222|      0|        }
+  223|      0|    } else {
+  224|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  225|      0|    }
+  226|      0|}
+  227|      0|public func <*> (left: inout [Double?]?, right: SundeedQLiteMap) {
+  228|      0|    if !right.fetchingColumns {
+  229|      0|        if let value = right.currentValue as? [String] {
+  230|      0|            left = value.compactMap({Double($0)})
+  231|      0|        }
+  232|      0|        if left == nil && right.isSafeToAdd {
+  233|      0|            right.isSafeToAdd = false
+  234|      0|        }
+  235|      0|    } else {
+  236|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  237|      0|    }
+  238|      0|}
+  239|      0|public func <*> (left: inout [Float]?, right: SundeedQLiteMap) {
+  240|      0|    if !right.fetchingColumns {
+  241|      0|        if let value = right.currentValue as? [String] {
+  242|      0|            left = value.compactMap({Float($0)})
+  243|      0|        }
+  244|      0|        if left == nil && right.isSafeToAdd {
+  245|      0|            right.isSafeToAdd = false
+  246|      0|        }
+  247|      0|    } else {
+  248|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  249|      0|    }
+  250|      0|}
+  251|      0|public func <*> (left: inout [Float?]?, right: SundeedQLiteMap) {
+  252|      0|    if !right.fetchingColumns {
+  253|      0|        if let value = right.currentValue as? [String] {
+  254|      0|            left = value.compactMap({Float($0)})
+  255|      0|        }
+  256|      0|        if left == nil && right.isSafeToAdd {
+  257|      0|            right.isSafeToAdd = false
+  258|      0|        }
+  259|      0|    } else {
+  260|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  261|      0|    }
+  262|      0|}
+  263|      0|public func <*> (left: inout [UIImage]?, right: SundeedQLiteMap) {
+  264|      0|    if !right.fetchingColumns {
+  265|      0|        if let value = right.currentValue as? [String] {
+  266|      0|            left = value.compactMap({ UIImage.fromDatatypeValue(filePath: $0) })
+  267|      0|        }
+  268|      0|        if left == nil && right.isSafeToAdd {
+  269|      0|            right.isSafeToAdd = false
+  270|      0|        }
+  271|      0|    } else {
+  272|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  273|      0|    }
+  274|      0|}
+  275|      0|public func <*> (left: inout [UIImage?]?, right: SundeedQLiteMap) {
+  276|      0|    if !right.fetchingColumns {
+  277|      0|        if let value = right.currentValue as? [String] {
+  278|      0|            left = value.compactMap({ UIImage.fromDatatypeValue(filePath: $0) })
+  279|      0|        }
+  280|      0|        if left == nil && right.isSafeToAdd {
+  281|      0|            right.isSafeToAdd = false
+  282|      0|        }
+  283|      0|    } else {
+  284|      0|        right.addColumn(attribute: left, withColumnName: right.key!)
+  285|      0|    }
+  286|      0|}
+  287|       |public func <*> (left: inout Double?, right: SundeedQLiteMap) {
+  288|       |    if !right.fetchingColumns {
+  289|       |        if let rightValue = right.currentValue as? String, let value = Double(rightValue) {
+  290|       |            left = value
+  291|       |        }
+  292|      0|        if left == nil && right.isSafeToAdd {
+  293|       |            right.isSafeToAdd = false
+  294|       |        }
+  295|       |    } else {
+  296|       |        if let key = right.key {
+  297|       |            right.addColumn(attribute: left, withColumnName: key)
+  298|       |        }
+  299|       |    }
+  300|       |}
+  301|       |
+  302|      0|public func <*> (left: inout Float?, right: SundeedQLiteMap) {
+  303|      0|    if !right.fetchingColumns {
+  304|      0|        if let rightValue = right.currentValue as? String, let value = Float(rightValue) {
+  305|      0|            left = value
+  306|      0|        }
+  307|      0|        if left == nil && right.isSafeToAdd {
+  308|      0|            right.isSafeToAdd = false
+  309|      0|        }
+  310|      0|    } else {
+  311|      0|        if let key = right.key {
+  312|      0|            right.addColumn(attribute: left, withColumnName: key)
+  313|      0|        }
+  314|      0|    }
+  315|      0|}
+  316|       |public func <*> (left: inout UIImage?, right: SundeedQLiteMap) {
+  317|       |    if !right.fetchingColumns {
+  318|       |        if let value = right.currentValue as? String {
+  319|       |            left = UIImage.fromDatatypeValue(filePath: value)
+  320|       |        }
+  321|      0|        if left == nil && right.isSafeToAdd {
+  322|       |            right.isSafeToAdd = false
+  323|       |        }
+  324|       |    } else {
+  325|       |        if let key = right.key {
+  326|       |            right.addColumn(attribute: left, withColumnName: key)
+  327|       |        }
+  328|       |    }
+  329|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/Map/SundeedQLiteMap+Normal.swift:
+    1|       |//
+    2|       |//  SundeedQLiteMap+Normal.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/16/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |infix operator <~>
+   12|       |public func <~> <T>(left: inout T, right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   13|       |    if !right.0.fetchingColumns,
+   14|       |        let currentValue = right.0.currentValue as? String {
+   15|       |        if let value = right.1.fromString(value: currentValue) as? T {
+   16|       |            left = value
+   17|       |        }
+   18|       |    } else {
+   19|       |        let attribute = right.1.toString(value: left)
+   20|       |        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
+   21|       |    }
+   22|       |}
+   23|     28|public func <~> <T>(left: inout T?, right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   24|     28|    if !right.0.fetchingColumns,
+   25|     28|        let currentValue = right.0.currentValue as? String {
+   26|      6|        left = right.1.fromString(value: currentValue) as? T
+   27|     28|    } else {
+   28|     22|        let attribute = right.1.toString(value: left)
+   29|     22|        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
+   30|     28|    }
+   31|     28|}
+   32|       |public func <~> <T>(left: inout [T], right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   33|       |    if !right.0.fetchingColumns,
+   34|       |        let currentValue = right.0.currentValue as? [String] {
+   35|      0|        if let value = currentValue.map({ right.1.fromString(value: $0) }) as? [T] {
+   36|       |            left = value
+   37|       |        }
+   38|       |    } else {
+   39|      0|        let attributes = left.map({right.1.toString(value: $0)})
+   40|       |        right.0.addColumn(attribute: attributes, withColumnName: right.0.key!)
+   41|       |    }
+   42|       |}
+   43|       |public func <~> <T>(left: inout [T?], right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   44|       |    if !right.0.fetchingColumns,
+   45|       |        let currentValue = right.0.currentValue as? [String] {
+   46|      0|        if let value = currentValue.map({ right.1.fromString(value: $0) }) as? [T] {
+   47|       |            left = value
+   48|       |        }
+   49|       |    } else {
+   50|      0|        let attributes = left.map({right.1.toString(value: $0)})
+   51|       |        right.0.addColumn(attribute: attributes, withColumnName: right.0.key!)
+   52|       |    }
+   53|       |}
+   54|       |public func <~> <T>(left: inout [T?]?, right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   55|       |    if !right.0.fetchingColumns,
+   56|       |        let currentValue = right.0.currentValue as? [String] {
+   57|      0|        if let value = currentValue.map({ right.1.fromString(value: $0) }) as? [T] {
+   58|       |            left = value
+   59|       |        }
+   60|       |    } else {
+   61|      0|        let attributes = left?.map({right.1.toString(value: $0)})
+   62|       |        right.0.addColumn(attribute: attributes, withColumnName: right.0.key!)
+   63|       |    }
+   64|       |}
+   65|      0|public func <~> <T>(left: inout [T]?, right: (SundeedQLiteMap, SundeedQLiteConverter)) {
+   66|      0|    if !right.0.fetchingColumns,
+   67|      0|        let currentValue = right.0.currentValue as? [String] {
+   68|      0|        left = currentValue.map({ right.1.fromString(value: $0) }) as? [T]
+   69|      0|    } else {
+   70|      0|        let attributes = left?.map({right.1.toString(value: $0)})
+   71|      0|        right.0.addColumn(attribute: attributes, withColumnName: right.0.key!)
+   72|      0|    }
+   73|      0|}
+   74|     28|public func <~> <T: SundeedQLiter>(left: inout T, right: SundeedQLiteMap) {
+   75|     28|    if !right.fetchingColumns {
+   76|      6|        if let values = right.currentValue as? NSArray {
+   77|      6|            if let value = values.firstObject as? [String: Any] {
+   78|      6|                let object = T()
+   79|      6|                let map = SundeedQLiteMap(dictionnary: value)
+   80|      6|                object.sundeedQLiterMapping(map: map)
+   81|      6|                if !map.isSafeToAdd && right.isSafeToAdd {
+   82|      6|                    right.isSafeToAdd = false
+   83|      6|                }
+   84|      6|                let referencedInstance = SundeedQLiteMap
+   85|      6|                    .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+   86|      6|                                  andClassName: "\(T.self)")
+   87|      6|                if let referencedInstance = referencedInstance as? T {
+   88|      0|                    let map = SundeedQLiteMap(dictionnary: value)
+   89|      0|                    referencedInstance.sundeedQLiterMapping(map: map)
+   90|      0|                    left = referencedInstance
+   91|      6|                } else {
+   92|      6|                    SundeedQLiteMap.addReference(object: object,
+   93|      6|                                                 andValue: map[map.primaryKey].currentValue as AnyObject,
+   94|      6|                                                 andClassName: "\(T.self)")
+   95|      6|                    left = object
+   96|      6|                }
+   97|      6|            }
+   98|      6|        }
+   99|     28|    } else {
+  100|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  101|     28|    }
+  102|     28|}
+  103|     56|public func <~> <T: SundeedQLiter>(left: inout T?, right: SundeedQLiteMap) {
+  104|     56|    if !right.fetchingColumns {
+  105|     12|        if let values = right.currentValue as? NSArray {
+  106|      6|            if let value = values.firstObject {
+  107|      6|                if let value = value as? [String: Any] {
+  108|      6|                    let object = T()
+  109|      6|                    let map = SundeedQLiteMap(dictionnary: value)
+  110|      6|                    object.sundeedQLiterMapping(map: map)
+  111|      6|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  112|      0|                        right.isSafeToAdd = false
+  113|      6|                    }
+  114|      6|                    let referencedInstance = SundeedQLiteMap
+  115|      6|                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  116|      6|                                      andClassName: "\(T.self)")
+  117|      6|                    if referencedInstance != nil {
+  118|      6|                        let map = SundeedQLiteMap(dictionnary: value)
+  119|      6|                        referencedInstance?.sundeedQLiterMapping(map: map)
+  120|      6|                        left = referencedInstance as? T
+  121|      6|                    } else {
+  122|      0|                        SundeedQLiteMap.addReference(object: object,
+  123|      0|                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  124|      0|                                                     andClassName: "\(T.self)")
+  125|      0|                        left = object
+  126|      6|                    }
+  127|      6|                }
+  128|      6|            }
+  129|     12|        }
+  130|     56|    } else {
+  131|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  132|     56|    }
+  133|     56|}
+  134|       |public func <~> <T: SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
+  135|       |    if !right.fetchingColumns {
+  136|       |        if let values = right.currentValue as? NSArray {
+  137|       |            var array: [SundeedQLiter] = []
+  138|       |            for value in values where value is [String: Any] {
+  139|       |                if let value = value as? [String: Any] {
+  140|       |                    let object = T()
+  141|       |                    let map = SundeedQLiteMap(dictionnary: value)
+  142|       |                    object.sundeedQLiterMapping(map: map)
+  143|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  144|       |                        right.isSafeToAdd = false
+  145|       |                    }
+  146|       |                    let referencedInstance = SundeedQLiteMap
+  147|       |                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  148|       |                                      andClassName: "\(T.self)")
+  149|       |                    if let referencedInstance = referencedInstance {
+  150|       |                        let map = SundeedQLiteMap(dictionnary: value)
+  151|       |                        referencedInstance.sundeedQLiterMapping(map: map)
+  152|       |                        array.append(referencedInstance)
+  153|       |                    } else {
+  154|       |                        SundeedQLiteMap.addReference(object: object,
+  155|       |                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  156|       |                                                     andClassName: "\(T.self)")
+  157|       |                        array.append(object)
+  158|       |                    }
+  159|       |                }
+  160|       |            }
+  161|       |            if let array = array as? [T] {
+  162|       |                left = array
+  163|       |            }
+  164|       |        }
+  165|       |    } else {
+  166|       |        right.addColumn(attribute: left, withColumnName: right.key!)
+  167|       |    }
+  168|       |}
+  169|     56|public func <~> <T: SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
+  170|     56|    if !right.fetchingColumns {
+  171|     12|        if let values = right.currentValue as? NSArray {
+  172|      6|            var array: [SundeedQLiter] = []
+  173|     36|            for value in values where value is [String: Any] {
+  174|     36|                if let value = value as? [String: Any] {
+  175|     36|                    let object = T()
+  176|     36|                    let map = SundeedQLiteMap(dictionnary: value)
+  177|     36|                    object.sundeedQLiterMapping(map: map)
+  178|     36|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  179|      0|                        right.isSafeToAdd = false
+  180|     36|                    }
+  181|     36|                    let referencedInstance = SundeedQLiteMap
+  182|     36|                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  183|     36|                                      andClassName: "\(T.self)")
+  184|     36|                    if let referencedInstance = referencedInstance {
+  185|     36|                        let map = SundeedQLiteMap(dictionnary: value)
+  186|     36|                        referencedInstance.sundeedQLiterMapping(map: map)
+  187|     36|                        array.append(referencedInstance)
+  188|     36|                    } else {
+  189|      0|                        SundeedQLiteMap.addReference(object: object,
+  190|      0|                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  191|      0|                                                     andClassName: "\(T.self)")
+  192|      0|                        array.append(object)
+  193|     36|                    }
+  194|     36|                }
+  195|     36|            }
+  196|      6|            left = array as? [T]
+  197|     12|        }
+  198|     56|    } else {
+  199|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  200|     56|    }
+  201|     56|}
+  202|     56|public func <~> <T: SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
+  203|     56|    if !right.fetchingColumns {
+  204|     12|        if let values = right.currentValue as? NSArray {
+  205|      6|            var array: [SundeedQLiter] = []
+  206|     36|            for value in values where value is [String: Any] {
+  207|     36|                if let value = value as? [String: Any] {
+  208|     36|                    let object = T()
+  209|     36|                    let map = SundeedQLiteMap(dictionnary: value)
+  210|     36|                    object.sundeedQLiterMapping(map: map)
+  211|     36|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  212|      0|                        right.isSafeToAdd = false
+  213|     36|                    }
+  214|     36|                    let referencedInstance = SundeedQLiteMap
+  215|     36|                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  216|     36|                                      andClassName: "\(T.self)")
+  217|     36|                    if let referencedInstance = referencedInstance {
+  218|     36|                        let map = SundeedQLiteMap(dictionnary: value)
+  219|     36|                        referencedInstance.sundeedQLiterMapping(map: map)
+  220|     36|                        array.append(referencedInstance)
+  221|     36|                    } else {
+  222|      0|                        SundeedQLiteMap.addReference(object: object,
+  223|      0|                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  224|      0|                                                     andClassName: "\(T.self)")
+  225|      0|                        array.append(object)
+  226|     36|                    }
+  227|     36|                }
+  228|     36|            }
+  229|      6|            left = array as? [T]
+  230|     12|        }
+  231|     56|    } else {
+  232|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  233|     56|    }
+  234|     56|}
+  235|       |public func <~> <T: SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
+  236|       |    if !right.fetchingColumns {
+  237|       |        if let values = right.currentValue as? NSArray {
+  238|       |            var array: [SundeedQLiter] = []
+  239|       |            for value in values where value is [String: Any] {
+  240|       |                if let value = value as? [String: Any] {
+  241|       |                    let object = T()
+  242|       |                    let map = SundeedQLiteMap(dictionnary: value)
+  243|       |                    object.sundeedQLiterMapping(map: map)
+  244|      0|                    if !map.isSafeToAdd && right.isSafeToAdd {
+  245|       |                        right.isSafeToAdd = false
+  246|       |                    }
+  247|       |                    let referencedInstance = SundeedQLiteMap
+  248|       |                        .getReference(andValue: map[map.primaryKey].currentValue as AnyObject,
+  249|       |                                      andClassName: "\(T.self)")
+  250|       |                    if let referencedInstance = referencedInstance {
+  251|       |                        let map = SundeedQLiteMap(dictionnary: value)
+  252|       |                        referencedInstance.sundeedQLiterMapping(map: map)
+  253|       |                        array.append(referencedInstance)
+  254|       |                    } else {
+  255|       |                        SundeedQLiteMap.addReference(object: object,
+  256|       |                                                     andValue: map[map.primaryKey].currentValue as AnyObject,
+  257|       |                                                     andClassName: "\(T.self)")
+  258|       |                        array.append(object)
+  259|       |                    }
+  260|       |                }
+  261|       |            }
+  262|       |            if let array = array as? [T] {
+  263|       |                left = array
+  264|       |            }
+  265|       |        }
+  266|       |    } else {
+  267|       |        right.addColumn(attribute: left, withColumnName: right.key!)
+  268|       |    }
+  269|       |}
+  270|     84|public func <~> (left: inout [String], right: SundeedQLiteMap) {
+  271|     84|    if !right.fetchingColumns {
+  272|     18|        if let value = right.currentValue as? [String] {
+  273|      6|            left = value
+  274|     18|        }
+  275|     84|    } else {
+  276|     66|        right.addColumn(attribute: left, withColumnName: right.key!)
+  277|     84|    }
+  278|     84|}
+  279|     28|public func <~> (left: inout [String?], right: SundeedQLiteMap) {
+  280|     28|    if !right.fetchingColumns {
+  281|      6|        if let value = right.currentValue as? [String] {
+  282|      6|            left = value
+  283|      6|        }
+  284|     28|    } else {
+  285|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  286|     28|    }
+  287|     28|}
+  288|     84|public func <~> (left: inout [String]?, right: SundeedQLiteMap) {
+  289|     84|    if !right.fetchingColumns {
+  290|     18|        if let value = right.currentValue as? [String] {
+  291|      6|            left = value
+  292|     18|        }
+  293|     84|    } else {
+  294|     66|        right.addColumn(attribute: left, withColumnName: right.key!)
+  295|     84|    }
+  296|     84|}
+  297|     28|public func <~> (left: inout [String?]?, right: SundeedQLiteMap) {
+  298|     28|    if !right.fetchingColumns {
+  299|      6|        if let value = right.currentValue as? [String?] {
+  300|      6|            left = value
+  301|      6|        }
+  302|     28|    } else {
+  303|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  304|     28|    }
+  305|     28|}
+  306|     28|public func <~> (left: inout [Int], right: SundeedQLiteMap) {
+  307|     28|    if !right.fetchingColumns {
+  308|      6|        if let value = right.currentValue as? [String] {
+  309|      6|            left = value.compactMap({Int($0)})
+  310|      6|        }
+  311|     28|    } else {
+  312|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  313|     28|    }
+  314|     28|}
+  315|     28|public func <~> (left: inout [Int?], right: SundeedQLiteMap) {
+  316|     28|    if !right.fetchingColumns {
+  317|      6|        if let value = right.currentValue as? [String] {
+  318|      6|            left = value.map({Int($0)})
+  319|      6|        }
+  320|     28|    } else {
+  321|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  322|     28|    }
+  323|     28|}
+  324|     28|public func <~> (left: inout [Int]?, right: SundeedQLiteMap) {
+  325|     28|    if !right.fetchingColumns {
+  326|      6|        if let value = right.currentValue as? [String] {
+  327|      6|            left = value.compactMap({Int($0)})
+  328|      6|        }
+  329|     28|    } else {
+  330|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  331|     28|    }
+  332|     28|}
+  333|     28|public func <~> (left: inout [Int?]?, right: SundeedQLiteMap) {
+  334|     28|    if !right.fetchingColumns {
+  335|      6|        if let value = right.currentValue as? [String] {
+  336|      6|            left = value.map({Int($0)})
+  337|      6|        }
+  338|     28|    } else {
+  339|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  340|     28|    }
+  341|     28|}
+  342|     56|public func <~> (left: inout [Double], right: SundeedQLiteMap) {
+  343|     56|    if !right.fetchingColumns {
+  344|     12|        if let value = right.currentValue as? [String] {
+  345|      6|            left = value.compactMap({Double($0)})
+  346|     12|        }
+  347|     56|    } else {
+  348|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  349|     56|    }
+  350|     56|}
+  351|     56|public func <~> (left: inout [Double?], right: SundeedQLiteMap) {
+  352|     56|    if !right.fetchingColumns {
+  353|     12|        if let value = right.currentValue as? [String] {
+  354|      6|            left = value.map({Double($0)})
+  355|     12|        }
+  356|     56|    } else {
+  357|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  358|     56|    }
+  359|     56|}
+  360|     56|public func <~> (left: inout [Double]?, right: SundeedQLiteMap) {
+  361|     56|    if !right.fetchingColumns {
+  362|     12|        if let value = right.currentValue as? [String] {
+  363|      6|            left = value.compactMap({Double($0)})
+  364|     12|        }
+  365|     56|    } else {
+  366|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  367|     56|    }
+  368|     56|}
+  369|     56|public func <~> (left: inout [Double?]?, right: SundeedQLiteMap) {
+  370|     56|    if !right.fetchingColumns {
+  371|     12|        if let value = right.currentValue as? [String] {
+  372|      6|            left = value.map({Double($0)})
+  373|     12|        }
+  374|     56|    } else {
+  375|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  376|     56|    }
+  377|     56|}
+  378|    112|public func <~> (left: inout [Float], right: SundeedQLiteMap) {
+  379|    112|    if !right.fetchingColumns {
+  380|     24|        if let value = right.currentValue as? [String] {
+  381|      6|            left = value.compactMap({Float($0)})
+  382|     24|        }
+  383|    112|    } else {
+  384|     88|        right.addColumn(attribute: left, withColumnName: right.key!)
+  385|    112|    }
+  386|    112|}
+  387|    112|public func <~> (left: inout [Float?], right: SundeedQLiteMap) {
+  388|    112|    if !right.fetchingColumns {
+  389|     24|        if let value = right.currentValue as? [String] {
+  390|      6|            left = value.map({Float($0)})
+  391|     24|        }
+  392|    112|    } else {
+  393|     88|        right.addColumn(attribute: left, withColumnName: right.key!)
+  394|    112|    }
+  395|    112|}
+  396|     56|public func <~> (left: inout [Float]?, right: SundeedQLiteMap) {
+  397|     56|    if !right.fetchingColumns {
+  398|     12|        if let value = right.currentValue as? [String] {
+  399|      6|            left = value.compactMap({Float($0)})
+  400|     12|        }
+  401|     56|    } else {
+  402|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  403|     56|    }
+  404|     56|}
+  405|     56|public func <~> (left: inout [Float?]?, right: SundeedQLiteMap) {
+  406|     56|    if !right.fetchingColumns {
+  407|     12|        if let value = right.currentValue as? [String] {
+  408|      6|            left = value.map({Float($0)})
+  409|     12|        }
+  410|     56|    } else {
+  411|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  412|     56|    }
+  413|     56|}
+  414|     56|public func <~> (left: inout [UIImage], right: SundeedQLiteMap) {
+  415|     56|    if !right.fetchingColumns {
+  416|     12|        if let value = right.currentValue as? [String] {
+  417|      6|            left = value.compactMap({ UIImage.fromDatatypeValue(filePath: $0) })
+  418|     12|        }
+  419|     56|    } else {
+  420|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  421|     56|    }
+  422|     56|}
+  423|     56|public func <~> (left: inout [UIImage]?, right: SundeedQLiteMap) {
+  424|     56|    if !right.fetchingColumns {
+  425|     12|        if let value = right.currentValue as? [String] {
+  426|      6|            left = value.compactMap({ UIImage.fromDatatypeValue(filePath: $0) })
+  427|     12|        }
+  428|     56|    } else {
+  429|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  430|     56|    }
+  431|     56|}
+  432|     56|public func <~> (left: inout [UIImage?], right: SundeedQLiteMap) {
+  433|     56|    if !right.fetchingColumns {
+  434|     12|        if let value = right.currentValue as? [String] {
+  435|      6|            left = value.map({ UIImage.fromDatatypeValue(filePath: $0) })
+  436|     12|        }
+  437|     56|    } else {
+  438|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  439|     56|    }
+  440|     56|}
+  441|     56|public func <~> (left: inout [UIImage?]?, right: SundeedQLiteMap) {
+  442|     56|    if !right.fetchingColumns {
+  443|     12|        if let value = right.currentValue as? [String] {
+  444|      6|            left = value.map({ UIImage.fromDatatypeValue(filePath: $0) })
+  445|     12|        }
+  446|     56|    } else {
+  447|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  448|     56|    }
+  449|     56|}
+  450|     28|public func <~> (left: inout [Bool], right: SundeedQLiteMap) {
+  451|     28|    if !right.fetchingColumns {
+  452|      6|        if let rightValue = right.currentValue as? [String] {
+  453|      6|            left = rightValue.compactMap({$0 == "1"})
+  454|      6|        }
+  455|     28|    } else {
+  456|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  457|     28|    }
+  458|     28|}
+  459|     56|public func <~> (left: inout [Bool]?, right: SundeedQLiteMap) {
+  460|     56|    if !right.fetchingColumns {
+  461|     12|        if let rightValue = right.currentValue as? [String] {
+  462|      6|            left = rightValue.compactMap({$0 == "1"})
+  463|     12|        }
+  464|     56|    } else {
+  465|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  466|     56|    }
+  467|     56|}
+  468|     28|public func <~> (left: inout [Bool?], right: SundeedQLiteMap) {
+  469|     28|    if !right.fetchingColumns {
+  470|      6|        if let rightValue = right.currentValue as? [String] {
+  471|      6|            left = rightValue.map({$0 == "1"})
+  472|      6|        }
+  473|     28|    } else {
+  474|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  475|     28|    }
+  476|     28|}
+  477|     56|public func <~> (left: inout [Bool?]?, right: SundeedQLiteMap) {
+  478|     56|    if !right.fetchingColumns {
+  479|     12|        if let rightValue = right.currentValue as? [String] {
+  480|      6|            left = rightValue.map({$0 == "1"})
+  481|     12|        }
+  482|     56|    } else {
+  483|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  484|     56|    }
+  485|     56|}
+  486|     28|public func <~> (left: inout [Date], right: SundeedQLiteMap) {
+  487|     28|    if !right.fetchingColumns {
+  488|      6|        if let rightValue = right.currentValue as? [String] {
+  489|      6|            left = rightValue.compactMap({Sundeed.shared.dateFormatter.date(from: $0)})
+  490|      6|        }
+  491|     28|    } else {
+  492|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  493|     28|    }
+  494|     28|}
+  495|     56|public func <~> (left: inout [Date]?, right: SundeedQLiteMap) {
+  496|     56|    if !right.fetchingColumns {
+  497|     12|        if let rightValue = right.currentValue as? [String] {
+  498|      6|            left = rightValue.compactMap({Sundeed.shared.dateFormatter.date(from: $0)})
+  499|     12|        }
+  500|     56|    } else {
+  501|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  502|     56|    }
+  503|     56|}
+  504|     28|public func <~> (left: inout [Date?], right: SundeedQLiteMap) {
+  505|     28|    if !right.fetchingColumns {
+  506|      6|        if let rightValue = right.currentValue as? [String] {
+  507|      6|            left = rightValue.map({Sundeed.shared.dateFormatter.date(from: $0)})
+  508|      6|        }
+  509|     28|    } else {
+  510|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  511|     28|    }
+  512|     28|}
+  513|     56|public func <~> (left: inout [Date?]?, right: SundeedQLiteMap) {
+  514|     56|    if !right.fetchingColumns {
+  515|     12|        if let rightValue = right.currentValue as? [String] {
+  516|      6|            left = rightValue.map({Sundeed.shared.dateFormatter.date(from: $0)})
+  517|     12|        }
+  518|     56|    } else {
+  519|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  520|     56|    }
+  521|     56|}
+  522|     28|public func <~> (left: inout String, right: SundeedQLiteMap) {
+  523|     28|    if !right.fetchingColumns {
+  524|      6|        if let value = right.currentValue as? String {
+  525|      6|            left = value
+  526|      6|        }
+  527|     28|    } else {
+  528|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  529|     28|    }
+  530|     28|}
+  531|    562|public func <~> (left: inout String?, right: SundeedQLiteMap) {
+  532|    562|    if !right.fetchingColumns {
+  533|    324|        left = right.currentValue as? String
+  534|    562|    } else {
+  535|    238|        right.addColumn(attribute: left, withColumnName: right.key!)
+  536|    562|    }
+  537|    562|}
+  538|     28|public func <~> (left: inout Int, right: SundeedQLiteMap) {
+  539|     28|    if !right.fetchingColumns {
+  540|      6|        if let rightValue = right.currentValue as? String, let value = Int(rightValue) {
+  541|      6|            left = value
+  542|      6|        }
+  543|     28|    } else {
+  544|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  545|     28|    }
+  546|     28|}
+  547|     56|public func <~> (left: inout Int?, right: SundeedQLiteMap) {
+  548|     56|    if !right.fetchingColumns {
+  549|     12|        if let rightValue = right.currentValue as? String {
+  550|      6|            left = Int(rightValue)
+  551|     12|        }
+  552|     56|    } else {
+  553|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  554|     56|    }
+  555|     56|}
+  556|     28|public func <~> (left: inout Date, right: SundeedQLiteMap) {
+  557|     28|    if !right.fetchingColumns {
+  558|      6|        if let rightValue = right.currentValue as? String,
+  559|      6|            let value = Sundeed.shared.dateFormatter.date(from: rightValue) {
+  560|      6|            left = value
+  561|      6|        }
+  562|     28|    } else {
+  563|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  564|     28|    }
+  565|     28|}
+  566|     56|public func <~> (left: inout Date?, right: SundeedQLiteMap) {
+  567|     56|    if !right.fetchingColumns {
+  568|     12|        if let rightValue = right.currentValue as? String {
+  569|      6|            left = Sundeed.shared.dateFormatter.date(from: rightValue)
+  570|     12|        }
+  571|     56|    } else {
+  572|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  573|     56|    }
+  574|     56|}
+  575|     28|public func <~> (left: inout Bool, right: SundeedQLiteMap) {
+  576|     28|    if !right.fetchingColumns {
+  577|      6|        if let rightValue = right.currentValue as? String {
+  578|      6|            left = rightValue == "1"
+  579|      6|        }
+  580|     28|    } else {
+  581|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  582|     28|    }
+  583|     28|}
+  584|     56|public func <~> (left: inout Bool?, right: SundeedQLiteMap) {
+  585|     56|    if !right.fetchingColumns {
+  586|     12|        if let rightValue = right.currentValue as? String {
+  587|      6|            left = rightValue == "1"
+  588|     12|        }
+  589|     56|    } else {
+  590|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  591|     56|    }
+  592|     56|}
+  593|     28|public func <~> (left: inout Double, right: SundeedQLiteMap) {
+  594|     28|    if !right.fetchingColumns {
+  595|      6|        if let rightValue = right.currentValue as? String, let value = Double(rightValue) {
+  596|      6|            left = value
+  597|      6|        }
+  598|     28|    } else {
+  599|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  600|     28|    }
+  601|     28|}
+  602|     56|public func <~> (left: inout Double?, right: SundeedQLiteMap) {
+  603|     56|    if !right.fetchingColumns {
+  604|     12|        if let rightValue = right.currentValue as? String {
+  605|      6|            left = Double(rightValue)
+  606|     12|        }
+  607|     56|    } else {
+  608|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  609|     56|    }
+  610|     56|}
+  611|     56|public func <~> (left: inout Float?, right: SundeedQLiteMap) {
+  612|     56|    if !right.fetchingColumns {
+  613|     12|        if let rightValue = right.currentValue as? String {
+  614|      6|            left = Float(rightValue)
+  615|     12|        }
+  616|     56|    } else {
+  617|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  618|     56|    }
+  619|     56|}
+  620|     28|public func <~> (left: inout Float, right: SundeedQLiteMap) {
+  621|     28|    if !right.fetchingColumns {
+  622|      6|        if let rightValue = right.currentValue as? String, let value = Float(rightValue) {
+  623|      6|            left = value
+  624|      6|        }
+  625|     28|    } else {
+  626|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  627|     28|    }
+  628|     28|}
+  629|     56|public func <~> (left: inout UIImage?, right: SundeedQLiteMap) {
+  630|     56|    if !right.fetchingColumns {
+  631|     12|        if let rightValue = right.currentValue as? String {
+  632|      6|            left = UIImage.fromDatatypeValue(filePath: rightValue)
+  633|     12|        }
+  634|     56|    } else {
+  635|     44|        right.addColumn(attribute: left, withColumnName: right.key!)
+  636|     56|    }
+  637|     56|}
+  638|     28|public func <~> (left: inout UIImage, right: SundeedQLiteMap) {
+  639|     28|    if !right.fetchingColumns {
+  640|      6|        if let rightValue = right.currentValue as? String,
+  641|      6|            let image = UIImage.fromDatatypeValue(filePath: rightValue) {
+  642|      6|            left = image
+  643|      6|        }
+  644|     28|    } else {
+  645|     22|        right.addColumn(attribute: left, withColumnName: right.key!)
+  646|     28|    }
+  647|     28|}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/Map/SundeedQLiteMap+Ordering.swift:
+    1|       |//
+    2|       |//  SundeedQLiteMap+Ordering.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/16/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |postfix operator <<
+   12|       |public postfix func << (left: SundeedQLiteMap) -> SundeedQLiteMap {
+   13|      0|    assert(!left.isOrdered, "You can only order by one column")
+   14|       |    guard let key = left.key else {
+   15|      0|        fatalError("You can only order by one column")
+   16|       |    }
+   17|       |    left.orderBy = key
+   18|       |    left.asc = true
+   19|       |    left.isOrdered = true
+   20|       |    return left
+   21|       |}
+   22|       |
+   23|       |postfix operator >>
+   24|       |public postfix func >> (left: SundeedQLiteMap) -> SundeedQLiteMap {
+   25|      0|    assert(!left.isOrdered, "You can only order by one column")
+   26|       |    guard let key = left.key else {
+   27|      0|        fatalError("You can only order by one column")
+   28|       |    }
+   29|       |    left.orderBy = key
+   30|       |    left.asc = false
+   31|       |    left.isOrdered = true
+   32|       |    return left
+   33|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/Map/SundeedQLiteMap+Primary.swift:
+    1|       |//
+    2|       |//  SundeedQLiteMap+Primary.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/16/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |postfix operator +
+   12|       |public postfix func + (left: SundeedQLiteMap) -> SundeedQLiteMap {
+   13|      0|    assert(!left.hasPrimaryKey, "You can only have one primary key")
+   14|       |    guard let key = left.key else {
+   15|      0|        fatalError("You can only have one primary key")
+   16|       |    }
+   17|       |    left.primaryKey = key
+   18|       |    left.hasPrimaryKey = true
+   19|       |    return left
+   20|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/Map/SundeedQLiteMap.swift:
+    1|       |//
+    2|       |//  SundeedQLiteMap.swift
+    3|       |//  SQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 12/9/18.
+    6|       |//  Copyright © 2018 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |public class SundeedQLiteMap {
+   12|      0|    var map: [String: Any] = [:]
+   13|      0|    var columns: [String: AnyObject] = [:]
+   14|       |    var fetchingColumns: Bool = false
+   15|       |    var key: String?
+   16|       |    var currentValue: Any?
+   17|       |    static var references: [String: [String: SundeedQLiter]] = [:]
+   18|       |    var primaryKey: String = ""
+   19|       |    var orderBy: String = ""
+   20|       |    var asc: Bool = true
+   21|       |    var isOrdered: Bool = false
+   22|       |    var hasPrimaryKey: Bool = false
+   23|       |    var isSafeToAdd: Bool = true
+   24|  3.04k|    public subscript(key: String) -> SundeedQLiteMap {
+   25|  3.04k|        self.key = key
+   26|  3.04k|        if map.contains(where: { (key1, _) -> Bool in
+   27|      0|            return key1 == key
+   28|    852|        }) {
+   29|    852|            self.currentValue = map[key]
+   30|  3.04k|        } else {
+   31|  2.19k|            self.currentValue = nil
+   32|  3.04k|        }
+   33|  3.04k|        return self
+   34|  3.04k|    }
+   35|       |    func addColumn<T>(attribute: T, withColumnName columnName: String) {
+   36|       |        self.columns[columnName] = attribute as AnyObject
+   37|      0|        if hasPrimaryKey && columnName == primaryKey {
+   38|       |            self.columns[Sundeed.shared.primaryKey] = attribute as AnyObject
+   39|       |        }
+   40|       |    }
+   41|      0|    init(fetchingColumns: Bool) {
+   42|      0|        self.fetchingColumns = fetchingColumns
+   43|      0|    }
+   44|      0|    init(dictionnary: [String: Any]) {
+   45|      0|        self.map = dictionnary
+   46|      0|        self.fetchingColumns = false
+   47|      0|    }
+   48|       |    static func addReference(object: SundeedQLiter,
+   49|       |                             andValue value: AnyObject,
+   50|      0|                             andClassName className: String) {
+   51|      0|        if SundeedQLiteMap.references[className] == nil {
+   52|      0|            SundeedQLiteMap.references[className] = [:]
+   53|      0|        }
+   54|      0|        if SundeedQLiteMap.references[className]?["\(value)"] == nil {
+   55|      0|            SundeedQLiteMap.references[className]?["\(value)"] = object
+   56|      0|        }
+   57|      0|    }
+   58|       |    static func getReference(andValue value: AnyObject,
+   59|      0|                             andClassName name: String) -> SundeedQLiter? {
+   60|      0|        if SundeedQLiteMap.references[name] == nil {
+   61|      0|            SundeedQLiteMap.references[name] = [:]
+   62|      0|        }
+   63|      0|        return SundeedQLiteMap.references[name]?["\(value)"]
+   64|      0|    }
+   65|       |    static func removeReference(value: AnyObject,
+   66|      0|                                andClassName className: String) {
+   67|      0|        SundeedQLiteMap.references[className]?["\(value)"] = nil
+   68|      0|    }
+   69|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/SundeedQLite.swift:
+    1|       |//
+    2|       |//  SundeedQLite.swift
+    3|       |//  SQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 12/9/18.
+    6|       |//  Copyright © 2018 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |public enum Operation {
+   11|       |    case any
+   12|       |    case retrieve
+   13|       |    case save
+   14|       |    case update
+   15|       |    case delete
+   16|       |}
+   17|       |public class Listener: Equatable {
+   18|      0|    internal var id = UUID()
+   19|       |    internal var object: Any?
+   20|       |    internal var function: (_ object: Any) -> Void
+   21|       |    internal var operation: Operation
+   22|       |    internal var specific: Bool
+   23|       |    internal init(object: Any?,
+   24|       |         function: @escaping (_ object: Any) -> Void,
+   25|       |         operation: Operation,
+   26|      0|         specific: Bool) {
+   27|      0|        self.object = object
+   28|      0|        self.function = function
+   29|      0|        self.operation = operation
+   30|      0|        self.specific = specific
+   31|      0|    }
+   32|       |    
+   33|      0|    public func stop() {
+   34|      0|        SundeedQLite.removeListener(listener: self)
+   35|      0|    }
+   36|       |    
+   37|       |    
+   38|      0|    public static func == (lhs: Listener, rhs: Listener) -> Bool {
+   39|      0|        lhs.id == rhs.id
+   40|      0|    }
+   41|       |}
+   42|       |
+   43|       |public class SundeedQLite {
+   44|       |    public static var instance: SundeedQLite = SundeedQLite()
+   45|       |    private static var listeners: [Listener] = []
+   46|       |    static func addListener<T>(object: Any?,
+   47|       |                               function: @escaping (_ object: T) -> Void,
+   48|      0|                               operation: Operation) -> Listener {
+   49|      0|        let functionWrapper: (_ object: Any) -> Void = { object in
+   50|      0|            guard let object = object as? T else { return }
+   51|      0|            function(object)
+   52|      0|        }
+   53|      0|        let listener = Listener(object: object,
+   54|      0|                                function: functionWrapper,
+   55|      0|                                operation: operation,
+   56|      0|                                specific: false)
+   57|      0|        listeners.append(listener)
+   58|      0|        return listener
+   59|      0|    }
+   60|       |    static func addSpecificListener<T>(object: Any?,
+   61|       |                                       function: @escaping (_ object: T) -> Void,
+   62|      0|                                       operation: Operation) -> Listener {
+   63|      0|        let functionWrapper: (_ object: Any) -> Void = { object in
+   64|      0|            guard let object = object as? T else { return }
+   65|      0|            function(object)
+   66|      0|        }
+   67|      0|        let listener = Listener(object: object,
+   68|      0|                                function: functionWrapper,
+   69|      0|                                operation: operation,
+   70|      0|                                specific: true)
+   71|      0|        listeners.append(listener)
+   72|      0|        return listener
+   73|      0|    }
+   74|       |    static func notify<T: SundeedQLiter>(for object: T,
+   75|      0|                                         operation: Operation) {
+   76|      0|        listeners.filter({
+   77|      0|            if $0.specific {
+   78|      0|                if let listenerObject = $0.object as? SundeedQLiter {
+   79|      0|                    let map = SundeedQLiteMap(fetchingColumns: true)
+   80|      0|                    object.sundeedQLiterMapping(map: map)
+   81|      0|                    if let primaryValue = map.columns[map.primaryKey] as? String {
+   82|      0|                        let map = SundeedQLiteMap(fetchingColumns: true)
+   83|      0|                        listenerObject.sundeedQLiterMapping(map: map)
+   84|      0|                        if let listenerPrimaryValue = map.columns[map.primaryKey] as? String {
+   85|      0|                            return primaryValue == listenerPrimaryValue
+   86|      0|                                && ($0.operation == operation || $0.operation == .any)
+   87|      0|                        }
+   88|      0|                    }
+   89|      0|                }
+   90|      0|                return false
+   91|      0|            } else {
+   92|      0|                return ($0.object is T.Type || $0.object == nil)
+   93|      0|                    && ($0.operation == operation || $0.operation == .any)
+   94|      0|            }
+   95|      0|        }).forEach({
+   96|      0|            $0.function(object)
+   97|      0|        })
+   98|      0|    }
+   99|       |    static func notify<T: SundeedQLiter>(for objects: [T],
+  100|      0|                                         operation: Operation) {
+  101|      0|        objects.forEach({notify(for: $0, operation: operation)})
+  102|      0|    }
+  103|       |    
+  104|      0|    static func removeListener(listener: Listener) {
+  105|      0|        listeners.removeAll { (listenerInstance) -> Bool in
+  106|      0|            return listener == listenerInstance
+  107|      0|        }
+  108|      0|    }
+  109|       |}
+  110|       |
+  111|       |// Save
+  112|       |extension SundeedQLite {
+  113|     71|    func save(objects: [SundeedQLiter], withForeignKey foreignKey: String? = nil) {
+  114|     71|        let objectWrappers: [ObjectWrapper] = objects.compactMap({$0.toObjectWrapper()})
+  115|     71|        Processor()
+  116|     71|            .saveProcessor
+  117|     71|            .save(objects: objectWrappers, withForeignKey: foreignKey)
+  118|     71|    }
+  119|       |}
+  120|       |
+  121|       |// Update
+  122|       |extension SundeedQLite {
+  123|      0|    func update<T: SundeedQLiter>(object: T, columns: [SundeedColumn]) throws {
+  124|      0|        let map = SundeedQLiteMap(fetchingColumns: true)
+  125|      0|        object.sundeedQLiterMapping(map: map)
+  126|      0|        if let primaryValue = map.columns[Sundeed.shared.primaryKey] as? String {
+  127|      0|            try Processor()
+  128|      0|                .updateProcessor
+  129|      0|                .update(objectWrapper: object.toObjectWrapper(),
+  130|      0|                        columns: columns,
+  131|      0|                        withFilters: [SundeedColumn(Sundeed.shared.primaryKey) == primaryValue])
+  132|      0|        } else {
+  133|      0|            throw SundeedQLiteError.primaryKeyError(tableName: object.getTableName())
+  134|      0|        }
+  135|      0|    }
+  136|       |    func update<T: SundeedQLiter>(forClass sundeedClass: T.Type,
+  137|       |                                  changes: [SundeedUpdateSetStatement],
+  138|      0|                                  withFilter filters: SundeedExpression<Bool>?...) throws {
+  139|      0|        let map = SundeedQLiteMap(fetchingColumns: true)
+  140|      0|        let object = sundeedClass.init()
+  141|      0|        object.sundeedQLiterMapping(map: map)
+  142|      0|        if changes.count == 0 {
+  143|      0|            throw SundeedQLiteError.noChangesMade(tableName: object.getTableName())
+  144|      0|        }
+  145|      0|        let columns = changes.map({$0.column})
+  146|      0|        let wrapper = object.toObjectWrapper()
+  147|      0|        for change in changes {
+  148|      0|            wrapper.objects?[change.column.value] = change.value
+  149|      0|        }
+  150|      0|        try Processor()
+  151|      0|            .updateProcessor
+  152|      0|            .update(objectWrapper: wrapper,
+  153|      0|                    columns: columns,
+  154|      0|                    withFilters: filters)
+  155|      0|    }
+  156|       |}
+  157|       |
+  158|       |// Retrieve
+  159|       |extension SundeedQLite {
+  160|       |    func retrieve<T: SundeedQLiter>(forClass sundeed: T.Type,
+  161|       |                                    withFilter filter: SundeedExpression<Bool>? = nil,
+  162|       |                                    orderBy order: SundeedColumn? = nil,
+  163|       |                                    ascending asc: Bool = true,
+  164|      0|                                    completion: ((_ data: [T]) -> Void)?) {
+  165|      0|        Sundeed.shared.backgroundQueue.async {
+  166|      0|            let map = SundeedQLiteMap(fetchingColumns: true)
+  167|      0|            let instance = sundeed.init()
+  168|      0|            instance.sundeedQLiterMapping(map: map)
+  169|      0|            let dictionnariesArray = Processor()
+  170|      0|                .retrieveProcessor
+  171|      0|                .retrieve(objectWrapper: instance.toObjectWrapper(),
+  172|      0|                          withFilter: filter,
+  173|      0|                          subObjectHandler: self.classToObjectWrapper)
+  174|      0|            var objectsArray: [T] = []
+  175|      0|            for dictionnary in dictionnariesArray {
+  176|      0|                let object = sundeed.init()
+  177|      0|                let map = SundeedQLiteMap(dictionnary: dictionnary)
+  178|      0|                object.sundeedQLiterMapping(map: map)
+  179|      0|                if map.isSafeToAdd {
+  180|      0|                    objectsArray.append(object)
+  181|      0|                }
+  182|      0|            }
+  183|      0|            self.sort(&objectsArray, order: order, asc: asc)
+  184|      0|            completion?(objectsArray)
+  185|      0|        }
+  186|      0|    }
+  187|      0|    func classToObjectWrapper(_ className: String) -> ObjectWrapper? {
+  188|      0|        if let sundeedClass = NSClassFromString(String(describing: className)),
+  189|      0|            let sundeed = sundeedClass as? SundeedQLiter.Type {
+  190|      0|            let map = SundeedQLiteMap(fetchingColumns: true)
+  191|      0|            let instance = sundeed.init()
+  192|      0|            instance.sundeedQLiterMapping(map: map)
+  193|      0|            return instance.toObjectWrapper()
+  194|      0|        }
+  195|      0|        return nil
+  196|      0|    }
+  197|       |    private func sort<T: SundeedQLiter>(_ objectsArray: inout [T],
+  198|       |                                        order: SundeedColumn?,
+  199|      0|                                        asc: Bool) {
+  200|      0|        if let order = order, objectsArray.count > 0 {
+  201|      0|            objectsArray.sort { (object1, object2) -> Bool in
+  202|      0|                if !asc {
+  203|      0|                    if let obj1 = object1[order.value] as? String,
+  204|      0|                        let obj2 = object2[order.value] as? String {
+  205|      0|                        return obj1 > obj2
+  206|      0|                    } else if let obj1 = object1[order.value] as? Int,
+  207|      0|                        let obj2 = object2[order.value] as? Int {
+  208|      0|                        return obj1 > obj2
+  209|      0|                    } else if let obj1 = object1[order.value] as? Date,
+  210|      0|                        let obj2 = object2[order.value] as? Date {
+  211|      0|                        return obj1 > obj2
+  212|      0|                    }
+  213|      0|                } else {
+  214|      0|                    if let obj1 = object1[order.value] as? String,
+  215|      0|                        let obj2 = object2[order.value] as? String {
+  216|      0|                        return obj1 < obj2
+  217|      0|                    } else if let obj1 = object1[order.value] as? Int,
+  218|      0|                        let obj2 = object2[order.value] as? Int {
+  219|      0|                        return obj1 < obj2
+  220|      0|                    } else if let obj1 = object1[order.value] as? Date,
+  221|      0|                        let obj2 = object2[order.value] as? Date {
+  222|      0|                        return obj1 < obj2
+  223|      0|                    }
+  224|      0|                }
+  225|      0|                return false
+  226|      0|            }
+  227|      0|        }
+  228|      0|    }
+  229|       |}
+  230|       |
+  231|       |// Delete
+  232|       |extension SundeedQLite {
+  233|      0|    func deleteFromDB<T: SundeedQLiter>(object: T) throws -> Bool {
+  234|      0|        let map = SundeedQLiteMap(fetchingColumns: true)
+  235|      0|        object.sundeedQLiterMapping(map: map)
+  236|      0|        guard map.hasPrimaryKey,
+  237|      0|            let primaryValue = map.columns[map.primaryKey] as? String else {
+  238|      0|                throw SundeedQLiteError
+  239|      0|                    .primaryKeyError(tableName: object.getTableName())
+  240|      0|        }
+  241|      0|        let filter = SundeedColumn(map.primaryKey) == primaryValue
+  242|      0|        Processor()
+  243|      0|            .saveProcessor
+  244|      0|            .deleteFromDB(tableName: object.getTableName(),
+  245|      0|                          withFilters: [filter])
+  246|      0|        SundeedQLiteMap.removeReference(value: primaryValue as AnyObject,
+  247|      0|                                        andClassName: "\(T.self)")
+  248|      0|        SundeedQLite.notify(for: object, operation: .delete)
+  249|      0|        return true
+  250|      0|    }
+  251|       |    func deleteAllFromDB<T: SundeedQLiter>(forClass sundeedClass: T.Type,
+  252|      0|                                           withFilters filters: [SundeedExpression<Bool>?]) {
+  253|      0|        let object = sundeedClass.init()
+  254|      0|        let map = SundeedQLiteMap(fetchingColumns: true)
+  255|      0|        object.sundeedQLiterMapping(map: map)
+  256|      0|        Processor()
+  257|      0|            .saveProcessor
+  258|      0|            .deleteFromDB(tableName: object.getTableName(),
+  259|      0|                          withFilters: filters)
+  260|      0|    }
+  261|      7|    public static func deleteDatabase() {
+  262|      7|        Sundeed.shared.tables.removeAll()
+  263|      7|        SundeedQLiteConnection.pool.deleteDatabase()
+  264|      7|    }
+  265|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/ClassHandler/SundeedQLiter.swift:
+    1|       |//
+    2|       |//  SundeedQLiterClasses.swift
+    3|       |//  SQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 12/9/18.
+    6|       |//  Copyright © 2018 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |public protocol SundeedQLiter: class {
+   12|       |    /** A function that describes all the mappings between database and object */
+   13|       |    func sundeedQLiterMapping(map: SundeedQLiteMap)
+   14|       |    init()
+   15|       |}
+   16|       |
+   17|       |extension SundeedQLiter {
+   18|      2|    subscript(key: String) -> AnyObject? {
+   19|      2|        let mirror = Mirror(reflecting: self)
+   20|     87|        for child in mirror.children where child.label == key {
+   21|     87|            return child.value as AnyObject
+   22|  18.4E|        }
+   23|  18.4E|        return nil
+   24|      2|    }
+   25|       |    /** retrieves the tableName of the specific object*/
+   26|    167|    func getTableName() -> String {
+   27|    167|        return "\(type(of: self))"
+   28|    167|    }
+   29|       |    /** saves the object locally */
+   30|      9|    public func save(withForeignKey foreignKey: String? = nil) {
+   31|      9|        SundeedQLite.instance.save(objects: [self], withForeignKey: foreignKey)
+   32|      9|        SundeedQLite.notify(for: self, operation: .save)
+   33|      9|    }
+   34|       |    /** deletes the object locally */
+   35|       |    @discardableResult
+   36|       |    public func delete() throws -> Bool {
+   37|       |        let result = try SundeedQLite.instance.deleteFromDB(object: self)
+   38|       |        if result {
+   39|       |            SundeedQLite.notify(for: self, operation: .delete)
+   40|       |        }
+   41|       |        return result
+   42|       |    }
+   43|       |    /** updates the object locally */
+   44|      0|    public func update(columns: SundeedColumn...) throws {
+   45|      0|        SundeedQLite.notify(for: self, operation: .update)
+   46|      0|        try SundeedQLite.instance.update(object: self, columns: columns)
+   47|      0|    }
+   48|       |    /** retrieves asynchrously all the occurences of a specific class, or add a filter
+   49|       |     - author:
+   50|       |     Nour Sandid
+   51|       |     - returns:
+   52|       |     An array of Objects of the specified class
+   53|       |     - Parameters:
+   54|       |     - filter: (Optional) add a filter to get a specific result
+   55|       |     * e.g: SundeedColumn("id") == "A1B2C3"
+   56|       |     */
+   57|       |    public static func retrieve(withFilter filter: SundeedExpression<Bool>? = nil,
+   58|       |                                orderBy order: SundeedColumn? = nil,
+   59|       |                                ascending asc: Bool = true,
+   60|      7|                                completion: ((_ data: [Self]) -> Void)?) {
+   61|      7|        SundeedQLite.instance.retrieve(forClass: self,
+   62|      7|                                       withFilter: filter,
+   63|      7|                                       orderBy: order,
+   64|      7|                                       ascending: asc,
+   65|      7|                                       completion: { (objects) in
+   66|      0|                                        DispatchQueue.main.async {
+   67|      0|                                            SundeedQLite.notify(for: objects, operation: .retrieve)
+   68|      0|                                            completion?(objects)
+   69|      0|                                        }
+   70|      0|        })
+   71|      7|    }
+   72|       |    /** deletes all the objects of this type locally */
+   73|      0|    public static func delete(withFilter filters: SundeedExpression<Bool>...) {
+   74|      0|        SundeedQLite.instance.deleteAllFromDB(forClass: self, withFilters: filters)
+   75|      0|    }
+   76|       |    /** updates specific columns of all objects of this class, or objects with a specific criteria */
+   77|       |    public static func update(changes: SundeedUpdateSetStatement...,
+   78|      0|                              withFilter filter: SundeedExpression<Bool>? = nil) throws {
+   79|      0|        try SundeedQLite.instance.update(forClass: self, changes: changes, withFilter: filter)
+   80|      0|    }
+   81|      0|    func toObjectWrapper() -> ObjectWrapper {
+   82|      0|        let map = SundeedQLiteMap(fetchingColumns: true)
+   83|      0|        sundeedQLiterMapping(map: map)
+   84|      0|        var columns = map.columns
+   85|      0|        for (columnName, value) in map.columns {
+   86|      0|            if let sundeedObject = value as? SundeedQLiter {
+   87|      0|                let map = SundeedQLiteMap(fetchingColumns: true)
+   88|      0|                sundeedObject.sundeedQLiterMapping(map: map)
+   89|      0|                let wrapper = ObjectWrapper(tableName: sundeedObject.getTableName(),
+   90|      0|                                            className: "\(sundeedObject)",
+   91|      0|                    objects: map.columns,
+   92|      0|                    isOrdered: map.isOrdered,
+   93|      0|                    orderBy: map.orderBy,
+   94|      0|                    asc: map.asc,
+   95|      0|                    hasPrimaryKey: map.hasPrimaryKey)
+   96|      0|                columns[columnName] = wrapper
+   97|      0|            } else if let sundeedObjects = value as? [SundeedQLiter?] {
+   98|      0|                let dictionnaries = sundeedObjects.compactMap({$0?.toObjectWrapper()})
+   99|      0|                columns[columnName] = dictionnaries as AnyObject
+  100|      0|            }
+  101|      0|        }
+  102|      0|        return ObjectWrapper(tableName: getTableName(),
+  103|      0|                             className: "\(self)",
+  104|      0|            objects: columns,
+  105|      0|            isOrdered: map.isOrdered,
+  106|      0|            orderBy: map.orderBy,
+  107|      0|            asc: map.asc,
+  108|      0|            hasPrimaryKey: map.hasPrimaryKey)
+  109|      0|    }
+  110|       |}
+  111|       |
+  112|       |extension Array where Element: SundeedQLiter {
+  113|       |    /** saves the object locally */
+  114|      1|    public func save() {
+  115|      1|        SundeedQLite.instance.save(objects: self)
+  116|      1|    }
+  117|       |}
+  118|       |
+  119|       |// Listener
+  120|       |extension SundeedQLiter {
+  121|      0|    public static func onAllEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  122|      0|        return SundeedQLite.addListener(object: Self.self,
+  123|      0|                                        function: function,
+  124|      0|                                        operation: .any)
+  125|      0|    }
+  126|      0|    public static func onSaveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  127|      0|        return SundeedQLite.addListener(object: Self.self,
+  128|      0|                                 function: function,
+  129|      0|                                 operation: .save)
+  130|      0|    }
+  131|      0|    public static func onUpdateEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  132|      0|        return SundeedQLite.addListener(object: Self.self,
+  133|      0|                                 function: function,
+  134|      0|                                 operation: .update)
+  135|      0|    }
+  136|      0|    public static func onDeleteEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  137|      0|        return SundeedQLite.addListener(object: Self.self,
+  138|      0|                                 function: function,
+  139|      0|                                 operation: .delete)
+  140|      0|    }
+  141|      0|    public static func onRetrieveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  142|      0|        return SundeedQLite.addListener(object: Self.self,
+  143|      0|                                 function: function,
+  144|      0|                                 operation: .retrieve)
+  145|      0|    }
+  146|      0|    public func onAllEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  147|      0|        return SundeedQLite.addSpecificListener(object: self,
+  148|      0|                                         function: function,
+  149|      0|                                         operation: .any)
+  150|      0|    }
+  151|      0|    public func onSaveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  152|      0|        return SundeedQLite.addSpecificListener(object: self,
+  153|      0|                                         function: function,
+  154|      0|                                         operation: .save)
+  155|      0|    }
+  156|      0|    public func onUpdateEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  157|      0|        return SundeedQLite.addSpecificListener(object: self,
+  158|      0|                                         function: function,
+  159|      0|                                         operation: .update)
+  160|      0|    }
+  161|      0|    public func onDeleteEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  162|      0|        return SundeedQLite.addSpecificListener(object: self,
+  163|      0|                                         function: function,
+  164|      0|                                         operation: .delete)
+  165|      0|    }
+  166|      0|    public func onRetrieveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
+  167|      0|        return SundeedQLite.addSpecificListener(object: self,
+  168|      0|                                         function: function,
+  169|      0|                                         operation: .retrieve)
+  170|      0|    }
+  171|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Processor/ObjectWrapper.swift:
+    1|       |//
+    2|       |//  SundeedObjectWrapper.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/11/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |typealias SundeedObject = [String: Any]
+   12|       |
+   13|       |class ObjectWrapper {
+   14|       |    private(set) var tableName: String
+   15|       |    private(set) var className: String?
+   16|       |    var objects: SundeedObject?
+   17|       |    var isOrdered: Bool
+   18|       |    var orderBy: String
+   19|       |    var asc: Bool
+   20|       |    var hasPrimaryKey: Bool
+   21|       |    init(tableName: String,
+   22|       |         className: String?,
+   23|       |         objects: SundeedObject?,
+   24|       |         isOrdered: Bool = false,
+   25|       |         orderBy: String = "",
+   26|       |         asc: Bool = false,
+   27|      0|         hasPrimaryKey: Bool = false) {
+   28|      0|        self.tableName = tableName
+   29|      0|        self.objects = objects
+   30|      0|        self.className = className
+   31|      0|        self.isOrdered = isOrdered
+   32|      0|        self.orderBy = orderBy
+   33|      0|        self.asc = asc
+   34|      0|        self.hasPrimaryKey = hasPrimaryKey
+   35|      0|    }
+   36|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Processor/Processor.swift:
+    1|       |//
+    2|       |//  SundeedQLiteHandler.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/9/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |class Processor {
+   12|      0|    var createTableProcessor: CreateTableProcessor {
+   13|      0|        CreateTableProcessor()
+   14|      0|    }
+   15|      0|    var saveProcessor: SaveProcessor {
+   16|      0|        SaveProcessor()
+   17|      0|    }
+   18|      0|    var retrieveProcessor: RetrieveProcessor {
+   19|      0|        RetrieveProcessor()
+   20|      0|    }
+   21|      0|    var updateProcessor: UpdateProcessor {
+   22|      0|        UpdateProcessor()
+   23|      0|    }
+   24|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Processor/Processors/CreateTableProcessor.swift:
+    1|       |//
+    2|       |//  SundeedCreateTableProcessor.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/11/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class CreateTableProcessor {
+   12|      0|    func createTableIfNeeded(for object: ObjectWrapper?) throws {
+   13|      0|        guard let object = object,
+   14|      0|            let objects = object.objects else {
+   15|      0|                throw SundeedQLiteError.noObjectPassed
+   16|      0|        }
+   17|      0|        if !Sundeed.shared.tables.contains(object.tableName) {
+   18|      0|            let createTableStatement = StatementBuilder()
+   19|      0|                .createTableStatement(tableName: object.tableName)
+   20|      0|            for (columnName, attribute) in objects {
+   21|      0|                if let attribute = attribute as? ObjectWrapper {
+   22|      0|                    try createTableIfNeeded(for: attribute)
+   23|      0|                } else if let attribute = attribute as? [ObjectWrapper] {
+   24|      0|                    if let firstAttribute = attribute.first {
+   25|      0|                        try createTableIfNeeded(for: firstAttribute)
+   26|      0|                    }
+   27|      0|                } else
+   28|      0|                    if attribute is [Any] {
+   29|      0|                    createTableForPrimitiveDataTypes(withTableName: columnName)
+   30|      0|                }
+   31|      0|                createTableStatement.addColumn(with: columnName)
+   32|      0|                if columnName == "index" {
+   33|      0|                    throw SundeedQLiteError.cantUseNameIndex(tableName: object.tableName)
+   34|      0|                }
+   35|      0|            }
+   36|      0|            if objects[Sundeed.shared.primaryKey] != nil {
+   37|      0|                createTableStatement.withPrimaryKey()
+   38|      0|            }
+   39|      0|            let query = createTableStatement.build()
+   40|      0|            SundeedQLiteConnection.pool.execute(query: query)
+   41|      0|            Sundeed.shared.tables.append(object.tableName)
+   42|      0|        }
+   43|      0|    }
+   44|       |    /** Try to create table for primitive data types if not already exists */
+   45|      0|    func createTableForPrimitiveDataTypes(withTableName tableName: String) {
+   46|      0|        if  !Sundeed.shared.tables.contains(tableName) {
+   47|      0|            let createTableStatement = StatementBuilder()
+   48|      0|                .createTableStatement(tableName: tableName)
+   49|      0|                .addColumn(with: Sundeed.shared.valueColumnName)
+   50|      0|                .build()
+   51|      0|            SundeedQLiteConnection.pool.execute(query: createTableStatement)
+   52|      0|            Sundeed.shared.tables.append(tableName)
+   53|      0|        }
+   54|      0|    }
+   55|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Processor/Processors/RetrieveProcessor.swift:
+    1|       |//
+    2|       |//  SundeedRetrieveProcessor.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/11/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |import SQLite3
+   11|       |
+   12|       |class RetrieveProcessor {
+   13|       |    func retrieve(objectWrapper: ObjectWrapper,
+   14|       |                  withFilter filters: SundeedExpression<Bool>?...,
+   15|      0|        subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
+   16|      0|        var database: OpaquePointer? = try? SundeedQLiteConnection.pool.getConnection()
+   17|      0|        let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
+   18|      0|        if !columns.isEmpty {
+   19|      0|            var statement: OpaquePointer?
+   20|      0|            let selectStatement: String = StatementBuilder()
+   21|      0|                .selectStatement(tableName: objectWrapper.tableName)
+   22|      0|                .isOrdered(objectWrapper.isOrdered)
+   23|      0|                .orderBy(columnName: objectWrapper.orderBy)
+   24|      0|                .isAscending(objectWrapper.asc)
+   25|      0|                .isCaseInsensitive(true)
+   26|      0|                .withFilters(filters)
+   27|      0|                .build()
+   28|      0|            
+   29|      0|            sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil)
+   30|      0|            let array: [[String: Any]] = fetchStatementResult(statement: statement,
+   31|      0|                                 columns: columns,
+   32|      0|                                 objectWrapper: objectWrapper,
+   33|      0|                                 subObjectHandler: subObjectHandler)
+   34|      0|            SundeedQLiteConnection.pool.closeConnection(database: database)
+   35|      0|            statement = nil
+   36|      0|            database = nil
+   37|      0|            return array
+   38|      0|        }
+   39|      0|        return []
+   40|      0|    }
+   41|       |    
+   42|       |    func fetchStatementResult(statement: OpaquePointer?,
+   43|       |                              columns: [Int : String],
+   44|       |                              objectWrapper: ObjectWrapper,
+   45|      0|                              subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [[String: Any]] {
+   46|      0|        var array: [[String: Any]] = []
+   47|      0|        while sqlite3_step(statement) == SQLITE_ROW {
+   48|      0|            var dictionary: [String: Any] = [:]
+   49|      0|            var primaryValue: String?
+   50|      0|            for column in columns {
+   51|      0|                if let databaseValue = sqlite3_column_text(statement, Int32(column.key)) {
+   52|      0|                    let value: String = normalizeColumnValue(databaseValue)
+   53|      0|                    let columnName = column.value
+   54|      0|                    if value != Sundeed.shared.databaseNull {
+   55|      0|                        dictionary[columnName] = value
+   56|      0|                    }
+   57|      0|                    if columnName == Sundeed.shared.primaryKey {
+   58|      0|                        primaryValue = value
+   59|      0|                    }
+   60|      0|                }
+   61|      0|            }
+   62|      0|            fetchForeignObjects(withObject: objectWrapper,
+   63|      0|                                primaryValue: primaryValue,
+   64|      0|                                inDictionary: &dictionary,
+   65|      0|                                subObjectHandler: subObjectHandler)
+   66|      0|            array.append(dictionary)
+   67|      0|        }
+   68|      0|        return array
+   69|      0|    }
+   70|       |    
+   71|       |    func fetchForeignObjects(withObject objectWrapper: ObjectWrapper,
+   72|       |                                     primaryValue: String?,
+   73|       |                                     inDictionary dictionary: inout [String: Any],
+   74|      0|                                     subObjectHandler: (_ objectType: String) -> ObjectWrapper?) {
+   75|      0|        guard let primaryValue = primaryValue else { return }
+   76|      0|        for row in dictionary {
+   77|      0|            if let value = row.value as? String {
+   78|      0|                if value.starts(with: Sundeed.shared.foreignPrefix) {
+   79|      0|                    let configurations = value.split(separator: "|")
+   80|      0|                    let embededElementTable = String(describing: configurations[1])
+   81|      0|                    let embededElementFieldNameLink = String(configurations[2])
+   82|      0|                    if let subObject = subObjectHandler(embededElementTable) {
+   83|      0|                        let filter1 = SundeedColumn(Sundeed
+   84|      0|                            .shared.foreignKey) == primaryValue
+   85|      0|                        let filter2 = SundeedColumn(Sundeed.shared
+   86|      0|                            .fieldNameLink) == embededElementFieldNameLink
+   87|      0|                        dictionary[row.key] = self
+   88|      0|                            .retrieve(objectWrapper: subObject,
+   89|      0|                                      withFilter: filter1, filter2,
+   90|      0|                                      subObjectHandler: subObjectHandler)
+   91|      0|                    }
+   92|      0|                } else if value.starts(with: Sundeed.shared.foreignPrimitivePrefix) {
+   93|      0|                    let configurations = value.split(separator: "|")
+   94|      0|                    let embededElementTable = String(configurations[1])
+   95|      0|                        let filter = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
+   96|      0|                        dictionary[row.key] = self
+   97|      0|                            .getPrimitiveValues(forTable: embededElementTable,
+   98|      0|                                                withFilter: filter)
+   99|      0|                }
+  100|      0|            }
+  101|      0|        }
+  102|      0|    }
+  103|       |    func getPrimitiveValues(forTable table: String,
+  104|      0|                                    withFilter filter: SundeedExpression<Bool>?) -> [String]? {
+  105|      0|            let database = try? SundeedQLiteConnection.pool.getConnection()
+  106|      0|            var statement: OpaquePointer?
+  107|      0|            let selectStatement = StatementBuilder()
+  108|      0|                .selectStatement(tableName: table)
+  109|      0|                .withFilters(filter)
+  110|      0|                .build()
+  111|      0|        if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK {
+  112|      0|                let columns = getDatabaseColumns(forTable: table)
+  113|      0|                var array: [String] = []
+  114|      0|            for column in columns where column.value == Sundeed.shared.valueColumnName {
+  115|      0|                    while sqlite3_step(statement) == SQLITE_ROW {
+  116|      0|                        if let columnValue = sqlite3_column_text(statement, Int32(column.key)) {
+  117|      0|                            let value: String = String(cString: columnValue)
+  118|      0|                            if value != Sundeed.shared.databaseNull {
+  119|      0|                                array.append(value.replacingOccurrences(of: "\\\"", with: "\""))
+  120|      0|                            }
+  121|      0|                        }
+  122|      0|                    }
+  123|      0|                }
+  124|      0|                return array
+  125|      0|            }
+  126|      0|        return nil
+  127|      0|    }
+  128|      0|    func getDatabaseColumns(forTable table: String) -> [Int: String] {
+  129|      0|        let database = try? SundeedQLiteConnection.pool.getConnection(toWrite: true)
+  130|      0|        var columnsStatement: OpaquePointer?
+  131|      0|        var array: [String] = []
+  132|      0|        var dictionary: [Int: String] = [:]
+  133|      0|        sqlite3_prepare_v2(database,
+  134|      0|                           "PRAGMA table_info(\(table));",-1,
+  135|      0|                           &columnsStatement, nil)
+  136|      0|        while sqlite3_step(columnsStatement) == SQLITE_ROW {
+  137|      0|            if let columnName = sqlite3_column_text(columnsStatement, 1) {
+  138|      0|                array.append(String(cString: columnName))
+  139|      0|            }
+  140|      0|        }
+  141|      0|        array.enumerated().forEach({dictionary[$0] = $1})
+  142|      0|        columnsStatement = nil
+  143|      0|        SundeedQLiteConnection.pool.closeConnection(database: database)
+  144|      0|        return dictionary
+  145|      0|    }
+  146|      0|    func normalizeColumnValue(_ columnValue: UnsafePointer<UInt8>) -> String {
+  147|      0|        String(cString: columnValue).replacingOccurrences(of: "\\\"", with: "\"")
+  148|      0|    }
+  149|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Processor/Processors/SaveProcessor.swift:
+    1|       |//
+    2|       |//  SundeedSaveProcessor.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/11/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |class SaveProcessor {
+   12|       |    /** Checks if the object is of an acceptable type */
+   13|      0|    func acceptDataType(forObject object: AnyObject?) -> Bool {
+   14|      0|        if object != nil {
+   15|      0|            return object is String
+   16|      0|                || object is String?
+   17|      0|                || object is Int
+   18|      0|                || object is Int?
+   19|      0|                || object is Double
+   20|      0|                || object is Double?
+   21|      0|                || object is Float
+   22|      0|                || object is Float?
+   23|      0|                || object is Bool
+   24|      0|                || object is Bool?
+   25|      0|                || object is Date
+   26|      0|                || object is Date?
+   27|      0|                || object is UIImage
+   28|      0|                || object is UIImage?
+   29|      0|        }
+   30|      0|        return false
+   31|      0|    }
+   32|       |    func save(objects: [ObjectWrapper], withForeignKey foreignKey: String? = nil,
+   33|      0|              withFieldNameLink fieldNameLink: String? = nil) {
+   34|      0|        Sundeed.shared.backgroundQueue.async {
+   35|      0|            do {
+   36|      0|                try Processor().createTableProcessor.createTableIfNeeded(for: objects.first)
+   37|      0|                for object in objects {
+   38|      0|                    if let objects = object.objects {
+   39|      0|                        let insertStatement = StatementBuilder()
+   40|      0|                            .insertStatement(tableName: object.tableName)
+   41|      0|                            .add(key: Sundeed.shared.foreignKey, value: foreignKey)
+   42|      0|                            .add(key: Sundeed.shared.fieldNameLink, value: fieldNameLink)
+   43|      0|                        for (columnName, attribute) in objects {
+   44|      0|                            if let attribute = attribute as? ObjectWrapper {
+   45|      0|                                if let className = attribute.className {
+   46|      0|                                    let value = Sundeed.shared
+   47|      0|                                        .sundeedForeignValue(tableName: className,
+   48|      0|                                                             fieldNameLink: columnName)
+   49|      0|                                    insertStatement.add(key: columnName, value: value)
+   50|      0|                                    if let primaryValue = objects[Sundeed
+   51|      0|                                        .shared.primaryKey] as? String {
+   52|      0|                                        self.save(objects: [attribute],
+   53|      0|                                                  withForeignKey: primaryValue,
+   54|      0|                                                  withFieldNameLink: columnName)
+   55|      0|                                    } else {
+   56|      0|                                        throw SundeedQLiteError
+   57|      0|                                            .primaryKeyError(tableName: attribute.tableName)
+   58|      0|                                    }
+   59|      0|                                }
+   60|      0|                            } else if let attribute = attribute as? [ObjectWrapper?] {
+   61|      0|                                if let firstAttribute = attribute.compactMap({$0}).first,
+   62|      0|                                    let className = firstAttribute.className {
+   63|      0|                                    if let primaryValue = objects[Sundeed
+   64|      0|                                        .shared.primaryKey] as? String {
+   65|      0|                                        let value = Sundeed.shared
+   66|      0|                                        .sundeedForeignValue(tableName: className,
+   67|      0|                                                             fieldNameLink: columnName)
+   68|      0|                                        insertStatement
+   69|      0|                                            .add(key: columnName,
+   70|      0|                                                 value: value)
+   71|      0|                                        let wrappers = attribute.compactMap({$0})
+   72|      0|                                        self.save(objects: wrappers,
+   73|      0|                                                  withForeignKey: primaryValue,
+   74|      0|                                                  withFieldNameLink: columnName)
+   75|      0|                                    } else {
+   76|      0|                                        throw SundeedQLiteError
+   77|      0|                                            .primaryKeyError(tableName: firstAttribute.tableName)
+   78|      0|                                    }
+   79|      0|                                } else {
+   80|      0|                                    insertStatement.add(key: columnName, value: nil)
+   81|      0|                                }
+   82|      0|                            } else if let attribute = attribute as? UIImage {
+   83|      0|                                if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+   84|      0|                                    let attributeValue = attribute.dataTypeValue(forObjectID: primaryValue)
+   85|      0|                                    insertStatement.add(key: columnName, value: attributeValue)
+   86|      0|                                } else {
+   87|      0|                                    throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+   88|      0|                                }
+   89|      0|                            } else if let attribute = attribute as? Date {
+   90|      0|                                if objects[Sundeed.shared.primaryKey] as? String != nil {
+   91|      0|                                    let attributeValue = Sundeed.shared.dateFormatter.string(from: attribute)
+   92|      0|                                    insertStatement.add(key: columnName,
+   93|      0|                                                        value: attributeValue)
+   94|      0|                                } else {
+   95|      0|                                    throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+   96|      0|                                }
+   97|      0|                            } else if let attribute = attribute as? [UIImage?] {
+   98|      0|                                let compactAttribute = attribute.compactMap({$0})
+   99|      0|                                if compactAttribute.count > 0,
+  100|      0|                                    let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+  101|      0|                                    let attribute: [String] = compactAttribute
+  102|      0|                                    .enumerated()
+  103|      0|                                        .compactMap({
+  104|      0|                                            let indexString = String(describing: $0)
+  105|      0|                                            let objectID = "\(primaryValue)\(columnName)\(indexString)"
+  106|      0|                                            return $1.dataTypeValue(forObjectID: objectID)
+  107|      0|                                        })
+  108|      0|                                    let attributeValue = Sundeed.shared
+  109|      0|                                        .sundeedPrimitiveForeignValue(tableName: columnName)
+  110|      0|                                    insertStatement.add(key: columnName, value: attributeValue)
+  111|      0|                                    self.saveArrayOfPrimitives(tableName: columnName,
+  112|      0|                                                               objects: attribute,
+  113|      0|                                                               withForeignKey: primaryValue)
+  114|      0|                                } else {
+  115|      0|                                    insertStatement.add(key: columnName, value: nil)
+  116|      0|                                }
+  117|      0|                            } else if let attribute = attribute as? [Any] {
+  118|      0|                                if attribute.compactMap({$0}).count > 0,
+  119|      0|                                    self.acceptDataType(forObject: attribute.first as AnyObject) {
+  120|      0|                                    let attributeValue = Sundeed.shared
+  121|      0|                                        .sundeedPrimitiveForeignValue(tableName: columnName)
+  122|      0|                                    insertStatement.add(key: columnName, value: attributeValue)
+  123|      0|                                    if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+  124|      0|                                        self.saveArrayOfPrimitives(tableName: columnName,
+  125|      0|                                                                   objects: attribute,
+  126|      0|                                                                   withForeignKey: primaryValue)
+  127|      0|                                    } else {
+  128|      0|                                        throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+  129|      0|                                    }
+  130|      0|                                } else {
+  131|      0|                                    insertStatement.add(key: columnName, value: nil)
+  132|      0|                                }
+  133|      0|                            } else if self.acceptDataType(forObject: attribute as AnyObject) {
+  134|      0|                                insertStatement.add(key: columnName, value: String(describing: attribute))
+  135|      0|                            }
+  136|      0|                        }
+  137|      0|                        let query = insertStatement.build()
+  138|      0|                        SundeedQLiteConnection.pool.execute(query: query)
+  139|      0|                    }
+  140|      0|                }
+  141|      0|            } catch {
+  142|      0|                print("\(error)")
+  143|      0|            }
+  144|      0|        }
+  145|      0|    }
+  146|      0|    func saveArrayOfPrimitives<T>(tableName: String, objects: [T?], withForeignKey foreignKey: String) {
+  147|      0|        Sundeed.shared.backgroundQueue.async {
+  148|      0|            Processor().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName)
+  149|      0|            let filter = SundeedColumn(Sundeed.shared.foreignKey) == foreignKey
+  150|      0|            self.deleteFromDB(tableName: tableName,
+  151|      0|                                   withFilters: [filter])
+  152|      0|            for string in objects.compactMap({$0}) {
+  153|      0|                let insertStatement = StatementBuilder()
+  154|      0|                    .insertStatement(tableName: tableName)
+  155|      0|                    .add(key: Sundeed.shared.foreignKey, value: foreignKey)
+  156|      0|                    .add(key: Sundeed.shared.valueColumnName, value: String(describing: string))
+  157|      0|                    .build()
+  158|      0|                SundeedQLiteConnection.pool.execute(query: insertStatement)
+  159|      0|            }
+  160|      0|        }
+  161|      0|    }
+  162|       |    func deleteFromDB(tableName: String,
+  163|      0|                      withFilters filters: [SundeedExpression<Bool>?]) {
+  164|      0|        let deleteStatement = StatementBuilder()
+  165|      0|            .deleteStatement(tableName: tableName)
+  166|      0|            .withFilters(filters)
+  167|      0|            .build()
+  168|      0|        SundeedQLiteConnection.pool.execute(query: deleteStatement)
+  169|      0|    }
+  170|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Processor/Processors/UpdateProcessor.swift:
+    1|       |//
+    2|       |//  SundeedUpdateProcessor.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/11/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |class UpdateProcessor {
+   12|       |    func update(objectWrapper: ObjectWrapper,
+   13|       |                columns: [SundeedColumn],
+   14|      0|                withFilters filters: [SundeedExpression<Bool>?]) throws {
+   15|      0|        try Processor()
+   16|      0|            .createTableProcessor
+   17|      0|            .createTableIfNeeded(for: objectWrapper)
+   18|      0|        guard objectWrapper.hasPrimaryKey else {
+   19|      0|            throw SundeedQLiteError
+   20|      0|                .primaryKeyError(tableName: objectWrapper.tableName)
+   21|      0|        }
+   22|      0|        let updateStatement = StatementBuilder()
+   23|      0|            .updateStatement(tableName: objectWrapper.tableName)
+   24|      0|        for column in columns {
+   25|      0|            if let objects = objectWrapper.objects,
+   26|      0|                objects.contains(where: { (arg0) -> Bool in
+   27|      0|                    let (key, _) = arg0
+   28|      0|                    return key == column.value
+   29|      0|                }) {
+   30|      0|                let attribute = objects[column.value]
+   31|      0|                if let attribute = attribute as? ObjectWrapper,
+   32|      0|                    let className = attribute.className {
+   33|      0|                    if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+   34|      0|                        self.saveForeignObjects(attributes: [attribute],
+   35|      0|                                                primaryValue: primaryValue,
+   36|      0|                                                column: column,
+   37|      0|                                                className: className,
+   38|      0|                                                updateStatement: updateStatement)
+   39|      0|                    }
+   40|      0|                } else if let attributes = attribute as? [ObjectWrapper?] {
+   41|      0|                    if let firstAttribute = attributes.first as? ObjectWrapper,
+   42|      0|                        let className = firstAttribute.className {
+   43|      0|                        if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+   44|      0|                            self.saveForeignObjects(attributes: attributes,
+   45|      0|                                                    primaryValue: primaryValue,
+   46|      0|                                                    column: column,
+   47|      0|                                                    className: className,
+   48|      0|                                                    updateStatement: updateStatement)
+   49|      0|                        }
+   50|      0|                    }
+   51|      0|                } else if let attribute = attribute as? UIImage {
+   52|      0|                    if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+   53|      0|                        updateStatement
+   54|      0|                            .add(key: column.value,
+   55|      0|                                 value: attribute
+   56|      0|                                    .dataTypeValue(forObjectID: primaryValue))
+   57|      0|                    }
+   58|      0|                } else if let attribute = attribute as? Date {
+   59|      0|                    updateStatement.add(key: column.value,
+   60|      0|                                        value: Sundeed.shared
+   61|      0|                                            .dateFormatter.string(from: attribute))
+   62|      0|                } else if let attributes = attribute as? [UIImage?] {
+   63|      0|                    let attributes = attributes.compactMap({$0})
+   64|      0|                    if !attributes.isEmpty {
+   65|      0|                        if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+   66|      0|                            self.saveArrayOfImages(attributes: attributes,
+   67|      0|                                                   primaryValue: primaryValue,
+   68|      0|                                                   column: column,
+   69|      0|                                                   updateStatement: updateStatement)
+   70|      0|                        }
+   71|      0|                    }
+   72|      0|                } else if let attributes = attribute as? [Any] {
+   73|      0|                    let attributes = attributes.compactMap({$0})
+   74|      0|                    if !attributes.isEmpty {
+   75|      0|                        if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+   76|      0|                            Processor()
+   77|      0|                                .saveProcessor
+   78|      0|                                .saveArrayOfPrimitives(tableName: column.value,
+   79|      0|                                                       objects: attributes,
+   80|      0|                                                       withForeignKey: primaryValue)
+   81|      0|                            updateStatement
+   82|      0|                                .add(key: column.value,
+   83|      0|                                     value: Sundeed.shared
+   84|      0|                                        .sundeedPrimitiveForeignValue(tableName: column.value))
+   85|      0|                        }
+   86|      0|                    }
+   87|      0|                } else {
+   88|      0|                    if let attribute = attribute {
+   89|      0|                        let attributeString = "\(attribute as AnyObject)"
+   90|      0|                        updateStatement.add(key: column.value,
+   91|      0|                                            value: attributeString)
+   92|      0|                    } else {
+   93|      0|                        updateStatement.add(key: column.value,
+   94|      0|                                            value: "")
+   95|      0|                    }
+   96|      0|                }
+   97|      0|            } else {
+   98|      0|                throw SundeedQLiteError
+   99|      0|                    .noColumnWithThisName(tableName: objectWrapper.tableName,
+  100|      0|                                          columnName: column.value)
+  101|      0|            }
+  102|      0|        }
+  103|      0|        updateStatement.withFilters(filters)
+  104|      0|        let query = updateStatement.build()
+  105|      0|        SundeedQLiteConnection.pool.execute(query: query)
+  106|      0|    }
+  107|       |    
+  108|       |    func saveArrayOfImages(attributes: [UIImage],
+  109|       |                           primaryValue: String,
+  110|       |                           column: SundeedColumn,
+  111|      0|                           updateStatement: UpdateStatement) {
+  112|      0|            let attributes: [String] = attributes.enumerated()
+  113|      0|                .map({
+  114|      0|                    let index = $0
+  115|      0|                    let indexString = String(describing: index)
+  116|      0|                    let objectID = "\(primaryValue)\(column.value)\(indexString)"
+  117|      0|                    return $1.dataTypeValue(forObjectID: objectID)
+  118|      0|                })
+  119|      0|            Processor()
+  120|      0|                .saveProcessor
+  121|      0|                .saveArrayOfPrimitives(tableName: column.value,
+  122|      0|                                       objects: attributes,
+  123|      0|                                       withForeignKey: primaryValue)
+  124|      0|            updateStatement
+  125|      0|                .add(key: column.value,
+  126|      0|                     value: Sundeed.shared
+  127|      0|                        .sundeedPrimitiveForeignValue(tableName: column.value))
+  128|      0|    }
+  129|       |    
+  130|       |    
+  131|       |    func saveForeignObjects(attributes: [ObjectWrapper?],
+  132|       |                            primaryValue: String,
+  133|       |                            column: SundeedColumn,
+  134|       |                            className: String,
+  135|      0|                            updateStatement: UpdateStatement) {
+  136|      0|        Processor()
+  137|      0|            .saveProcessor
+  138|      0|            .save(objects: attributes.compactMap({$0}),
+  139|      0|                  withForeignKey: primaryValue,
+  140|      0|                  withFieldNameLink: column.value)
+  141|      0|        
+  142|      0|        updateStatement
+  143|      0|            .add(key: column.value,
+  144|      0|                 value: Sundeed.shared
+  145|      0|                    .sundeedForeignValue(tableName: className,
+  146|      0|                                         fieldNameLink: column.value))
+  147|      0|    }
+  148|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/CreateTableStatement.swift:
+    1|       |//
+    2|       |//  SundeedCreateTableStatement.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/9/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class CreateTableStatement {
+   12|       |    private var tableName: String
+   13|       |    private var hasPrimaryKey: Bool = false
+   14|      0|    private var columnNames: [String] = []
+   15|      0|    init(with tableName: String) {
+   16|      0|        self.tableName = tableName
+   17|      0|    }
+   18|       |    @discardableResult
+   19|      0|    func addColumn(with columnName: String) -> Self {
+   20|      0|        columnNames.append(columnName)
+   21|      0|        return self
+   22|      0|    }
+   23|       |    @discardableResult
+   24|      0|    func withPrimaryKey() -> Self {
+   25|      0|        self.hasPrimaryKey = true
+   26|      0|        return self
+   27|      0|    }
+   28|      0|    func build() -> String {
+   29|      0|        var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (\(Sundeed.shared.offlineID) INTEGER PRIMARY KEY, \(Sundeed.shared.foreignKey) TEXT, \(Sundeed.shared.fieldNameLink) TEXT" 
+   30|      0|        for columnName in columnNames {
+   31|      0|            statement.append(",\(columnName) TEXT")
+   32|      0|        }
+   33|      0|        if hasPrimaryKey {
+   34|      0|            statement.append(",CONSTRAINT unq\(tableName) UNIQUE (SUNDEED_FOREIGN_KEY, \(Sundeed.shared.primaryKey))")
+   35|      0|        }
+   36|      0|        statement.append(");")
+   37|      0|        return statement
+   38|      0|    }
+   39|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/DeleteStatement.swift:
+    1|       |//
+    2|       |//  SundeedDeleteStatement.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/10/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class DeleteStatement: Statement {
+   12|       |    private var tableName: String
+   13|      0|    private var filters: [SundeedExpression<Bool>] = []
+   14|      0|    init(with tableName: String) {
+   15|      0|        self.tableName = tableName
+   16|      0|    }
+   17|       |    @discardableResult
+   18|      0|    func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
+   19|      0|        self.filters = filters.compactMap({$0})
+   20|      0|        return self
+   21|      0|    }
+   22|      0|    func build() -> String {
+   23|      0|        var statement: String = "DELETE FROM \(tableName) WHERE "
+   24|      0|        addFilters(forStatement: &statement)
+   25|      0|        return statement
+   26|      0|    }
+   27|      0|    private func addFilters(forStatement statement: inout String) {
+   28|      0|        if !filters.isEmpty {
+   29|      0|            for (index, filter) in filters.enumerated() {
+   30|      0|                statement.append(filter.toQuery())
+   31|      0|                addSeparatorIfNeeded(separator: " AND ",
+   32|      0|                                     forStatement: &statement,
+   33|      0|                                     needed: isLastIndex(index: index, in: filters))
+   34|      0|            }
+   35|      0|        } else {
+   36|      0|            statement.append("1")
+   37|      0|        }
+   38|      0|    }
+   39|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/InsertStatement.swift:
+    1|       |//
+    2|       |//  SundeedInsertStatement.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/10/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class InsertStatement: Statement {
+   12|       |    private var tableName: String
+   13|      0|    private var keyValues: [(String, String?)] = []
+   14|      0|    init(with tableName: String) {
+   15|      0|        self.tableName = tableName
+   16|      0|    }
+   17|       |    @discardableResult
+   18|      0|    func add(key: String, value: String?) -> Self {
+   19|      0|        keyValues.append((key, value))
+   20|      0|        return self
+   21|      0|    }
+   22|      0|    func build() -> String {
+   23|      0|        var statement: String = "REPLACE INTO \(tableName) ("
+   24|      0|        addKeysAndValues(toStatement: &statement)
+   25|      0|        return statement
+   26|      0|    }
+   27|      0|    private func addKeysAndValues(toStatement statement: inout String) {
+   28|      0|        var valuesStatement: String = ") VALUES ("
+   29|      0|        for (index, (key, value)) in keyValues.enumerated() {
+   30|      0|            let value = value ?? ""
+   31|      0|            let quotation = getQuotation(forValue: value)
+   32|      0|            statement.append(key)
+   33|      0|            valuesStatement.append("\(quotation)\(value)\(quotation)")
+   34|      0|            let needed = isLastIndex(index: index, in: keyValues)
+   35|      0|            addSeparatorIfNeeded(separator: ", ",
+   36|      0|                                 forStatement: &statement,
+   37|      0|                                 needed: needed)
+   38|      0|            addSeparatorIfNeeded(separator: ", ",
+   39|      0|                                 forStatement: &valuesStatement,
+   40|      0|                                 needed: needed)
+   41|      0|        }
+   42|      0|        valuesStatement.append(");")
+   43|      0|        statement = "\(statement)\(valuesStatement)"
+   44|      0|    }
+   45|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/SelectStatement.swift:
+    1|       |//
+    2|       |//  SundeedSelectStatement.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/10/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class SelectStatement: Statement {
+   12|       |    private var tableName: String
+   13|      0|    private var filters: [SundeedExpression<Bool>] = []
+   14|       |    private var caseInSensitive: Bool = false
+   15|       |    private var orderByColumnName: String?
+   16|       |    private var isOrdered: Bool = false
+   17|       |    private var ascending: Bool = true
+   18|      0|    init(with tableName: String) {
+   19|      0|        self.tableName = tableName
+   20|      0|    }
+   21|       |    @discardableResult
+   22|      0|    func isCaseInsensitive(_ isCaseInsensitive: Bool) -> Self {
+   23|      0|        self.caseInSensitive = isCaseInsensitive
+   24|      0|        return self
+   25|      0|    }
+   26|       |    @discardableResult
+   27|      0|    func isAscending(_ isAscending: Bool) -> Self {
+   28|      0|        self.ascending = isAscending
+   29|      0|        return self
+   30|      0|    }
+   31|       |    @discardableResult
+   32|      0|    func isOrdered(_ isOrdered: Bool) -> Self {
+   33|      0|        self.isOrdered = isOrdered
+   34|      0|        return self
+   35|      0|    }
+   36|       |    @discardableResult
+   37|      0|    func orderBy(columnName: String?) -> Self {
+   38|      0|        orderByColumnName = columnName
+   39|      0|        return self
+   40|      0|    }
+   41|       |    @discardableResult
+   42|      0|    func withFilters(_ filters: SundeedExpression<Bool>?...) -> Self {
+   43|      0|        self.filters = filters.compactMap({$0})
+   44|      0|        return self
+   45|      0|    }
+   46|       |    @discardableResult
+   47|      0|    func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
+   48|      0|        self.filters = filters.compactMap({$0})
+   49|      0|        return self
+   50|      0|    }
+   51|      0|    func build() -> String {
+   52|      0|        var statement = "SELECT * FROM \(tableName)"
+   53|      0|        addFilters(toStatement: &statement)
+   54|      0|        addOrderBy(toStatement: &statement)
+   55|      0|        statement.append(";")
+   56|      0|        return statement
+   57|      0|    }
+   58|      0|    private func addFilters(toStatement statement: inout String) {
+   59|      0|        if !filters.isEmpty {
+   60|      0|            statement += " WHERE "
+   61|      0|            for (index, filter) in filters.enumerated() {
+   62|      0|                let whereStatement = filterToQuery(filter: filter)
+   63|      0|                statement.append(whereStatement)
+   64|      0|                addSeparatorIfNeeded(separator: " AND ",
+   65|      0|                                     forStatement: &statement,
+   66|      0|                                     needed: isLastIndex(index: index, in: filters))
+   67|      0|            }
+   68|      0|        }
+   69|      0|    }
+   70|      0|    private func addOrderBy(toStatement statement: inout String) {
+   71|      0|        statement.append(" ORDER BY ")
+   72|      0|        if isOrdered,
+   73|      0|            let orderByColumnName = orderByColumnName {
+   74|      0|            let quoations = getQuotation(forValue: orderByColumnName)
+   75|      0|            let condition = "\(quoations)\(orderByColumnName)\(quoations)"
+   76|      0|            statement.append(condition)
+   77|      0|        } else {
+   78|      0|            statement.append("\'SUNDEED_OFFLINE_ID\'")
+   79|      0|        }
+   80|      0|        addCaseInsensitive(toStatement: &statement)
+   81|      0|        let sorting = ascending ? " ASC" : " DESC"
+   82|      0|        statement.append(sorting)
+   83|      0|    }
+   84|      0|    private func addCaseInsensitive(toStatement statement: inout String) {
+   85|      0|        if caseInSensitive {
+   86|      0|            statement.append(" COLLATE NOCASE")
+   87|      0|        }
+   88|      0|    }
+   89|      0|    private func filterToQuery(filter: SundeedExpression<Bool>) -> String {
+   90|      0|        let template = filter.template
+   91|      0|        let binding = filter.bindings
+   92|      0|        let quotation = getQuotation(forValue: binding)
+   93|      0|        return "\(template) = \(quotation)\(binding)\(quotation)"
+   94|      0|    }
+   95|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/Statement.swift:
+    1|       |//
+    2|       |//  Statement.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/10/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class Statement {
+   12|       |    final func addSeparatorIfNeeded(separator: String,
+   13|       |                                    forStatement statement: inout String,
+   14|      0|                                    needed: Bool) {
+   15|      0|        statement.append(needed ? separator : "")
+   16|      0|    }
+   17|      0|    final func getQuotation(forValue value: String) -> String {
+   18|      0|        let characterSet = CharacterSet(charactersIn: "\'")
+   19|      0|        return value.rangeOfCharacter(from: characterSet) != nil ? "\"" : "\'"
+   20|      0|    }
+   21|      0|    final func isLastIndex<T>(index: Int, in array: [T]) -> Bool {
+   22|      0|        index != array.count - 1
+   23|      0|    }
+   24|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/StatementBuilder.swift:
+    1|       |//
+    2|       |//  SundeedStatements.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/9/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class StatementBuilder {
+   12|      0|    func createTableStatement(tableName: String) -> CreateTableStatement {
+   13|      0|        return CreateTableStatement(with: tableName)
+   14|      0|    }
+   15|      0|    func deleteStatement(tableName: String) -> DeleteStatement {
+   16|      0|        return DeleteStatement(with: tableName)
+   17|      0|    }
+   18|      0|    func insertStatement(tableName: String) -> InsertStatement {
+   19|      0|        return InsertStatement(with: tableName)
+   20|      0|    }
+   21|      0|    func updateStatement(tableName: String) -> UpdateStatement {
+   22|      0|        return UpdateStatement(with: tableName)
+   23|      0|    }
+   24|      0|    func selectStatement(tableName: String) -> SelectStatement {
+   25|      0|        return SelectStatement(with: tableName)
+   26|      0|    }
+   27|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Statements/UpdateStatement.swift:
+    1|       |//
+    2|       |//  SundeedUpdateStatement.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/10/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class UpdateStatement: Statement {
+   12|       |    private var tableName: String
+   13|      0|    private var keyValues: [(String, String)] = []
+   14|      0|    private var filters: [SundeedExpression<Bool>] = []
+   15|      0|    init(with tableName: String) {
+   16|      0|        self.tableName = tableName
+   17|      0|    }
+   18|       |    @discardableResult
+   19|      0|    func add(key: String, value: String) -> Self {
+   20|      0|        keyValues.append((key, value))
+   21|      0|        return self
+   22|      0|    }
+   23|       |    @discardableResult
+   24|      0|    func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
+   25|      0|        self.filters = filters.compactMap({$0})
+   26|      0|        return self
+   27|      0|    }
+   28|      0|    func build() -> String {
+   29|      0|        var statement = "UPDATE \(tableName) SET "
+   30|      0|        addKeyValues(toStatement: &statement)
+   31|      0|        addFilters(toStatement: &statement)
+   32|      0|        return statement
+   33|      0|    }
+   34|      0|    private func addKeyValues(toStatement statement: inout String) {
+   35|      0|        for (index, (key, value)) in keyValues.enumerated() {
+   36|      0|            let value = value
+   37|      0|            let quotation = getQuotation(forValue: value)
+   38|      0|            statement.append("\(key) = \(quotation)\(value)\(quotation)")
+   39|      0|            addSeparatorIfNeeded(separator: ", ",
+   40|      0|                                 forStatement: &statement,
+   41|      0|                                 needed: isLastIndex(index: index, in: keyValues))
+   42|      0|        }
+   43|      0|    }
+   44|      0|    private func addFilters(toStatement statement: inout String) {
+   45|      0|        statement.append(" WHERE ")
+   46|      0|        if !filters.isEmpty {
+   47|      0|            for (index, filter) in filters.enumerated() {
+   48|      0|                statement.append(filter.toQuery())
+   49|      0|                addSeparatorIfNeeded(separator: " AND ",
+   50|      0|                                     forStatement: &statement,
+   51|      0|                                     needed: isLastIndex(index: index, in: filters))
+   52|      0|            }
+   53|      0|        } else {
+   54|      0|            statement.append("1")
+   55|      0|        }
+   56|      0|    }
+   57|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/Sundeed.swift:
+    1|       |//
+    2|       |//  Sundeed.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 5/10/20.
+    6|       |//  Copyright © 2020 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import Foundation
+   10|       |
+   11|       |class Sundeed {
+   12|       |    static var shared: Sundeed = Sundeed()
+   13|      0|    final lazy var dateFormatter: DateFormatter = {
+   14|      0|        let dateFormatter: DateFormatter = DateFormatter()
+   15|      0|        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+   16|      0|        return dateFormatter
+   17|      0|    }()
+   18|      0|    var tables: [String] = []
+   19|      0|    final let backgroundQueue: DispatchQueue = DispatchQueue(
+   20|      0|        label: "globalBackgroundSyncronizeSharedData")
+   21|       |    /// VALUE
+   22|       |    final let valueColumnName: String = "VALUE"
+   23|       |    /// <null>
+   24|       |    final let databaseNull: String = "<null>"
+   25|       |    /// SUNDEED_UNIQUE_KEY
+   26|       |    final let primaryKey: String = "SUNDEED_UNIQUE_KEY"
+   27|       |    /// SUNDEED_FOREIGN_KEY
+   28|       |    final let foreignKey: String = "SUNDEED_FOREIGN_KEY"
+   29|       |    /// SUNDEED_FIELD_NAME_LINK
+   30|       |    final let fieldNameLink: String = "SUNDEED_FIELD_NAME_LINK"
+   31|       |    /// SUNDEED_OFFLINE_ID
+   32|       |    final let offlineID: String = "SUNDEED_OFFLINE_ID" 
+   33|       |    /// SUNDEED_FOREIGN|
+   34|       |    final let foreignPrefix: String = "SUNDEED_FOREIGN|"
+   35|       |    /// SUNDEED_PRIMITIVE_FOREIGN|
+   36|       |    final let foreignPrimitivePrefix: String = "SUNDEED_PRIMITIVE_FOREIGN|"
+   37|       |    /// SQLiteDB.sqlite
+   38|       |    final let databaseFileName: String = "SQLiteDB.sqlite"
+   39|       |    /// shouldCopyDatabaseToFilePath
+   40|       |    final let shouldCopyDatabaseToFilePathKey: String = "shouldCopyDatabaseToFilePath"
+   41|       |    /// SUNDEED_FOREIGN|#tableName#|#foreignKey#
+   42|       |    final func sundeedForeignValue(tableName: Any,
+   43|      0|                                   fieldNameLink: String) -> String {
+   44|      0|            return "\(foreignPrefix)\(tableName)|\(fieldNameLink)"
+   45|      0|    }
+   46|       |    /// SUNDEED_PRIMITIVE_FOREIGN|#tableName#
+   47|      0|    final func sundeedPrimitiveForeignValue(tableName: Any) -> String {
+   48|      0|        return "\(foreignPrimitivePrefix)\(tableName)"
+   49|      0|    }
+   50|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/SundeedQLiteConnection.swift:
+    1|       |//
+    2|       |//  SundeedQLiteConnection.swift
+    3|       |//  SQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 12/9/18.
+    6|       |//  Copyright © 2018 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |import SQLite3
+   11|       |
+   12|       |class SundeedQLiteConnection {
+   13|       |    static var pool: SundeedQLiteConnection = SundeedQLiteConnection()
+   14|      0|    var sqlStatements: [String] = []
+   15|       |    var canExecute: Bool = true
+   16|      0|    let fileManager = FileManager.default
+   17|      0|    let destPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+   18|      0|                                                       .userDomainMask,
+   19|      0|                                                       true).first!
+   20|       |    lazy var fullDestPath = NSURL(fileURLWithPath: destPath)
+   21|       |        .appendingPathComponent(Sundeed.shared.databaseFileName)
+   22|      0|    func getConnection(toWrite: Bool = false) throws -> OpaquePointer? {
+   23|      0|        moveDatabaseToFilePath()
+   24|      0|        let fileURL = try FileManager
+   25|      0|            .default.url(for: .documentDirectory,
+   26|      0|                         in: .userDomainMask,
+   27|      0|                         appropriateFor: nil,
+   28|      0|                         create: false)
+   29|      0|            .appendingPathComponent(Sundeed.shared.databaseFileName)
+   30|      0|        var database: OpaquePointer?
+   31|      0|        let flags = toWrite ?
+   32|      0|            SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX :
+   33|      0|            SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX
+   34|      0|        if sqlite3_open_v2(fileURL.path,
+   35|      0|                           &database,
+   36|      0|                           flags,
+   37|      0|                           nil) != SQLITE_OK {
+   38|      0|            throw SundeedQLiteError.errorInConnection
+   39|      0|        }
+   40|      0|        return database
+   41|      0|    }
+   42|      0|    func closeConnection(database: OpaquePointer?) {
+   43|      0|        let rc2 = sqlite3_close(database)
+   44|      0|        if rc2 == SQLITE_BUSY {
+   45|      0|            while let stmt = sqlite3_next_stmt(database, nil) {
+   46|      0|                sqlite3_finalize(stmt)
+   47|      0|            }
+   48|      0|            sqlite3_close(database)
+   49|      0|        }
+   50|      0|    }
+   51|      0|    func execute(query: String, force: Bool = false) {
+   52|      0|        Sundeed.shared.backgroundQueue.async {
+   53|      0|            do {
+   54|      0|                if self.canExecute || force {
+   55|      0|                    var writeConnection = try self.getConnection(toWrite: true)
+   56|      0|                    self.canExecute = false
+   57|      0|                    var statement: OpaquePointer?
+   58|      0|                    let prepare = sqlite3_prepare_v2(writeConnection, query, -1, &statement, nil)
+   59|      0|                    if  prepare == SQLITE_OK {
+   60|      0|                        if sqlite3_step(statement) == SQLITE_DONE {
+   61|      0|                            sqlite3_finalize(statement)
+   62|      0|                        } else {
+   63|      0|                            sqlite3_finalize(statement)
+   64|      0|                            self.sqlStatements.insert(query, at: 0)
+   65|      0|                        }
+   66|      0|                    } else {
+   67|      0|                        if prepare != SQLITE_ERROR {
+   68|      0|                            sqlite3_finalize(statement)
+   69|      0|                            self.sqlStatements.insert(query, at: 0)
+   70|      0|                        }
+   71|      0|                    }
+   72|      0|                    let oldQuery = self.sqlStatements.popLast()
+   73|      0|                    if oldQuery != nil {
+   74|      0|                        self.closeConnection(database: writeConnection)
+   75|      0|                        statement = nil
+   76|      0|                        writeConnection = nil
+   77|      0|                        self.execute(query: oldQuery!, force: true)
+   78|      0|                    } else {
+   79|      0|                        self.closeConnection(database: writeConnection)
+   80|      0|                        statement = nil
+   81|      0|                        writeConnection = nil
+   82|      0|                        self.canExecute = true
+   83|      0|                    }
+   84|      0|                } else {
+   85|      0|                    self.sqlStatements.insert(query, at: 0)
+   86|      0|                }
+   87|      0|            } catch {
+   88|      0|                self.sqlStatements.insert(query, at: 0)
+   89|      0|            }
+   90|      0|        }
+   91|      0|    }
+   92|      0|    func deleteDatabase() {
+   93|      0|        guard let fullDestinationPath = fullDestPath else { return }
+   94|      0|        UserDefaults.standard.set(true,
+   95|      0|                                  forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
+   96|      0|        self.sqlStatements.removeAll()
+   97|      0|        try? fileManager.removeItem(at: fullDestinationPath)
+   98|      0|    }
+   99|      0|    private func moveDatabaseToFilePath(force: Bool = false) {
+  100|      0|        if self.shouldCopyDatabaseToFilePath() || force {
+  101|      0|            guard let fullDestinationPath = fullDestPath else { return }
+  102|      0|            let fullDestPathString = fullDestPath!.path
+  103|      0|            if !fileManager.fileExists(atPath: fullDestPathString) {
+  104|      0|                try? "".write(to: fullDestinationPath, atomically: false, encoding: .utf8)
+  105|      0|                moveDatabaseToFilePath(force: true)
+  106|      0|            }
+  107|      0|        }
+  108|      0|    }
+  109|       |    /**  returns if we should copy the database to the files again */
+  110|      0|    private func shouldCopyDatabaseToFilePath() -> Bool {
+  111|      0|        let shouldCopy = (UserDefaults.standard
+  112|      0|        .value(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey) as? Bool) ?? true
+  113|      0|        if shouldCopy {
+  114|      0|            UserDefaults.standard
+  115|      0|                .set(false, forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
+  116|      0|            return true
+  117|      0|        }
+  118|      0|        return false
+  119|      0|    }
+  120|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/Library/Main/SundeedQLiterLibrary.swift:
+    1|       |//
+    2|       |//  SundeedQLiterLibrary.swift
+    3|       |//  SQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 12/9/18.
+    6|       |//  Copyright © 2018 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |import SQLite3
+   11|       |
+   12|       |/** Filter in local database */
+   13|    209|public func == (left: SundeedColumn, right: String) -> SundeedExpression<Bool>? {
+   14|    209|return SundeedExpression(left.value, right)
+   15|    209|}
+   16|       |infix operator <~
+   17|       |/** Setting variables in global update statement in local database */
+   18|      1|public func <~ (left: SundeedColumn, right: String) -> SundeedUpdateSetStatement {
+   19|      1|    return SundeedUpdateSetStatement(sundeedColumn: left, withValue: right as AnyObject)
+   20|      1|}
+   21|       |public class SundeedColumn {
+   22|       |    var value: String = ""
+   23|      0|    required public init(_ value: String) {
+   24|      0|        self.value = value
+   25|      0|    }
+   26|       |    public typealias StringLiteralType = String
+   27|       |}
+   28|       |/** SundeedColumn("columnName") == "value" */
+   29|       |public struct SundeedExpression<Bool> {
+   30|       |    public var template: String
+   31|       |    public var bindings: String
+   32|      0|    public init(_ template: String, _ bindings: String) {
+   33|      0|        self.template = template
+   34|      0|        self.bindings = bindings
+   35|      0|    }
+   36|      1|    public func toQuery() -> String {
+   37|      1|        return "\(self.template) = \"\(self.bindings)\""
+   38|      1|    }
+   39|       |}
+   40|       |/** SundeedColumn("columnName") <~ "value" */
+   41|       |public struct SundeedUpdateSetStatement {
+   42|       |    public var column: SundeedColumn
+   43|       |    public var value: AnyObject
+   44|      0|    public init(sundeedColumn column: SundeedColumn, withValue value: AnyObject) {
+   45|      0|        self.column = column
+   46|      0|        self.value = value
+   47|      0|    }
+   48|       |}
+   49|       |
+   50|       |extension UIImage {
+   51|     48|    static func fromDatatypeValue(filePath: String) -> UIImage? {
+   52|     48|        if let documentsDirectoryURL = FileManager
+   53|     48|            .default.urls(for: .documentDirectory,
+   54|     48|                          in: .userDomainMask)
+   55|     48|            .first {
+   56|      0|            let fileURL = documentsDirectoryURL.appendingPathComponent(filePath)
+   57|      0|            if FileManager.default.fileExists(atPath: fileURL.path),
+   58|     48|                let data = try? Data(contentsOf: fileURL) {
+   59|     48|                return  UIImage(data: data)
+   60|  18.4E|            }
+   61|  18.4E|        }
+   62|      0|        return nil
+   63|     48|    }
+   64|     81|    func dataTypeValue(forObjectID objectID: String) -> String {
+   65|     81|        guard let documentsDirectoryURL = FileManager
+   66|     81|            .default.urls(for: .documentDirectory,
+   67|     81|                          in: .userDomainMask)
+   68|     81|            .first else { fatalError() }
+   69|     81|        let fileURL = documentsDirectoryURL.appendingPathComponent("\(objectID).png")
+   70|     81|        try? self.pngData()?.write(to: fileURL)
+   71|     81|        return fileURL.lastPathComponent
+   72|     81|    }
+   73|       |}
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/SundeedQLiteLibrary/AppDelegate.swift:
+    1|       |//
+    2|       |//  AppDelegate.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 10/5/19.
+    6|       |//  Copyright © 2019 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |@UIApplicationMain
+   12|       |class AppDelegate: UIResponder, UIApplicationDelegate {
+   13|       |
+   14|       |    var window: UIWindow?
+   15|       |
+   16|       |
+   17|      1|    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+   18|      1|        return true
+   19|      1|    }
+   20|       |
+   21|       |}
+   22|       |
+
+/Users/noursandid/Desktop/LibraryGihub/SundeedQLite/SundeedQLiteLibrary/ViewController.swift:
+    1|       |//
+    2|       |//  ViewController.swift
+    3|       |//  SundeedQLiteLibrary
+    4|       |//
+    5|       |//  Created by Nour Sandid on 10/5/19.
+    6|       |//  Copyright © 2019 LUMBERCODE. All rights reserved.
+    7|       |//
+    8|       |
+    9|       |import UIKit
+   10|       |
+   11|       |class ViewController: UIViewController {
+   12|      1|    override func viewDidLoad() {
+   13|      1|        super.viewDidLoad()
+   14|      1|        
+   15|      1|    }
+   16|       |}
+
