@@ -24,7 +24,7 @@ jobs:
                 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  build test;
           fi
       after_success:
-        - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary';
+        - bash <(curl -s https://codecov.io/bash);
         - sleep 5
 
     - stage: Build Example
