@@ -24,7 +24,7 @@ jobs:
                 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
           fi
       after_success:
-        - bash <(curl -s https://codecov.io/bash) -J 'SundeedQLiteLibrary';
+        - bash <(curl -s https://codecov.io/bash) -J 'Library';
         - sleep 5
 
     - stage: Build Library
