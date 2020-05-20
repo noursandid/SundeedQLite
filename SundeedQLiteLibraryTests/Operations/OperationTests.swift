@@ -76,7 +76,7 @@ class OperationTests: XCTestCase {
     
     func testRetrieveWithFilter() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
                                         completion: { (allEmployers) in
                                             guard let employer = allEmployers.first else {
@@ -105,13 +105,13 @@ class OperationTests: XCTestCase {
     
     func testRetrieveWithSortingIntAsc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "str"
             employer2.integer = 2
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
                                             ascending: true,
                                             completion: { (allEmployers) in
@@ -124,18 +124,18 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingIntDesc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "stri"
             employer2.integer = 3
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
                                             ascending: false,
                                             completion: { (allEmployers) in
@@ -148,18 +148,18 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingStringAsc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "string2"
             employer2.integer = 2
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("string"),
                                             ascending: true,
                                             completion: { (allEmployers) in
@@ -172,18 +172,18 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingStringDesc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "string3"
             employer2.integer = 3
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting
                     .retrieve(orderBy: SundeedColumn("string"),
                               ascending: false,
@@ -201,19 +201,19 @@ class OperationTests: XCTestCase {
                     })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingDateAsc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "string2"
             employer2.integer = 2
             employer2.date = Date().addingTimeInterval(500)
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
                                             ascending: true,
                                             completion: { (allEmployers) in
@@ -226,19 +226,19 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingDateDesc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "string3"
             employer2.integer = 3
             employer2.date = Date().addingTimeInterval(500)
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
                                             ascending: false,
                                             completion: { (allEmployers) in
@@ -251,19 +251,19 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingEnumAsc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "string2"
             employer2.integer = 2
             employer2.type = .ceo
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
                                             ascending: true,
                                             completion: { (allEmployers) in
@@ -276,19 +276,19 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testRetrieveWithSortingEnumDesc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let employer2 = EmployerForTesting()
             employer2.fillData()
             employer2.string = "string3"
             employer2.integer = 3
             employer2.type = .ceo
             employer2.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
                                             ascending: false,
                                             completion: { (allEmployers) in
@@ -301,7 +301,7 @@ class OperationTests: XCTestCase {
                 })
             }
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testNoPrimaryForClassWithSubclass() {
@@ -309,13 +309,13 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithSubClass.fillData()
         classWithNoPrimaryWithSubClass.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithNoPrimaryWithSubClass.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testNoPrimaryForClassWithSubclassArray() {
@@ -323,13 +323,13 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithSubClassArray.fillData()
         classWithNoPrimaryWithSubClassArray.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithNoPrimaryWithSubClassArray.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testNoPrimaryForClassWithImage() {
@@ -337,13 +337,13 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithImage.fillData()
         classWithNoPrimaryWithImage.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithNoPrimaryWithImage.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testNoPrimaryForClassWithImageArray() {
@@ -352,14 +352,14 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithImageArray.fillData()
         classWithNoPrimaryWithImageArray.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithNoPrimaryWithImageArray.retrieve(completion: { (results) in
                 XCTAssertEqual(results.count, 1)
                 XCTAssert(results.first?.images == nil)
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testNoPrimaryForClassWithPrimitiveArray() {
@@ -367,13 +367,13 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithPrimitiveArray.fillData()
         classWithNoPrimaryWithPrimitiveArray.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithNoPrimaryWithPrimitiveArray.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testNoPrimaryForClassWithDate() {
@@ -381,13 +381,13 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithDate.fillData()
         classWithNoPrimaryWithDate.save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             ClassWithNoPrimaryWithDate.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
                 expectation.fulfill()
             })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testArraySaving() {
@@ -401,7 +401,7 @@ class OperationTests: XCTestCase {
         employer2.integer = 2
         [employer2,employer].save()
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             EmployerForTesting.retrieve(completion: { (allEmployers) in
                 guard let employer1 = allEmployers.first else {
                     XCTFail("Couldn't Retrieve From Database")

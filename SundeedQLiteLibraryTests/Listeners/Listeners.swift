@@ -64,10 +64,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             EmployerForTesting.retrieve(completion: { _ in })
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
         listener?.stop()
     }
     
