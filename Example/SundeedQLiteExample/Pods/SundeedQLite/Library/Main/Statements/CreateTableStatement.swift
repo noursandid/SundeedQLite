@@ -15,21 +15,18 @@ class CreateTableStatement {
     init(with tableName: String) {
         self.tableName = tableName
     }
-    
     @discardableResult
     func addColumn(with columnName: String) -> Self {
         columnNames.append(columnName)
         return self
     }
-    
     @discardableResult
     func withPrimaryKey() -> Self {
         self.hasPrimaryKey = true
         return self
     }
-    
     func build() -> String {
-        var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (SUNDEED_OFFLINE_ID INTEGER PRIMARY KEY, SUNDEED_FOREIGN_KEY TEXT"
+        var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (\(Sundeed.shared.offlineID) INTEGER PRIMARY KEY, \(Sundeed.shared.foreignKey) TEXT, \(Sundeed.shared.fieldNameLink) TEXT" 
         for columnName in columnNames {
             statement.append(",\(columnName) TEXT")
         }

@@ -1,7 +1,7 @@
 ![Sundeed](https://raw.githubusercontent.com/noursandid/SundeedQLite/master/SundeedLogo.png)
 
 # SundeedQLite
-[![Build Status](https://travis-ci.org/noursandid/SundeedQLite.svg?branch=master)](https://travis-ci.org/noursandid/SundeedQLite) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite) [![Language](https://img.shields.io/badge/Language-Swift-brightgreen)](https://github.com/apple/swift) [![Last Commit](https://img.shields.io/github/last-commit/noursandid/SundeedQLite?style=flat)](https://github.com/noursandid/SundeedQLite)
+[![Build Status](https://travis-ci.org/noursandid/SundeedQLite.svg?branch=master)](https://travis-ci.org/noursandid/SundeedQLite) [![codecov.io](https://codecov.io/gh/noursandid/SundeedQLite/branch/master/graph/badge.svg)](https://codecov.io/gh/noursandid/SundeedQLite/branch/master) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite) [![Language](https://img.shields.io/badge/Language-Swift-brightgreen)](https://github.com/apple/swift) [![Last Commit](https://img.shields.io/github/last-commit/noursandid/SundeedQLite?style=flat)](https://github.com/noursandid/SundeedQLite) [![HitCount](http://hits.dwyl.com/noursandid/SundeedQLite.svg?style=flat)](http://hits.dwyl.com/noursandid/SundeedQLite)
 
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
@@ -34,7 +34,8 @@ pod install
 - **<<** : It's used to mark the *ASCENDING* sorting method
 - **>>** : It's used to mark the *DESCENDING* sorting method
 - **<~>** : It's used to map between objects returned from the database to specific property
-- **<\*>** : It's used to state that if this property is returned nil from the database, The whole parent object shall be dropped.
+- **<\*>** : It's used to state that if this property is returned nil from the database, the whole parent object shall be dropped.
+- **<\*\*>** : It's used to state that if this array was empty, or one of the elements was mandatory ( **<\*>** ), the whole parent object shall be dropped
 
 *N.B:*
 - Primary keys should always be strings.
@@ -57,6 +58,19 @@ pod install
 - *Optional and non-optional values of the above mentioned types will also be saved*
 - *Arrays of objects or primitive data type will be saved*
 - *No nil returned value from the database shall be added to an array while retrieving*
+
+# Listeners
+To Listen to events happening you can always add any listener with a block of code to be executed when the event happens.
+
+### Supported Events
+- Save
+- Update
+- Retrieve
+- Delete
+- AllEvents
+
+*P.S:*
+Always remember to save an instance of this listener to stop it whenever it's not needed anymore.
 
 # Documentation
 ```swift
@@ -89,6 +103,7 @@ class Employee: SundeedQLiter {
 import UIKit
 
 class ViewController: UIViewController {
+    var employerSaveListener: Listener?
     override func viewDidLoad() {
         super.viewDidLoad()
         let employee = Employee()
@@ -98,11 +113,18 @@ class ViewController: UIViewController {
         employer.id = "ABCD-1234-EFGH-5678"
         employer.fullName = "Nour Sandid"
         employer.employees = [employee]
-
+        employerSaveListener = employer.onSaveEvents({ (object) in 
+            print(object.id)
+        })
         employer.save()
+    }
+    
+    deinit {
+        employerSaveListener.stop()
     }
 }
 ```
+
 ### Custom Types
 To save variables with custom types like enum or struct, you can use SundeedQLiteConverter
 ```swift
@@ -128,7 +150,6 @@ class Employer: SundeedQLiter {
     }
 }
 ```
-
 # CheatSheet
 ### To Save
 ```swift

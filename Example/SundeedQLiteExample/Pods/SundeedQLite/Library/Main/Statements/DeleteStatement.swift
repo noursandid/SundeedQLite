@@ -11,29 +11,19 @@ import Foundation
 class DeleteStatement: Statement {
     private var tableName: String
     private var filters: [SundeedExpression<Bool>] = []
-    
     init(with tableName: String) {
         self.tableName = tableName
     }
-    
-    @discardableResult
-    func withFilters(_ filters: SundeedExpression<Bool>?...) -> Self {
-        self.filters = filters.compactMap({$0})
-        return self
-    }
-    
     @discardableResult
     func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
         self.filters = filters.compactMap({$0})
         return self
     }
-    
     func build() -> String {
         var statement: String = "DELETE FROM \(tableName) WHERE "
         addFilters(forStatement: &statement)
         return statement
     }
-    
     private func addFilters(forStatement statement: inout String) {
         if !filters.isEmpty {
             for (index, filter) in filters.enumerated() {
