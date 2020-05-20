@@ -23,7 +23,7 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
     }
     
     override func tearDown() {
-        SundeedQLite.deleteDatabase()
+//        SundeedQLite.deleteDatabase()
         noPrimary = nil
         employerWithNoPrimary = nil
     }
