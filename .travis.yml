@@ -1,4 +1,4 @@
-language: ruby
+language: objective-c
 os: osx
 env:
   global:
@@ -9,7 +9,8 @@ env:
   - IOS_FRAMEWORK_SCHEME="SundeedQLiteLibrary"
   - EXAMPLE_SCHEME="SundeedQLiteExample"
 matrix:
-    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="YES"
+    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$IOS_FRAMEWORK_SCHEME" RUN_TESTS="YES" BUILD_EXAMPLE="NO" CODE_COV="YES"
+    - DESTINATION="OS=11.4,name=iPhone X" SCHEME="$EXAMPLE_SCHEME" RUN_TESTS="NO" BUILD_EXAMPLE="YES" CODE_COV="NO"
 jobs:
   include:
     - stage: Initialize
@@ -24,11 +25,6 @@ jobs:
                 xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES  build test;
           fi
       after_success:
-        - bash <(curl -s https://codecov.io/bash) -J 'Library';
-        - sleep 5
-
-    - stage: Build Example
-      script:
-          - if [ $BUILD_EXAMPLE == "YES" ]; then
-                      xcodebuild -workspace "$WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
-            fi
+        - if [ $CODE_COV == "YES" ]; then
+                bash <(curl -s https://codecov.io/bash) -J 'Library';
+          fi
