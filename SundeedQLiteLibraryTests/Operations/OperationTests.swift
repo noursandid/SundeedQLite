@@ -17,7 +17,8 @@ class OperationTests: XCTestCase {
     }
     override class func tearDown() {
         SundeedQLite.deleteDatabase()
-        UserDefaults.standard.removeObject(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
+        UserDefaults.standard
+            .removeObject(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
     }
     
     func testDeleting() {
@@ -25,11 +26,11 @@ class OperationTests: XCTestCase {
         employer?.save {
             do {
                 if try !(self.employer?.delete(completion: {
-                        EmployerForTesting.retrieve(completion: { (allEmployers) in
-                            XCTAssert(allEmployers.isEmpty)
-                            _ = try? self.employer?.delete()
-                            expectation.fulfill()
-                        })
+                    EmployerForTesting.retrieve(completion: { (allEmployers) in
+                        XCTAssert(allEmployers.isEmpty)
+                        _ = try? self.employer?.delete()
+                        expectation.fulfill()
+                    })
                 }) ?? false) {
                     XCTFail("Couldn't delete class")
                     expectation.fulfill()
@@ -105,24 +106,24 @@ class OperationTests: XCTestCase {
     
     func testRetrieveWithSortingIntAsc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Int ASC")
-            let employer2 = EmployerForTesting()
-            employer2.fillData()
-            employer2.string = "str"
-            employer2.integer = 2
-            [employer!, employer2].save {
-                EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
-                                            ascending: true,
-                                            completion: { (allEmployers) in
-                                                XCTAssertEqual(allEmployers.count, 2)
-                                                let firstEmployer = allEmployers[0]
-                                                let secondEmployer = allEmployers[1]
-                                                self.checkEmployer(firstEmployer)
-                                                XCTAssertEqual(secondEmployer.integer, 2)
-                                                expectation.fulfill()
-                                                _ = try? self.employer?.delete()
-                                                _ = try? employer2.delete()
-                })
-            }
+        let employer2 = EmployerForTesting()
+        employer2.fillData()
+        employer2.string = "str"
+        employer2.integer = 2
+        [employer!, employer2].save {
+            EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
+                                        ascending: true,
+                                        completion: { (allEmployers) in
+                                            XCTAssertEqual(allEmployers.count, 2)
+                                            let firstEmployer = allEmployers[0]
+                                            let secondEmployer = allEmployers[1]
+                                            self.checkEmployer(firstEmployer)
+                                            XCTAssertEqual(secondEmployer.integer, 2)
+                                            expectation.fulfill()
+                                            _ = try? self.employer?.delete()
+                                            _ = try? employer2.delete()
+            })
+        }
         wait(for: [expectation], timeout: 5)
     }
     
@@ -232,21 +233,21 @@ class OperationTests: XCTestCase {
         employer2.integer = 3
         employer2.date = Date().addingTimeInterval(500)
         [employer!, employer2].save {
-        EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
-                                    ascending: false,
-                                    completion: { (allEmployers) in
-                                        XCTAssertEqual(allEmployers.count, 2)
-                                        let firstEmployer = allEmployers[0]
-                                        let secondEmployer = allEmployers[1]
-                                        XCTAssertEqual(firstEmployer.integer, 3)
-                                        self.checkEmployer(secondEmployer)
-                                        expectation.fulfill()
-                                        _ = try? self.employer?.delete()
-                                        _ = try? employer2.delete()
-        })
+            EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
+                                        ascending: false,
+                                        completion: { (allEmployers) in
+                                            XCTAssertEqual(allEmployers.count, 2)
+                                            let firstEmployer = allEmployers[0]
+                                            let secondEmployer = allEmployers[1]
+                                            XCTAssertEqual(firstEmployer.integer, 3)
+                                            self.checkEmployer(secondEmployer)
+                                            expectation.fulfill()
+                                            _ = try? self.employer?.delete()
+                                            _ = try? employer2.delete()
+            })
+        }
+        wait(for: [expectation], timeout: 5)
     }
-    wait(for: [expectation], timeout: 5)
-}
     
     func testRetrieveWithSortingEnumAsc() {
         let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum ASC")
