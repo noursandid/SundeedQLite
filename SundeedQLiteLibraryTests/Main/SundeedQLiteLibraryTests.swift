@@ -122,7 +122,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
                 XCTFail("Wrong Error")
                 return
             }
-            XCTAssert(sundeedError.description == SundeedQLiteError.primaryKeyError(tableName: "ClassWithNoPrimary").description)
+            XCTAssertEqual(sundeedError.description, SundeedQLiteError.primaryKeyError(tableName: "ClassWithNoPrimary").description)
         }
     }
     
@@ -138,7 +138,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
                 XCTFail("Wrong Error")
                 return
             }
-            XCTAssert(sundeedError.description == SundeedQLiteError.noObjectPassed.description)
+            XCTAssertEqual(sundeedError.description, SundeedQLiteError.noObjectPassed.description)
         }
     }
 }

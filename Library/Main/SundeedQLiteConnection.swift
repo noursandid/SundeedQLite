@@ -11,7 +11,7 @@ import SQLite3
 
 class SundeedQLiteConnection {
     static var pool: SundeedQLiteConnection = SundeedQLiteConnection()
-    var sqlStatements: [String] = []
+    var sqlStatements: [(String, (()->Void)?)] = []
     var canExecute: Bool = true
     let fileManager = FileManager.default
     let destPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
@@ -45,10 +45,10 @@ class SundeedQLiteConnection {
             while let stmt = sqlite3_next_stmt(database, nil) {
                 sqlite3_finalize(stmt)
             }
-            sqlite3_close(database)
+            closeConnection(database: database)
         }
     }
-    func execute(query: String, force: Bool = false) {
+    func execute(query: String, force: Bool = false, completion: (()->Void)? = nil) {
         Sundeed.shared.backgroundQueue.async {
             do {
                 if self.canExecute || force {
@@ -61,31 +61,32 @@ class SundeedQLiteConnection {
                             sqlite3_finalize(statement)
                         } else {
                             sqlite3_finalize(statement)
-                            self.sqlStatements.insert(query, at: 0)
+                            self.sqlStatements.insert((query, completion), at: 0)
                         }
                     } else {
                         if prepare != SQLITE_ERROR {
                             sqlite3_finalize(statement)
-                            self.sqlStatements.insert(query, at: 0)
+                            self.sqlStatements.insert((query, completion), at: 0)
                         }
                     }
-                    let oldQuery = self.sqlStatements.popLast()
-                    if oldQuery != nil {
+                    let combination = self.sqlStatements.popLast()
+                    if let oldQuery = combination?.0 {
                         self.closeConnection(database: writeConnection)
                         statement = nil
                         writeConnection = nil
-                        self.execute(query: oldQuery!, force: true)
+                        self.execute(query: oldQuery, force: true, completion: combination?.1)
                     } else {
+                        completion?()
                         self.closeConnection(database: writeConnection)
                         statement = nil
                         writeConnection = nil
                         self.canExecute = true
                     }
                 } else {
-                    self.sqlStatements.insert(query, at: 0)
+                    self.sqlStatements.insert((query, completion), at: 0)
                 }
             } catch {
-                self.sqlStatements.insert(query, at: 0)
+                self.sqlStatements.insert((query, completion), at: 0)
             }
         }
     }

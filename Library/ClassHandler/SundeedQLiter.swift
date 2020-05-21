@@ -27,23 +27,30 @@ extension SundeedQLiter {
         return "\(type(of: self))"
     }
     /** saves the object locally */
-    public func save(withForeignKey foreignKey: String? = nil) {
-        SundeedQLite.instance.save(objects: [self], withForeignKey: foreignKey)
-        SundeedQLite.notify(for: self, operation: .save)
+    public func save(withForeignKey foreignKey: String? = nil,
+                     completion: (()->Void)? = nil) {
+        SundeedQLite.instance.save(objects: [self], withForeignKey: foreignKey,
+                                   completion: {
+                                    SundeedQLite.notify(for: self, operation: .save)
+                                    completion?()
+        })
     }
     /** deletes the object locally */
     @discardableResult
-    public func delete() throws -> Bool {
-        let result = try SundeedQLite.instance.deleteFromDB(object: self)
-        if result {
-            SundeedQLite.notify(for: self, operation: .delete)
-        }
+    public func delete(completion: (()->Void)? = nil) throws -> Bool {
+        let result = try SundeedQLite.instance.deleteFromDB(object: self,
+                                                            completion: {
+                 SundeedQLite.notify(for: self, operation: .delete)
+                        completion?()
+        })
         return result
     }
     /** updates the object locally */
-    public func update(columns: SundeedColumn...) throws {
+    public func update(columns: SundeedColumn..., completion: (()->Void)? = nil) throws {
         SundeedQLite.notify(for: self, operation: .update)
-        try SundeedQLite.instance.update(object: self, columns: columns)
+        try SundeedQLite.instance.update(object: self,
+                                         columns: columns,
+                                         completion: completion)
     }
     /** retrieves asynchrously all the occurences of a specific class, or add a filter
      - author:
@@ -70,13 +77,20 @@ extension SundeedQLiter {
         })
     }
     /** deletes all the objects of this type locally */
-    public static func delete(withFilter filters: SundeedExpression<Bool>...) {
-        SundeedQLite.instance.deleteAllFromDB(forClass: self, withFilters: filters)
+    public static func delete(withFilter filters: SundeedExpression<Bool>...,
+        completion: (()->Void)? = nil) {
+        SundeedQLite.instance.deleteAllFromDB(forClass: self,
+                                              withFilters: filters,
+                                              completion: completion)
     }
     /** updates specific columns of all objects of this class, or objects with a specific criteria */
     public static func update(changes: SundeedUpdateSetStatement...,
-                              withFilter filter: SundeedExpression<Bool>? = nil) throws {
-        try SundeedQLite.instance.update(forClass: self, changes: changes, withFilter: filter)
+                              withFilter filter: SundeedExpression<Bool>? = nil,
+                              completion: (()->Void)? = nil) throws {
+        try SundeedQLite.instance.update(forClass: self,
+                                         changes: changes,
+                                         withFilter: filter,
+                                         completion: completion)
     }
     func toObjectWrapper() -> ObjectWrapper {
         let map = SundeedQLiteMap(fetchingColumns: true)
@@ -111,8 +125,10 @@ extension SundeedQLiter {
 
 extension Array where Element: SundeedQLiter {
     /** saves the object locally */
-    public func save() {
-        SundeedQLite.instance.save(objects: self)
+    public func save(completion: (()->Void)? = nil) {
+        SundeedQLite.instance.save(objects: self, completion: {
+            completion?()
+        })
     }
 }
 
