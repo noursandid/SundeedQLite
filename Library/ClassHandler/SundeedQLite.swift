@@ -110,17 +110,21 @@ public class SundeedQLite {
 
 // Save
 extension SundeedQLite {
-    func save(objects: [SundeedQLiter], withForeignKey foreignKey: String? = nil) {
+    func save(objects: [SundeedQLiter], withForeignKey foreignKey: String? = nil,
+              completion: (()->Void)?) {
         let objectWrappers: [ObjectWrapper] = objects.compactMap({$0.toObjectWrapper()})
         Processor()
             .saveProcessor
-            .save(objects: objectWrappers, withForeignKey: foreignKey)
+            .save(objects: objectWrappers, withForeignKey: foreignKey, completion: {
+                completion?()
+            })
     }
 }
 
 // Update
 extension SundeedQLite {
-    func update<T: SundeedQLiter>(object: T, columns: [SundeedColumn]) throws {
+    func update<T: SundeedQLiter>(object: T, columns: [SundeedColumn],
+                                  completion: (() -> Void)?) throws {
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
         if let primaryValue = map.columns[Sundeed.shared.primaryKey] as? String {
@@ -128,14 +132,16 @@ extension SundeedQLite {
                 .updateProcessor
                 .update(objectWrapper: object.toObjectWrapper(),
                         columns: columns,
-                        withFilters: [SundeedColumn(Sundeed.shared.primaryKey) == primaryValue])
+                        withFilters: [SundeedColumn(Sundeed.shared.primaryKey) == primaryValue],
+                        completion: completion)
         } else {
             throw SundeedQLiteError.primaryKeyError(tableName: object.getTableName())
         }
     }
     func update<T: SundeedQLiter>(forClass sundeedClass: T.Type,
                                   changes: [SundeedUpdateSetStatement],
-                                  withFilter filters: SundeedExpression<Bool>?...) throws {
+                                  withFilter filters: SundeedExpression<Bool>?...,
+        completion: (()->Void)?) throws {
         let map = SundeedQLiteMap(fetchingColumns: true)
         let object = sundeedClass.init()
         object.sundeedQLiterMapping(map: map)
@@ -151,7 +157,8 @@ extension SundeedQLite {
             .updateProcessor
             .update(objectWrapper: wrapper,
                     columns: columns,
-                    withFilters: filters)
+                    withFilters: filters,
+                    completion: completion)
     }
 }
 
@@ -230,11 +237,13 @@ extension SundeedQLite {
 
 // Delete
 extension SundeedQLite {
-    func deleteFromDB<T: SundeedQLiter>(object: T) throws -> Bool {
+    func deleteFromDB<T: SundeedQLiter>(object: T,
+                                        completion: (()->Void)? = nil) throws -> Bool {
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
         guard map.hasPrimaryKey,
             let primaryValue = map.columns[map.primaryKey] as? String else {
+                completion?()
                 throw SundeedQLiteError
                     .primaryKeyError(tableName: object.getTableName())
         }
@@ -242,21 +251,26 @@ extension SundeedQLite {
         Processor()
             .saveProcessor
             .deleteFromDB(tableName: object.getTableName(),
-                          withFilters: [filter])
+                          withFilters: [filter],
+                          completion: {
+                            SundeedQLite.notify(for: object, operation: .delete)
+                            completion?()
+            })
         SundeedQLiteMap.removeReference(value: primaryValue as AnyObject,
                                         andClassName: "\(T.self)")
-        SundeedQLite.notify(for: object, operation: .delete)
         return true
     }
     func deleteAllFromDB<T: SundeedQLiter>(forClass sundeedClass: T.Type,
-                                           withFilters filters: [SundeedExpression<Bool>?]) {
+                                           withFilters filters: [SundeedExpression<Bool>?],
+                                           completion: (()->Void)? = nil) {
         let object = sundeedClass.init()
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
         Processor()
             .saveProcessor
             .deleteFromDB(tableName: object.getTableName(),
-                          withFilters: filters)
+                          withFilters: filters,
+                          completion: completion)
     }
     public static func deleteDatabase() {
         Sundeed.shared.tables.removeAll()

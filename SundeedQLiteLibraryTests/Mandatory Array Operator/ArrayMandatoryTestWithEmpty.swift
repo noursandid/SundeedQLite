@@ -12,13 +12,12 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
     func testClassContainingAMandatoryArrayWithEmpty() {
         let mainClass = ClassContainingAMandatoryArrayWithEmpty()
         mainClass.mandatoryClasses = [MandatoryClass()]
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithEmpty")
+        mainClass.save {
             ClassContainingAMandatoryArrayWithEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassContainingAMandatoryArrayWithEmpty.delete()
                 expectation.fulfill()
+                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -26,13 +25,12 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
     
     func testClassContainingAMandatoryOptionalArrayWithEmpty() {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithEmpty()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithEmpty")
+        mainClass.save {
             ClassContainingAMandatoryOptionalArrayWithEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassContainingAMandatoryOptionalArrayWithEmpty.delete()
                 expectation.fulfill()
+                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -41,13 +39,12 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
     func testClassContainingAMandatoryOptionalArrayWithOptionalEmpty() {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalEmpty()
         mainClass.mandatoryClasses = []
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithOptionalEmpty")
+        mainClass.save {
             ClassContainingAMandatoryOptionalArrayWithOptionalEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassContainingAMandatoryOptionalArrayWithOptionalEmpty.delete()
                 expectation.fulfill()
+                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -56,13 +53,12 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
     func testClassContainingAMandatoryArrayWithOptionalEmpty() {
         let mainClass = ClassContainingAMandatoryArrayWithOptionalEmpty()
         mainClass.mandatoryClasses = [MandatoryClass()]
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithOptionalEmpty")
+        mainClass.save {
             ClassContainingAMandatoryArrayWithOptionalEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassContainingAMandatoryArrayWithOptionalEmpty.delete()
                 expectation.fulfill()
+                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)

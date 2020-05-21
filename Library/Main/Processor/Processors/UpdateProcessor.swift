@@ -11,7 +11,9 @@ import UIKit
 class UpdateProcessor {
     func update(objectWrapper: ObjectWrapper,
                 columns: [SundeedColumn],
-                withFilters filters: [SundeedExpression<Bool>?]) throws {
+                withFilters filters: [SundeedExpression<Bool>?],
+                completion: (()->Void)?) throws {
+        var depth: Int = 1
         try Processor()
             .createTableProcessor
             .createTableIfNeeded(for: objectWrapper)
@@ -31,11 +33,16 @@ class UpdateProcessor {
                 if let attribute = attribute as? ObjectWrapper,
                     let className = attribute.className {
                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                        depth += 1
                         self.saveForeignObjects(attributes: [attribute],
                                                 primaryValue: primaryValue,
                                                 column: column,
                                                 className: className,
-                                                updateStatement: updateStatement)
+                                                updateStatement: updateStatement,
+                                                completion: {
+                                                    depth = self.completionIfNeeded(depth: depth,
+                                                                            completion: completion)
+                        })
                     }
                 } else if let attributes = attribute as? [ObjectWrapper?] {
                     if let firstAttribute = attributes.first as? ObjectWrapper,
@@ -45,7 +52,11 @@ class UpdateProcessor {
                                                     primaryValue: primaryValue,
                                                     column: column,
                                                     className: className,
-                                                    updateStatement: updateStatement)
+                                                    updateStatement: updateStatement,
+                                                                            completion: {
+                                                                                depth = self.completionIfNeeded(depth: depth,
+                                                                                                        completion: completion)
+                                                    })
                         }
                     }
                 } else if let attribute = attribute as? UIImage {
@@ -63,21 +74,31 @@ class UpdateProcessor {
                     let attributes = attributes.compactMap({$0})
                     if !attributes.isEmpty {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                            depth += 1
                             self.saveArrayOfImages(attributes: attributes,
                                                    primaryValue: primaryValue,
                                                    column: column,
-                                                   updateStatement: updateStatement)
+                                                   updateStatement: updateStatement,
+                                                                           completion: {
+                                                                               depth = self.completionIfNeeded(depth: depth,
+                                                                                                       completion: completion)
+                                                   })
                         }
                     }
                 } else if let attributes = attribute as? [Any] {
                     let attributes = attributes.compactMap({$0})
                     if !attributes.isEmpty {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                            depth += 1
                             Processor()
                                 .saveProcessor
                                 .saveArrayOfPrimitives(tableName: column.value,
                                                        objects: attributes,
-                                                       withForeignKey: primaryValue)
+                                                       withForeignKey: primaryValue,
+                                                                               completion: {
+                                                                                   depth = self.completionIfNeeded(depth: depth,
+                                                                                                           completion: completion)
+                                                       })
                             updateStatement
                                 .add(key: column.value,
                                      value: Sundeed.shared
@@ -95,6 +116,7 @@ class UpdateProcessor {
                     }
                 }
             } else {
+                completion?()
                 throw SundeedQLiteError
                     .noColumnWithThisName(tableName: objectWrapper.tableName,
                                           columnName: column.value)
@@ -102,13 +124,17 @@ class UpdateProcessor {
         }
         updateStatement.withFilters(filters)
         let query = updateStatement.build()
-        SundeedQLiteConnection.pool.execute(query: query)
+        SundeedQLiteConnection.pool.execute(query: query, completion:
+            {
+                depth = self.completionIfNeeded(depth: depth, completion: completion)
+        })
     }
     
     func saveArrayOfImages(attributes: [UIImage],
                            primaryValue: String,
                            column: SundeedColumn,
-                           updateStatement: UpdateStatement) {
+                           updateStatement: UpdateStatement,
+                           completion: (()->Void)?) {
             let attributes: [String] = attributes.enumerated()
                 .map({
                     let index = $0
@@ -120,7 +146,8 @@ class UpdateProcessor {
                 .saveProcessor
                 .saveArrayOfPrimitives(tableName: column.value,
                                        objects: attributes,
-                                       withForeignKey: primaryValue)
+                                       withForeignKey: primaryValue,
+                                       completion: completion)
             updateStatement
                 .add(key: column.value,
                      value: Sundeed.shared
@@ -132,17 +159,27 @@ class UpdateProcessor {
                             primaryValue: String,
                             column: SundeedColumn,
                             className: String,
-                            updateStatement: UpdateStatement) {
+                            updateStatement: UpdateStatement,
+                            completion: (()->Void)?) {
         Processor()
             .saveProcessor
             .save(objects: attributes.compactMap({$0}),
                   withForeignKey: primaryValue,
-                  withFieldNameLink: column.value)
+                  withFieldNameLink: column.value,
+                  completion: completion)
         
         updateStatement
             .add(key: column.value,
                  value: Sundeed.shared
                     .sundeedForeignValue(tableName: className,
                                          fieldNameLink: column.value))
+    }
+    
+    private func completionIfNeeded(depth: Int, completion: (()->Void)?) -> Int {
+        let depth = depth - 1
+        if depth <= 0 {
+            completion?()
+        }
+        return depth
     }
 }

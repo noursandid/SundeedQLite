@@ -16,7 +16,6 @@ class UpdateTests: XCTestCase {
         EmployerForTesting.delete()
         EmployeeForTesting.delete()
         employer?.fillData()
-        employer?.save()
     }
     override class func tearDown() {
         SundeedQLite.deleteDatabase()
@@ -25,11 +24,10 @@ class UpdateTests: XCTestCase {
     
     func testGlobalUpdate() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        employer?.save {
             do {
                 try EmployerForTesting.update(changes: SundeedColumn("optionalString") <~ "test",
-                                              withFilter: SundeedColumn("string") == "string")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                              withFilter: SundeedColumn("string") == "string")  {
                     EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
                                                 completion: { (allEmployers) in
                                                     guard let employer = allEmployers.first else {
@@ -50,7 +48,7 @@ class UpdateTests: XCTestCase {
     
     func testUpdate() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        employer?.save {
             do {
                 self.employer?.optionalString = "test"
                 self.employer?.object.firstName = "testtt"
@@ -69,8 +67,7 @@ class UpdateTests: XCTestCase {
                                           SundeedColumn("nilImage"),
                                           SundeedColumn("nilDate"),
                                           SundeedColumn("arrayOfObjects")
-                )
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                )  {
                     EmployerForTesting.retrieve(completion: { (allEmployers) in
                         guard let employer1 = allEmployers.first else {
                             XCTFail("Couldn't Retrieve From Database")

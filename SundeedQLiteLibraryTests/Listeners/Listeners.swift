@@ -13,8 +13,7 @@ class Listeners: XCTestCase {
     var employer: EmployerForTesting? = EmployerForTesting()
     
     override func setUp() {
-        EmployerForTesting.delete()
-        EmployeeForTesting.delete()
+        _ = try? employer?.delete()
         employer?.fillData()
     }
     
@@ -24,29 +23,29 @@ class Listeners: XCTestCase {
     }
     
     func testSpecificOnAllEventsListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "SpecificOnAllEventsListener")
         let listener = self.employer?.onAllEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
         employer?.save()
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
     
     func testSpecificOnSaveListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "SpecificOnSaveListener")
         let listener = self.employer?.onSaveEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
         employer?.save()
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
     
     func testSpecificOnUpdateListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "SpecificOnUpdateListener")
         let listener = self.employer?.onUpdateEvents({ (object) in
             XCTAssertEqual(object.string, "test")
             expectation.fulfill()
@@ -58,14 +57,13 @@ class Listeners: XCTestCase {
     }
     
     func testSpecificOnRetrieveListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "SpecificOnRetrieveListener")
         let listener = self.employer?.onRetrieveEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.employer?.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        EmployerForTesting.delete {
+            self.employer?.save {
                 EmployerForTesting.retrieve(completion: { _ in })
             }
         }
@@ -74,41 +72,43 @@ class Listeners: XCTestCase {
     }
     
     func testSpecificOnDeleteListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "SpecificOnDeleteListener")
         let listener = self.employer?.onDeleteEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
         let _ = try? employer?.delete()
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
     
     
     func testGlobalOnAllEventsListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "GlobalOnAllEventsListener")
         let listener = EmployerForTesting.onAllEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        employer?.save()
-        wait(for: [expectation], timeout: 0.1)
+        EmployerForTesting.delete {
+            self.employer?.save()
+        }
+        wait(for: [expectation], timeout: 1)
         listener.stop()
     }
     
     func testGlobalOnSaveListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "GlobalOnSaveListener")
         let listener = EmployerForTesting.onSaveEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
         employer?.save()
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [expectation], timeout: 1)
         listener.stop()
     }
     
     func testGlobalOnUpdateListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "GlobalOnUpdateListener")
         let listener = EmployerForTesting.onUpdateEvents({ (object) in
             XCTAssertEqual(object.string, "test")
             expectation.fulfill()
@@ -120,14 +120,13 @@ class Listeners: XCTestCase {
     }
     
     func testGlobalOnRetrieveListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "GlobalOnRetrieveListener")
         let listener = EmployerForTesting.onRetrieveEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.employer?.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        EmployerForTesting.delete {
+            self.employer?.save {
                 EmployerForTesting.retrieve(completion: { _ in })
             }
         }
@@ -136,13 +135,12 @@ class Listeners: XCTestCase {
     }
     
     func testGlobalOnDeleteListener() {
-        let expectation = XCTestExpectation(description: "Deleted Retrieve Employer")
+        let expectation = XCTestExpectation(description: "GlobalOnDeleteListener")
         let listener = EmployerForTesting.onDeleteEvents({ (object) in
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        let _ = try? employer?.delete()
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [expectation], timeout: 1)
         listener.stop()
     }
 }

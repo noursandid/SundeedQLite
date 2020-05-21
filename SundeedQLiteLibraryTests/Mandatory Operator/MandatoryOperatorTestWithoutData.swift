@@ -14,12 +14,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalString() {
         let mainClass = ClassWithMandatoryOptionalString()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalString")
+        mainClass.save {
             ClassWithMandatoryOptionalString.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalString.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -28,12 +27,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalInt() {
         let mainClass = ClassWithMandatoryOptionalInt()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalInt")
+        mainClass.save {
             ClassWithMandatoryOptionalInt.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalInt.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -42,12 +40,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalDate() {
         let mainClass = ClassWithMandatoryOptionalDate()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalDate")
+        mainClass.save {
             ClassWithMandatoryOptionalDate.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalDate.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -56,12 +53,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalDouble() {
         let mainClass = ClassWithMandatoryOptionalDouble()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalDouble")
+        mainClass.save {
             ClassWithMandatoryOptionalDouble.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalDouble.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -70,12 +66,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalFloat() {
         let mainClass = ClassWithMandatoryOptionalFloat()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalFloat")
+        mainClass.save {
             ClassWithMandatoryOptionalFloat.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalFloat.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -84,12 +79,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalImage() {
         let mainClass = ClassWithMandatoryOptionalImage()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalImage")
+        mainClass.save {
             ClassWithMandatoryOptionalImage.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalImage.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -98,12 +92,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfImages() {
         let mainClass = ClassWithMandatoryOptionalArrayOfImages()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfImages")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfImages.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfImages.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -112,12 +105,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalImages() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalImages()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalImages")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalImages.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfOptionalImages.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -126,12 +118,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfFloats() {
         let mainClass = ClassWithMandatoryOptionalArrayOfFloats()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfFloats")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfFloats.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfFloats.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -140,12 +131,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalFloats() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalFloats()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalFloats")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalFloats.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfOptionalFloats.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -154,12 +144,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfDoubles() {
         let mainClass = ClassWithMandatoryOptionalArrayOfDoubles()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfDoubles")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfDoubles.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfDoubles.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -168,12 +157,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalDoubles() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalDoubles()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalDoubles")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalDoubles.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfOptionalDoubles.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -182,12 +170,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfInts() {
         let mainClass = ClassWithMandatoryOptionalArrayOfInts()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfInts")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfInts.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfInts.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -196,12 +183,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalInts() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalInts()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalInts")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalInts.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfOptionalInts.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -210,12 +196,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfStrings() {
         let mainClass = ClassWithMandatoryOptionalArrayOfStrings()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfStrings")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfStrings.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfStrings.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -224,12 +209,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalStrings() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalStrings()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalStrings")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalStrings.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfOptionalStrings.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -238,12 +222,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfObjects() {
         let mainClass = ClassWithMandatoryOptionalArrayOfObjects()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfObjects")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfObjects.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfObjects.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -252,12 +235,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalObjects() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalObjects()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalObjects")
+        mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalObjects.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalArrayOfOptionalObjects.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -266,12 +248,11 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
     
     func testClassWithMandatoryOptionalObjects() {
         let mainClass = ClassWithMandatoryOptionalObjects()
-        mainClass.save()
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalObjects")
+        mainClass.save {
             ClassWithMandatoryOptionalObjects.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassWithMandatoryOptionalObjects.delete()
+                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
