@@ -45,7 +45,7 @@ class SundeedQLiteConnection {
             while let stmt = sqlite3_next_stmt(database, nil) {
                 sqlite3_finalize(stmt)
             }
-            sqlite3_close(database)
+            closeConnection(database: database)
         }
     }
     func execute(query: String, force: Bool = false, completion: (()->Void)? = nil) {

@@ -121,12 +121,14 @@ class RetrieveProcessor {
                         }
                     }
                 }
+            SundeedQLiteConnection.pool.closeConnection(database: database)
                 return array
             }
+        SundeedQLiteConnection.pool.closeConnection(database: database)
         return nil
     }
     func getDatabaseColumns(forTable table: String) -> [Int: String] {
-        let database = try? SundeedQLiteConnection.pool.getConnection(toWrite: true)
+        let database = try? SundeedQLiteConnection.pool.getConnection(toWrite: false)
         var columnsStatement: OpaquePointer?
         var array: [String] = []
         var dictionary: [Int: String] = [:]
