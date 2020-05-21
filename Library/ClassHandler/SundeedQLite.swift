@@ -252,10 +252,7 @@ extension SundeedQLite {
             .saveProcessor
             .deleteFromDB(tableName: object.getTableName(),
                           withFilters: [filter],
-                          completion: {
-                            SundeedQLite.notify(for: object, operation: .delete)
-                            completion?()
-            })
+                          completion: completion)
         SundeedQLiteMap.removeReference(value: primaryValue as AnyObject,
                                         andClassName: "\(T.self)")
         return true
