@@ -10,65 +10,48 @@ import XCTest
 @testable import SundeedQLiteLibrary
 
 class SundeedQLiteErrorTests: XCTestCase {
-    var employer: EmployerForTesting?
     var error: SundeedQLiteError?
-
-    override func setUp() {
-        employer = EmployerForTesting()
-        employer?.fillData()
-    }
     
     override func tearDown() {
         SundeedQLite.deleteDatabase()
         error = nil
-        employer = nil
     }
 
     func testPrimaryKeyError() {
-        guard let employer = employer else {
-            XCTFail("Employer nil")
-            return
-        }
+        let employer = EmployerForTesting()
+        employer.fillData()
         error = .primaryKeyError(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n No Primary Key \n - To add a primary key add a '+' sign in the mapping function in the class after the designated primary map \n  e.g: self.id = map[\"ID\"]+"
         XCTAssertEqual(error?.description, errorString)
     }
     
     func testUnsupportedTypeError() {
-        guard let employer = employer else {
-            XCTFail("Employer nil")
-            return
-        }
+        let employer = EmployerForTesting()
+        employer.fillData()
         error = .unsupportedType(tableName: employer.getTableName(), attribute: "Test")
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Unsupported Type Test \n - Try to change the type of this attribute, or send us a suggestion so we can add it"
         XCTAssertEqual(error?.description, errorString)
     }
     
     func testNoColumnWithThisNameError() {
-        guard let employer = employer else {
-            XCTFail("Employer nil")
-            return
-        }
+        let employer = EmployerForTesting()
+        employer.fillData()
         error = .noColumnWithThisName(tableName: employer.getTableName(), columnName: "Test")
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n No Column With Title Test \n - Try to change the column name and try again"
         XCTAssertEqual(error?.description, errorString)
     }
     
     func testCantUseNameIndexError() {
-        guard let employer = employer else {
-            XCTFail("Employer nil")
-            return
-        }
+        let employer = EmployerForTesting()
+        employer.fillData()
         error = .cantUseNameIndex(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Unsupported column name \"index\" because it is reserved \n - Try to change it and try again"
         XCTAssertEqual(error?.description, errorString)
     }
     
     func testNoChangesMadeError() {
-        guard let employer = employer else {
-            XCTFail("Employer nil")
-            return
-        }
+        let employer = EmployerForTesting()
+        employer.fillData()
         error = .noChangesMade(tableName: employer.getTableName())
         let errorString = "SundeedQLiteError with class \(employer.getTableName()): \n Trying to perform global update statement with no changes \n - Try to add some changes and try again"
         XCTAssertEqual(error?.description, errorString)

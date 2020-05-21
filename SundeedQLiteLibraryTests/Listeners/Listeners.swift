@@ -13,7 +13,6 @@ class Listeners: XCTestCase {
     var employer: EmployerForTesting? = EmployerForTesting()
     
     override func setUp() {
-        _ = try? employer?.delete()
         employer?.fillData()
     }
     
@@ -28,7 +27,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        employer?.save()
+        EmployerForTesting.delete {
+            self.employer?.save()
+        }
         wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
@@ -39,7 +40,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        employer?.save()
+        EmployerForTesting.delete {
+            self.employer?.save()
+        }
         wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
@@ -50,8 +53,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "test")
             expectation.fulfill()
         })
-        employer?.string = "test"
-        try? employer?.update(columns: SundeedColumn("string"))
+        self.employer?.save() {
+            self.employer?.string = "test"
+            try? self.employer?.update(columns: SundeedColumn("string"))
+        }
         wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
@@ -77,7 +82,7 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        let _ = try? employer?.delete()
+        _ = try? employer?.delete()
         wait(for: [expectation], timeout: 1)
         listener?.stop()
     }
@@ -102,7 +107,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        employer?.save()
+        EmployerForTesting.delete {
+            self.employer?.save()
+        }
         wait(for: [expectation], timeout: 1)
         listener.stop()
     }
@@ -113,8 +120,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "test")
             expectation.fulfill()
         })
-        employer?.string = "test"
-        try? employer?.update(columns: SundeedColumn("string"))
+        employer?.save {
+            self.employer?.string = "test"
+            try? self.employer?.update(columns: SundeedColumn("string"))
+        }
         wait(for: [expectation], timeout: 1)
         listener.stop()
     }
@@ -140,6 +149,7 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
+        _ = try? self.employer?.delete()
         wait(for: [expectation], timeout: 1)
         listener.stop()
     }
