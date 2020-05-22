@@ -30,7 +30,7 @@ class Listeners: XCTestCase {
         EmployerForTesting.delete {
             self.employer?.save()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener?.stop()
     }
     
@@ -43,7 +43,7 @@ class Listeners: XCTestCase {
         EmployerForTesting.delete {
             self.employer?.save()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener?.stop()
     }
     
@@ -57,7 +57,7 @@ class Listeners: XCTestCase {
             self.employer?.string = "test"
             try? self.employer?.update(columns: SundeedColumn("string"))
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener?.stop()
     }
     
@@ -83,7 +83,7 @@ class Listeners: XCTestCase {
             expectation.fulfill()
         })
         _ = try? employer?.delete()
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener?.stop()
     }
     
@@ -97,7 +97,7 @@ class Listeners: XCTestCase {
         EmployerForTesting.delete {
             self.employer?.save()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener.stop()
     }
     
@@ -110,7 +110,7 @@ class Listeners: XCTestCase {
         EmployerForTesting.delete {
             self.employer?.save()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener.stop()
     }
     
@@ -124,7 +124,7 @@ class Listeners: XCTestCase {
             self.employer?.string = "test"
             try? self.employer?.update(columns: SundeedColumn("string"))
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener.stop()
     }
     
@@ -150,7 +150,7 @@ class Listeners: XCTestCase {
             expectation.fulfill()
         })
         _ = try? self.employer?.delete()
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         listener.stop()
     }
 }
