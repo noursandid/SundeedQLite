@@ -29,7 +29,7 @@ class Sundeed {
     /// SUNDEED_FIELD_NAME_LINK
     final let fieldNameLink: String = "SUNDEED_FIELD_NAME_LINK"
     /// SUNDEED_OFFLINE_ID
-    final let offlineID: String = "SUNDEED_OFFLINE_ID" 
+    final let offlineID: String = "SUNDEED_OFFLINE_ID"
     /// SUNDEED_FOREIGN|
     final let foreignPrefix: String = "SUNDEED_FOREIGN|"
     /// SUNDEED_PRIMITIVE_FOREIGN|
@@ -40,8 +40,13 @@ class Sundeed {
     final let shouldCopyDatabaseToFilePathKey: String = "shouldCopyDatabaseToFilePath"
     /// SUNDEED_FOREIGN|#tableName#|#foreignKey#
     final func sundeedForeignValue(tableName: Any,
-                                   fieldNameLink: String) -> String {
+                                   fieldNameLink: String,
+                                   subObjectPrimaryKey: String? = nil) -> String {
+        if let subObjectPrimaryKey = subObjectPrimaryKey {
+            return "\(foreignPrefix)\(tableName)|\(fieldNameLink)|\(subObjectPrimaryKey)"
+        } else {
             return "\(foreignPrefix)\(tableName)|\(fieldNameLink)"
+        }
     }
     /// SUNDEED_PRIMITIVE_FOREIGN|#tableName#
     final func sundeedPrimitiveForeignValue(tableName: Any) -> String {

@@ -31,7 +31,7 @@ class CreateTableStatement {
             statement.append(",\(columnName) TEXT")
         }
         if hasPrimaryKey {
-            statement.append(",CONSTRAINT unq\(tableName) UNIQUE (SUNDEED_FOREIGN_KEY, \(Sundeed.shared.primaryKey))")
+            statement.append(",CONSTRAINT unq\(tableName) UNIQUE (\(Sundeed.shared.foreignKey),\(Sundeed.shared.primaryKey),\(Sundeed.shared.fieldNameLink))")
         }
         statement.append(");")
         return statement

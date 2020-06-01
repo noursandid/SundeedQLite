@@ -100,9 +100,12 @@ extension SundeedQLiter {
             if let sundeedObject = value as? SundeedQLiter {
                 let map = SundeedQLiteMap(fetchingColumns: true)
                 sundeedObject.sundeedQLiterMapping(map: map)
+                let nestedColumns: SundeedObject = map.columns.mapValues({
+                    ($0 as? SundeedQLiter)?.toObjectWrapper() ?? $0
+                })
                 let wrapper = ObjectWrapper(tableName: sundeedObject.getTableName(),
                                             className: "\(sundeedObject)",
-                    objects: map.columns,
+                    objects: nestedColumns,
                     isOrdered: map.isOrdered,
                     orderBy: map.orderBy,
                     asc: map.asc,
