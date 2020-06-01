@@ -45,9 +45,11 @@ class SaveProcessor {
                         for (columnName, attribute) in objects {
                             if let attribute = attribute as? ObjectWrapper {
                                 if let className = attribute.className {
+                                    let subObjectPrimaryKey = attribute.objects?[Sundeed.shared.primaryKey] as? String
                                     let value = Sundeed.shared
                                         .sundeedForeignValue(tableName: className,
-                                                             fieldNameLink: columnName)
+                                                             fieldNameLink: columnName,
+                                                             subObjectPrimaryKey: subObjectPrimaryKey)
                                     insertStatement.add(key: columnName, value: value)
                                     if let primaryValue = objects[Sundeed
                                         .shared.primaryKey] as? String {
