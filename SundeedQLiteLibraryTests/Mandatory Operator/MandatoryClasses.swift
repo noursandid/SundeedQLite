@@ -10,7 +10,7 @@ import UIKit
 @testable import SundeedQLiteLibrary
 
 class ClassWithMandatoryOptionalString: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe1"
     var mandatory: String?
     required init() {}
     
@@ -21,7 +21,7 @@ class ClassWithMandatoryOptionalString: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalInt: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe2"
     var mandatory: Int?
     required init() {}
     
@@ -32,7 +32,7 @@ class ClassWithMandatoryOptionalInt: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalDate: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe3"
     var mandatory: Date?
     required init() {}
     
@@ -43,7 +43,7 @@ class ClassWithMandatoryOptionalDate: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalImage: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe4"
     var mandatory: UIImage?
     required init() {}
     
@@ -54,7 +54,7 @@ class ClassWithMandatoryOptionalImage: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalDouble: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe5"
     var mandatory: Double?
     required init() {}
     
@@ -65,7 +65,7 @@ class ClassWithMandatoryOptionalDouble: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalFloat: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe6"
     var mandatory: Float?
     required init() {}
     
@@ -76,7 +76,7 @@ class ClassWithMandatoryOptionalFloat: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfFloats: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe7"
     var mandatory: [Float]?
     required init() {}
     
@@ -87,7 +87,7 @@ class ClassWithMandatoryOptionalArrayOfFloats: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfOptionalFloats: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe8"
     var mandatory: [Float?]?
     required init() {}
     
@@ -98,7 +98,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalFloats: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfOptionalDoubles: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe9"
     var mandatory: [Double?]?
     required init() {}
     
@@ -109,7 +109,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalDoubles: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfDoubles: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe10"
     var mandatory: [Double]?
     required init() {}
     
@@ -120,7 +120,7 @@ class ClassWithMandatoryOptionalArrayOfDoubles: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfOptionalInts: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe11"
     var mandatory: [Int?]?
     required init() {}
     
@@ -131,7 +131,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalInts: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfInts: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe12"
     var mandatory: [Int]?
     required init() {}
     
@@ -144,7 +144,7 @@ class ClassWithMandatoryOptionalArrayOfInts: SundeedQLiter {
 
 
 class ClassWithMandatoryOptionalArrayOfImages: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe13"
     var mandatory: [UIImage]?
     required init() {}
     
@@ -155,7 +155,7 @@ class ClassWithMandatoryOptionalArrayOfImages: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfOptionalImages: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe14"
     var mandatory: [UIImage?]?
     required init() {}
     
@@ -166,7 +166,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalImages: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfStrings: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe15"
     var mandatory: [String]?
     required init() {}
     
@@ -177,7 +177,7 @@ class ClassWithMandatoryOptionalArrayOfStrings: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfOptionalStrings: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe16"
     var mandatory: [String?]?
     required init() {}
     
@@ -188,7 +188,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalStrings: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalObjects: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe17"
     var mandatory: MandatoryClass?
     required init() {}
     
@@ -199,7 +199,7 @@ class ClassWithMandatoryOptionalObjects: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfObjects: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe18"
     var mandatory: [MandatoryClass]?
     required init() {}
     
@@ -210,7 +210,7 @@ class ClassWithMandatoryOptionalArrayOfObjects: SundeedQLiter {
 }
 
 class ClassWithMandatoryOptionalArrayOfOptionalObjects: SundeedQLiter {
-    var id: String = "qwe"
+    var id: String = "qwe19"
     var mandatory: [MandatoryClass?]?
     required init() {}
     

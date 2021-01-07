@@ -433,10 +433,11 @@ class OperationTests: XCTestCase {
         XCTAssertEqual(employer.optionalBool, true)
         XCTAssertNotNil(employer.date)
         XCTAssertNotNil(employer.optionalDate)
-        XCTAssertEqual(employer.image.jpegData(compressionQuality: 1),
-                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
-        XCTAssertEqual(employer.optionalImage?.jpegData(compressionQuality: 1),
-                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
+        XCTAssertEqual(employer.image.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "1")?.jpegData(compressionQuality: 1)?.description)
+       
+        XCTAssertEqual(employer.optionalImage?.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "2")?.jpegData(compressionQuality: 1)?.description)
         XCTAssertEqual(employer.arrayOfStrings, ["string1", "string2"])
         XCTAssertEqual(employer.arrayOfOptionalStrings, ["string3"])
         XCTAssertEqual(employer.optionalArrayOfStrings, ["string4", "string6"])
@@ -475,12 +476,13 @@ class OperationTests: XCTestCase {
         XCTAssertNotNil(employer.optionalArrayOfDates)
         XCTAssertNotNil(employer.optionalArrayOfOptionalDates)
         XCTAssertNotNil(employer.arrayOfImages)
-        XCTAssertEqual(employer.arrayOfImages.first?.jpegData(compressionQuality: 1),
-                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
+        XCTAssertEqual(employer.arrayOfImages.first?.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "3")?.jpegData(compressionQuality: 1)?.description)
         XCTAssertNotNil(employer.arrayOfOptionalImages)
+        
         XCTAssertEqual(employer.arrayOfOptionalImages
-            .first??.jpegData(compressionQuality: 1),
-                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
+            .first??.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "5")?.jpegData(compressionQuality: 1)?.description)
         XCTAssertNotNil(employer.optionalArrayOfImages)
         XCTAssertNotNil(employer.optionalArrayOfOptionalImages)
         XCTAssertNil(employer.nilString)

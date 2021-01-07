@@ -97,13 +97,13 @@ class MandatoryOperatorTestWithData: XCTestCase {
     
     func testClassWithMandatoryOptionalImage() {
         let mainClass = ClassWithMandatoryOptionalImage()
-        mainClass.mandatory = UIImage(named: "image")
+        mainClass.mandatory = UIImage(named: "1")
         let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalImage")
         mainClass.save {
             ClassWithMandatoryOptionalImage.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
-                XCTAssertEqual(retrievedClasses.first?.mandatory?.jpegData(compressionQuality: 0.9),
-                               mainClass.mandatory?.jpegData(compressionQuality: 0.9))
+                XCTAssertEqual(retrievedClasses.first?.mandatory?.jpegData(compressionQuality: 1)?.description,
+                               mainClass.mandatory?.jpegData(compressionQuality: 1)?.description)
                 _ = try? mainClass.delete()
                 expectation.fulfill()
             })
@@ -113,13 +113,13 @@ class MandatoryOperatorTestWithData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfImages() {
         let mainClass = ClassWithMandatoryOptionalArrayOfImages()
-        mainClass.mandatory = [UIImage(named: "image")!]
+        mainClass.mandatory = [UIImage(named: "2")!]
         let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfImages")
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfImages.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
-                XCTAssertEqual(retrievedClasses.first?.mandatory?.first?.jpegData(compressionQuality: 0.9),
-                               mainClass.mandatory?.first?.jpegData(compressionQuality: 0.9))
+                XCTAssertEqual(retrievedClasses.first?.mandatory?.first?.jpegData(compressionQuality: 1)?.description,
+                               mainClass.mandatory?.first?.jpegData(compressionQuality: 1)?.description)
                 _ = try? mainClass.delete()
                 expectation.fulfill()
             })
@@ -129,13 +129,13 @@ class MandatoryOperatorTestWithData: XCTestCase {
     
     func testClassWithMandatoryOptionalArrayOfOptionalImages() {
         let mainClass = ClassWithMandatoryOptionalArrayOfOptionalImages()
-        mainClass.mandatory = [UIImage(named: "image")]
+        mainClass.mandatory = [UIImage(named: "3")]
         let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalArrayOfOptionalImages")
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalImages.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
-                XCTAssertEqual(retrievedClasses.first?.mandatory?.first??.jpegData(compressionQuality: 0.9),
-                               mainClass.mandatory?.first??.jpegData(compressionQuality: 0.9))
+                XCTAssertEqual(retrievedClasses.first?.mandatory?.first??.jpegData(compressionQuality: 1)?.description,
+                               mainClass.mandatory?.first??.jpegData(compressionQuality: 1)?.description)
                 _ = try? mainClass.delete()
                 expectation.fulfill()
             })

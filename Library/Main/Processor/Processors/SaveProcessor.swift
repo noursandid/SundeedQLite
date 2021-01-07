@@ -97,7 +97,8 @@ class SaveProcessor {
                                 }
                             } else if let attribute = attribute as? UIImage {
                                 if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                                    let attributeValue = attribute.dataTypeValue(forObjectID: primaryValue)
+                                    let objectID = "\(primaryValue)\(columnName)"
+                                    let attributeValue = attribute.dataTypeValue(forObjectID: objectID)
                                     insertStatement.add(key: columnName, value: attributeValue)
                                 } else {
                                     completion?()

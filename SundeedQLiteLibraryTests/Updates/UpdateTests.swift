@@ -53,9 +53,9 @@ class UpdateTests: XCTestCase {
                 self.employer?.optionalString = "test"
                 self.employer?.object.firstName = "testtt"
                 self.employer?.arrayOfStrings.append("Hello")
-                self.employer?.arrayOfOptionalImages.append(UIImage(named: "image"))
-                self.employer?.arrayOfImages.append(UIImage(named: "image")!)
-                self.employer?.nilImage = UIImage(named: "image")!
+                self.employer?.arrayOfOptionalImages.append(UIImage(named: "1"))
+                self.employer?.arrayOfImages.append(UIImage(named: "5")!)
+                self.employer?.nilImage = UIImage(named: "3")!
                 self.employer?.nilDate = Date()
                 let employee = EmployeeForTesting(id: "LLLLLLL")
                 self.employer?.arrayOfObjects.append(employee)
@@ -77,20 +77,20 @@ class UpdateTests: XCTestCase {
                         XCTAssert(employer1.object.firstName == "testtt")
                         XCTAssert(employer1.arrayOfStrings.contains("Hello"))
                         XCTAssert(employer1.arrayOfOptionalImages.count == 2)
-                        XCTAssertEqual(employer1.arrayOfOptionalImages.first??.jpegData(compressionQuality: 1),
-                                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
-                        XCTAssertEqual(employer1.arrayOfOptionalImages[1]?.jpegData(compressionQuality: 1),
-                                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
+                        XCTAssertEqual(employer1.arrayOfOptionalImages.first??.jpegData(compressionQuality: 1)?.description,
+                                       UIImage(named: "5")?.jpegData(compressionQuality: 1)?.description)
+                        XCTAssertEqual(employer1.arrayOfOptionalImages[1]?.jpegData(compressionQuality: 1)?.description,
+                                       UIImage(named: "1")?.jpegData(compressionQuality: 1)?.description)
                         XCTAssert(employer1.arrayOfImages.count == 3)
-                        XCTAssertEqual(employer1.arrayOfImages.first?.jpegData(compressionQuality: 1),
-                                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
-                        XCTAssertEqual(employer1.arrayOfImages[1].jpegData(compressionQuality: 1),
-                                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
-                        XCTAssertEqual(employer1.arrayOfImages[2].jpegData(compressionQuality: 1),
-                                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
+                        XCTAssertEqual(employer1.arrayOfImages.first?.jpegData(compressionQuality: 1)?.description,
+                                       UIImage(named: "3")?.jpegData(compressionQuality: 1)?.description)
+                        XCTAssertEqual(employer1.arrayOfImages[1].jpegData(compressionQuality: 1)?.description,
+                                       UIImage(named: "4")?.jpegData(compressionQuality: 1)?.description)
+                        XCTAssertEqual(employer1.arrayOfImages[2].jpegData(compressionQuality: 1)?.description,
+                                       UIImage(named: "5")?.jpegData(compressionQuality: 1)?.description)
                         XCTAssertNotNil(employer1.nilImage)
-                        XCTAssertEqual(employer1.nilImage?.jpegData(compressionQuality: 1),
-                                       UIImage(named: "image")?.jpegData(compressionQuality: 1))
+                        XCTAssertEqual(employer1.nilImage?.jpegData(compressionQuality: 1)?.description,
+                                       UIImage(named: "3")?.jpegData(compressionQuality: 1)?.description)
                         XCTAssertNotNil(employer1.nilDate)
                         XCTAssert(employer1.arrayOfObjects.contains(where: {$0.id == "LLLLLLL" }))
                         expectation.fulfill()
