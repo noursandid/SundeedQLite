@@ -19,7 +19,8 @@ class InsertStatement: Statement {
         keyValues.append((key, value))
         return self
     }
-    func build() -> String {
+    func build() -> String? {
+        guard !keyValues.isEmpty else { return nil }
         var statement: String = "REPLACE INTO \(tableName) ("
         addKeysAndValues(toStatement: &statement)
         return statement

@@ -25,7 +25,7 @@ class CreateTableStatement {
         self.hasPrimaryKey = true
         return self
     }
-    func build() -> String {
+    func build() -> String? {
         var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (\(Sundeed.shared.offlineID) INTEGER PRIMARY KEY, \(Sundeed.shared.foreignKey) TEXT, \(Sundeed.shared.fieldNameLink) TEXT" 
         for columnName in columnNames {
             statement.append(",\(columnName) TEXT")
