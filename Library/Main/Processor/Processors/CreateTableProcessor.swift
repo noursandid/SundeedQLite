@@ -36,7 +36,7 @@ class CreateTableProcessor {
             if objects[Sundeed.shared.primaryKey] != nil {
                 createTableStatement.withPrimaryKey()
             }
-            let query = createTableStatement.build()
+            let query: String? = createTableStatement.build()
             SundeedQLiteConnection.pool.execute(query: query)
             Sundeed.shared.tables.append(object.tableName)
         }

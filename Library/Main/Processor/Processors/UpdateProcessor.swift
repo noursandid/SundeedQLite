@@ -123,7 +123,7 @@ class UpdateProcessor {
             }
         }
         updateStatement.withFilters(filters)
-        let query = updateStatement.build()
+        let query: String? = updateStatement.build()
         SundeedQLiteConnection.pool.execute(query: query, completion:
             {
                 depth = self.completionIfNeeded(depth: depth, completion: completion)

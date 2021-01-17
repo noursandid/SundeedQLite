@@ -19,7 +19,7 @@ class DeleteStatement: Statement {
         self.filters = filters.compactMap({$0})
         return self
     }
-    func build() -> String {
+    func build() -> String? {
         var statement: String = "DELETE FROM \(tableName) WHERE "
         addFilters(forStatement: &statement)
         return statement

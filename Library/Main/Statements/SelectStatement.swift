@@ -48,7 +48,7 @@ class SelectStatement: Statement {
         self.filters = filters.compactMap({$0})
         return self
     }
-    func build() -> String {
+    func build() -> String? {
         var statement = "SELECT * FROM \(tableName)"
         addFilters(toStatement: &statement)
         addOrderBy(toStatement: &statement)

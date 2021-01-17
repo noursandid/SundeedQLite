@@ -272,8 +272,8 @@ class EmployerForTesting: SundeedQLiter {
         optionalBool = true
         date = Date()
         optionalDate = Date()
-        image = UIImage(named: "image")!
-        optionalImage = UIImage(named: "image")
+        image = UIImage(named: "1")!
+        optionalImage = UIImage(named: "2")
         arrayOfStrings = ["string1", "string2"]
         arrayOfOptionalStrings = ["string3", nil]
         optionalArrayOfStrings = ["string4", "string6"]
@@ -302,10 +302,10 @@ class EmployerForTesting: SundeedQLiter {
         arrayOfOptionalDates = [Date(), nil]
         optionalArrayOfDates = [Date(), Date()]
         optionalArrayOfOptionalDates = [Date(), nil]
-        arrayOfImages = [UIImage(named: "image")!, UIImage(named: "image")!]
-        arrayOfOptionalImages = [UIImage(named: "image"), nil]
-        optionalArrayOfImages = [UIImage(named: "image")!, UIImage(named: "image")!]
-        optionalArrayOfOptionalImages = [UIImage(named: "image"), nil]
+        arrayOfImages = [UIImage(named: "3")!, UIImage(named: "4")!]
+        arrayOfOptionalImages = [UIImage(named: "5"), nil]
+        optionalArrayOfImages = [UIImage(named: "1")!, UIImage(named: "2")!]
+        optionalArrayOfOptionalImages = [UIImage(named: "3"), nil]
     }
     
     func printEmployer() {

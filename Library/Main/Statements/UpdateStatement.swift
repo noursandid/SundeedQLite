@@ -25,7 +25,8 @@ class UpdateStatement: Statement {
         self.filters = filters.compactMap({$0})
         return self
     }
-    func build() -> String {
+    func build() -> String? {
+        guard !keyValues.isEmpty else { return nil }
         var statement = "UPDATE \(tableName) SET "
         addKeyValues(toStatement: &statement)
         addFilters(toStatement: &statement)

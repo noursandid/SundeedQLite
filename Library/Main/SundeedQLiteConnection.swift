@@ -48,7 +48,11 @@ class SundeedQLiteConnection {
             closeConnection(database: database)
         }
     }
-    func execute(query: String, force: Bool = false, completion: (()->Void)? = nil) {
+    func execute(query: String?, force: Bool = false, completion: (()->Void)? = nil) {
+        guard let query = query else {
+            completion?()
+            return
+        }
         Sundeed.shared.backgroundQueue.async {
             do {
                 if self.canExecute || force {
