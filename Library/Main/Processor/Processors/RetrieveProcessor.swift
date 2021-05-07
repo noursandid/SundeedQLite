@@ -84,14 +84,11 @@ class RetrieveProcessor {
                         embededElementPrimaryKey = String(configurations[3])
                     }
                     if let subObject = subObjectHandler(embededElementTable) {
-                        let filter1 = SundeedColumn(Sundeed
-                                                        .shared.foreignKey) == primaryValue
-                        let filter2 = SundeedColumn(Sundeed.shared
-                                                        .fieldNameLink) == embededElementFieldNameLink
+                        let filter1 = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
+                        let filter2 = SundeedColumn(Sundeed.shared.fieldNameLink) == embededElementFieldNameLink
                         var filter3: SundeedExpression<Bool>?
                         if let embededElementPrimaryKey = embededElementPrimaryKey {
-                            filter3 = SundeedColumn(Sundeed.shared
-                                                        .primaryKey) == embededElementPrimaryKey
+                            filter3 = SundeedColumn(Sundeed.shared.primaryKey) == embededElementPrimaryKey
                         }
                         dictionary[row.key] = self
                             .retrieve(objectWrapper: subObject,
@@ -102,9 +99,8 @@ class RetrieveProcessor {
                     let configurations = value.split(separator: "|")
                     let embededElementTable = String(configurations[1])
                     let filter = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
-                    dictionary[row.key] = self
-                        .getPrimitiveValues(forTable: embededElementTable,
-                                            withFilter: filter)
+                    dictionary[row.key] = self.getPrimitiveValues(forTable: embededElementTable,
+                                                                  withFilter: filter)
                 }
             }
         }
