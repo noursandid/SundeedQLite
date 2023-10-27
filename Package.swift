@@ -16,8 +16,7 @@ let package = Package(
     targets: [
         .target(
             name: "SundeedQLite",
-            path: "Library",
-            sources: ["**/*.swift"]
+            path: "Library"
         )
     ]
 )
