@@ -16,7 +16,7 @@ jobs:
         echo 'export PATH="/usr/bin:$PATH"' >> $GITHUB_PATH
     - name: Build and Test
       run: |
-        xcodebuild clean build test -project "$PROJECT" -scheme "SundeedQLiteLibrary" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+        xcodebuild clean build test -project "SundeedQLiteLibrary.xcodeproj" -scheme "SundeedQLiteLibrary" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
     - name: Upload code coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
