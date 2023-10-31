@@ -5,7 +5,7 @@
 //  Created by Nour Sandid on 5/16/20.
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
-#if canImport(UIKit)
+
 import UIKit
 
 infix operator <~>
@@ -645,4 +645,3 @@ public func <~> (left: inout UIImage, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
-#endif

@@ -5,7 +5,7 @@
 //  Created by Nour Sandid on 12/9/18.
 //  Copyright © 2018 LUMBERCODE. All rights reserved.
 //
-#if canImport(UIKit)
+
 import UIKit
 import SQLite3
 
@@ -71,4 +71,3 @@ extension UIImage {
         return fileURL.lastPathComponent
     }
 }
-#endif

@@ -5,7 +5,7 @@
 //  Created by Nour Sandid on 5/16/20.
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
-#if canImport(UIKit)
+
 import UIKit
 
 // if this value does not exist, dont add the whole object
@@ -328,5 +328,3 @@ public func <*> (left: inout UIImage?, right: SundeedQLiteMap) {
         }
     }
 }
-
-#endif

@@ -5,7 +5,7 @@
 //  Created by Nour Sandid on 5/11/20.
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
-#if canImport(UIKit)
+
 import UIKit
 
 class UpdateProcessor {
@@ -183,4 +183,3 @@ class UpdateProcessor {
         return depth
     }
 }
-#endif
