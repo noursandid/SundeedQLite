@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Swift
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_13.0.app
+        echo 'export PATH="/usr/bin:$PATH"' >> $GITHUB_PATH
+    - name: Build and Test
+      run: |
+        swift build
+        swift test --enable-code-coverage
+    - name: Upload code coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: .build/debug/codecov/*.json
+        fail_ci_if_error: true
+
