@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up Swift
       run: |
-        sudo xcode-select -s /Applications/Xcode_13.0.app/Contents/Developer
+        sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
         echo 'export PATH="/usr/bin:$PATH"' >> $GITHUB_PATH
     - name: Build and Test
       run: |
