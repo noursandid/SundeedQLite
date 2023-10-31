@@ -29,6 +29,17 @@ Afterwards, run the following command:
 ```bash
 pod install
 ```
+### Installation via Swift Package Manager
+To install SundeedQLite using SPM, 
+```swift
+dependencies: [
+  .package(
+    url: "https://github.com/noursandid/SundeedQLite.git",
+    from: "1.3.0"
+  ),
+]
+```
+
 # Signs
 - **+** : It's used to mark the primary key in the database.
 - **<<** : It's used to mark the *ASCENDING* sorting method
@@ -62,7 +73,7 @@ pod install
 # Listeners
 To Listen to events happening you can always add any listener with a block of code to be executed when the event happens.
 
-### Supported Events
+##### Supported Listener Events
 - Save
 - Update
 - Retrieve
@@ -73,6 +84,18 @@ To Listen to events happening you can always add any listener with a block of co
 Always remember to save an instance of this listener to stop it whenever it's not needed anymore.
 
 # Documentation
+### Prepare
+To prepare your Models, you need the class to conform to `SundeedQLiter` which has two mandatory functions
+```swift
+public protocol SundeedQLiter: AnyObject {
+    /** A function that describes all the mappings between database and object */
+    func sundeedQLiterMapping(map: SundeedQLiteMap)
+    init()
+}
+```
+
+this mapping will have all the details that the library needs to create the corresponding SQLite tables.
+
 ```swift
 import SundeedQLite
 
@@ -93,35 +116,198 @@ class Employee: SundeedQLiter {
     var firstName: String?
     required init() {}
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
-        id <~> map["id"]
+        id <~> map["id"]+
         firstName <~> map["firstName"]
     }
 }
 ```
 
+### Save
+
+To save an instance of a Model, you just need to call `.save(withForeignKey foreignKey: String? = nil, completion: (()->Void)? = nil)` function on the instance itself and it should be sufficient to create the table with the right columns and propagate the data, and of course call the right listeners (mentioned at a later stage in this documentation).
+The foreign key gives the ability to save a specific instance and link it to another one.
+
 ```swift
-import UIKit
+let employer = Employer()
+employer.id = "ABCD-1234-EFGH-5678"
+employer.fullName = "Nour Sandid"
+employer.save()
 
-class ViewController: UIViewController {
-    var employerSaveListener: Listener?
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        let employee = Employee()
-        employee.firstName = "Nour"
+let employee = Employee()
+employee.firstName = "Nour"
+employee.save(withForeignKey: "ABCD-1234-EFGH-5678")
+```
 
-        let employer = Employer()
-        employer.id = "ABCD-1234-EFGH-5678"
-        employer.fullName = "Nour Sandid"
-        employer.employees = [employee]
-        employerSaveListener = employer.onSaveEvents({ (object) in 
-            print(object.id)
-        })
-        employer.save()
-    }
-    
-    deinit {
-        employerSaveListener.stop()
-    }
+You can also save an array of `SundeedQLiter` objects
+```swift
+let employer1 = Employer()
+employer1.id = "ABCD-1234-EFGH-5678"
+employer1.fullName = "Nour Sandid"
+
+let employer2 = Employer()
+employer2.id = "IJKL-9123-MNOP-4567"
+employer2.fullName = "Test Employer"
+
+// time to save
+let employers = [employer1, employer2]
+employers.save()
+```
+
+### Update
+To update an instance of a Model, you need to update the value in that instance, and then call the `update(columns: SundeedColumn..., completion: (()->Void)? = nil) throws` function. This will update the instance value in the database, and of course call the right listeners (mentioned at a later stage in this documentation).
+
+```swift
+let employer = Employer()
+employer.id = "ABCD-1234-EFGH-5678"
+employer.fullName = "Nour Sandid"
+employer.save()
+
+employer.fullName = "Test"
+employer.update(columns: SundeedColumn("fullName")) // this string should be exactly as the one in the `sundeedQLiterMapping` function.
+```
+
+To update all instances of the same type from the database, you can call the static function `update(changes: SundeedUpdateSetStatement..., withFilter filter: SundeedExpression<Bool>? = nil, completion: (()->Void)? = nil) throws)` that would update specific columns for all the rows respecting the filters.
+
+```swift
+let employer = Employer()
+employer.id = "ABCD-1234-EFGH-5678"
+employer.fullName = "Nour Sandid"
+employer.save()
+
+// time to update
+do {
+    try CoreUser.update(changes: SundeedColumn("fullName") <~ "Test",
+                                 withFilter: SundeedColumn("fullName") == "Nour Sandid")
+} catch {
+    print(error)
+}
+```
+
+### Delete
+To delete an instance, you need to call the `delete(deleteSubObjects: Bool = false, completion: (()->Void)? = nil) throws -> Bool` function that will delete the instance from the database and return a boolean if it was deleted or not, and of course call the right listeners (mentioned at a later stage in this documentation).
+You can use `deleteSubObjects` to propagate the deletion of the object to it's sub-objects (in the properties)
+```swift
+let employer = Employer()
+employer.id = "ABCD-1234-EFGH-5678"
+employer.fullName = "Nour Sandid"
+employer.save()
+
+// time to delete
+employer.delete()
+```
+
+To delete all the instances of the same type from the database, you can call the static function `delete(withFilter filters: SundeedExpression<Bool>..., completion: (()->Void)? = nil)`, you can also pass filters to be more specific.
+```swift
+let employer = Employer()
+employer.id = "ABCD-1234-EFGH-5678"
+employer.fullName = "Nour Sandid"
+employer.save()
+
+// time to delete
+employer.delete(withFilter: SundeedColumn("fullName") == "Nour Sandid") 
+```
+
+### Retrieve
+To retrieve instances saved previously in the database, you need to call the static function  `.retrieve(withFilter filter: SundeedExpression<Bool>? = nil, orderBy order: SundeedColumn? = nil, ascending asc: Bool = true, excludeIfIsForeign: Bool = false, completion: ((_ data: [Self]) -> Void )?)`, which will retrieve all the instance of that type respecting the filters and the order. `excludeIfIsForeign` is responsible to exclude all the instances that are related to other instances (values for properties in other instances)
+
+```swift
+ let employee = Employee()
+ employee.firstName = "Nour"
+     
+let employer = Employer()
+employer.id = "ABCD-1234-EFGH-5678"
+employer.fullName = "Nour Sandid"
+employer.employees = [employee]
+employer.save()
+
+Employee.retrieve { data in
+        print(data) // [Employee(firstName: "Nour")]
+}
+
+// now since employee is not an independent instance, it will be excluded from the below result.
+Employee.retrieve(excludeIfIsForeign: true) { data in
+        print(data) // []
+}
+
+Employee.retrieve(withFilter: SundeedColumn("firstName") == "Nour", excludeIfIsForeign: true) { data in
+    print(data) // [Employee(firstName: "Nour")]
+}
+
+Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid", orderBy: SundeedColumn("fullName"), ascending: false, excludeIfIsForeign: true) { data in
+    print(data) // [Employer(id: "ABCD-1234-EFGH-5678", firstName: "Nour", employees: [Employee(firstName: "Nour")])]
+}
+```
+
+### Add Listeners
+To add listeners, you need to call the `.on#EVENT#Events(_ function: @escaping (_ object: Self) -> Void)`, and pass a block of code that will be called whenever a specific event is triggered
+###### Save Listener
+The function block will be called whenever a save event happens on the database for a specific class type or an instance.
+```swift
+let employerSaveListener: Listener? = employer.onSaveEvents({ (object) in 
+    print(object.id)
+})
+let allEmployersSaveListener: Listener? = Employer.onSaveEvents({ (object) in 
+    print(object.id)
+})
+deinit {
+    employerSaveListener?.stop()
+    allEmployersSaveListener?.stop()
+}
+```
+###### Update Listener
+The function block will be called whenever an update event happens on the database for a specific class type or an instance.
+```swift
+let employerUpdateListener: Listener? = employer.onUpdateEvents({ (object) in 
+    print(object.id)
+})
+let allEmployersUpdateListener: Listener? = Employer.onUpdateEvents({ (object) in 
+    print(object.id)
+})
+deinit {
+    employerUpdateListener?.stop()
+    allEmployersUpdateListener?.stop()
+}
+```
+###### Delete Listener
+The function block will be called whenever a delete event happens on the database for a specific class type or an instance.
+```swift
+let employerDeleteListener: Listener? = employer.onDeleteEvents({ (object) in 
+    print(object.id)
+})
+let allEmployersDeleteListener: Listener? = Employer.onDeleteEvents({ (object) in 
+    print(object.id)
+})
+deinit {
+    employerDeleteListener?.stop()
+    allEmployersDeleteListener?.stop()
+}
+```
+###### Retrieve Listener
+The function block will be called whenever a retrieve event happens from the database for a specific class type or an instance.
+```swift
+let employerRetrieveListener: Listener? = employer.onRetrieveEvents({ (object) in 
+    print(object.id)
+})
+let allEmployersRetrieveListener: Listener? = Employer.onRetrieveEvents({ (object) in 
+    print(object.id)
+})
+deinit {
+    employerRetrieveListener?.stop()
+    allEmployersRetrieveListener?.stop()
+}
+```
+###### All events Listener
+The function block will be called on any event happening on the database for a specific class type or an instance.
+```swift
+let employerAllListener: Listener? = employer.onAllEvents({ (object) in 
+    print(object.id)
+})
+let allEmployersAllListener: Listener? = Employer.onAllEvents({ (object) in 
+    print(object.id)
+})
+deinit {
+    employerAllListener?.stop()
+    allEmployersAllListener?.stop()
 }
 ```
 

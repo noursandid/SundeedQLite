@@ -6,7 +6,7 @@
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 infix operator <**>
 public func <**> <T: SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {

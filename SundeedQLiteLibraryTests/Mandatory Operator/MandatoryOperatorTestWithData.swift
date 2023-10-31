@@ -8,9 +8,13 @@
 
 import Foundation
 import XCTest
-@testable import SundeedQLiteLibrary
+import SundeedQLiteLibrary
 
 class MandatoryOperatorTestWithData: XCTestCase {
+    
+    override func tearDown() {
+        SundeedQLite.deleteDatabase()
+    }
     
     func testClassWithMandatoryOptionalString() {
         let mainClass = ClassWithMandatoryOptionalString()
@@ -21,7 +25,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -37,7 +40,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -56,7 +58,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.timeIntervalSince1970,
                                date?.timeIntervalSince1970)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -72,7 +73,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -88,7 +88,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -104,7 +103,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.jpegData(compressionQuality: 1)?.description,
                                mainClass.mandatory?.jpegData(compressionQuality: 1)?.description)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -120,7 +118,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.first?.jpegData(compressionQuality: 1)?.description,
                                mainClass.mandatory?.first?.jpegData(compressionQuality: 1)?.description)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -136,7 +133,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.first??.jpegData(compressionQuality: 1)?.description,
                                mainClass.mandatory?.first??.jpegData(compressionQuality: 1)?.description)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -152,7 +148,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -168,7 +163,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -184,7 +178,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -200,7 +193,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -216,7 +208,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -232,7 +223,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -248,7 +238,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -264,7 +253,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory,
                                mainClass.mandatory)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -282,7 +270,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.first?.firstName,
                                mandatoryClass.firstName)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -300,7 +287,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.first??.firstName,
                                mandatoryClass.firstName)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -318,7 +304,6 @@ class MandatoryOperatorTestWithData: XCTestCase {
                 XCTAssertEqual(retrievedClasses.count, 1)
                 XCTAssertEqual(retrievedClasses.first?.mandatory?.firstName,
                                mainClass.mandatory?.firstName)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }

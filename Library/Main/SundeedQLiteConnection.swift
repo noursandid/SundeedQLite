@@ -6,7 +6,7 @@
 //  Copyright © 2018 LUMBERCODE. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import SQLite3
 
 class SundeedQLiteConnection {
@@ -20,7 +20,7 @@ class SundeedQLiteConnection {
     lazy var fullDestPath = NSURL(fileURLWithPath: destPath)
         .appendingPathComponent(Sundeed.shared.databaseFileName)
     func getConnection(toWrite: Bool = false) throws -> OpaquePointer? {
-        moveDatabaseToFilePath()
+        try createDatabaseIfNeeded()
         let fileURL = try FileManager
             .default.url(for: .documentDirectory,
                          in: .userDomainMask,
@@ -96,30 +96,14 @@ class SundeedQLiteConnection {
     }
     func deleteDatabase() {
         guard let fullDestinationPath = fullDestPath else { return }
-        UserDefaults.standard.set(true,
-                                  forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
         self.sqlStatements.removeAll()
         try? fileManager.removeItem(at: fullDestinationPath)
     }
-    private func moveDatabaseToFilePath(force: Bool = false) {
-        if self.shouldCopyDatabaseToFilePath() || force {
-            guard let fullDestinationPath = fullDestPath else { return }
-            let fullDestPathString = fullDestPath!.path
-            if !fileManager.fileExists(atPath: fullDestPathString) {
-                try? "".write(to: fullDestinationPath, atomically: false, encoding: .utf8)
-                moveDatabaseToFilePath(force: true)
-            }
+    private func createDatabaseIfNeeded() throws {
+        guard let fullDestinationPath = fullDestPath else { return }
+        let fullDestPathString = fullDestPath!.path
+        if !fileManager.fileExists(atPath: fullDestPathString) {
+            try "".write(to: fullDestinationPath, atomically: false, encoding: .utf8)
         }
-    }
-    /**  returns if we should copy the database to the files again */
-    private func shouldCopyDatabaseToFilePath() -> Bool {
-        let shouldCopy = (UserDefaults.standard
-        .value(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey) as? Bool) ?? true
-        if shouldCopy {
-            UserDefaults.standard
-                .set(false, forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
-            return true
-        }
-        return false
     }
 }

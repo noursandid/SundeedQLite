@@ -6,7 +6,7 @@
 //  Copyright © 2018 LUMBERCODE. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 enum SundeedQLiteError: Error, CustomStringConvertible {
     case primaryKeyError(tableName: String)

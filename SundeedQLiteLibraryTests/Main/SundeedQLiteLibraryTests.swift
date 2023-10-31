@@ -10,6 +10,10 @@ import XCTest
 @testable import SundeedQLiteLibrary
 
 class SundeedQLiteLibraryTests: XCTestCase {
+    override func tearDown() {
+        SundeedQLite.deleteDatabase()
+    }
+    
     func testSubscript() {
         let employer = EmployerForTesting()
         employer.string = "string"
@@ -115,7 +119,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
     
     func testDeleteWithNoPrimary() {
         do {
-            _ = try SundeedQLite.instance.deleteFromDB(object: ClassWithNoPrimary())
+            _ = try SundeedQLite.instance.deleteFromDB(object: ClassWithNoPrimary(), deleteSubObjects: false)
             XCTFail("Shouldn't continue")
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {

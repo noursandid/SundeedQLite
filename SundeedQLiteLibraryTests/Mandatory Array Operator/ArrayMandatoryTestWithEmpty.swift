@@ -7,8 +7,13 @@
 //
 
 import XCTest
+import SundeedQLiteLibrary
 
 class ArrayMandatoryTestWithEmpty: XCTestCase {
+    override func tearDown() {
+        SundeedQLite.deleteDatabase()
+    }
+    
     func testClassContainingAMandatoryArrayWithEmpty() {
         let mainClass = ClassContainingAMandatoryArrayWithEmpty()
         mainClass.mandatoryClasses = [MandatoryClass()]
@@ -17,7 +22,6 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
             ClassContainingAMandatoryArrayWithEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -30,7 +34,6 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -44,7 +47,6 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithOptionalEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -58,7 +60,6 @@ class ArrayMandatoryTestWithEmpty: XCTestCase {
             ClassContainingAMandatoryArrayWithOptionalEmpty.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)

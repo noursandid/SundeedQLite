@@ -6,9 +6,9 @@
 //  Copyright © 2018 LUMBERCODE. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-public protocol SundeedQLiter: class {
+public protocol SundeedQLiter: AnyObject {
     /** A function that describes all the mappings between database and object */
     func sundeedQLiterMapping(map: SundeedQLiteMap)
     init()
@@ -27,8 +27,7 @@ extension SundeedQLiter {
         return "\(type(of: self))"
     }
     /** saves the object locally */
-    public func save(withForeignKey foreignKey: String? = nil,
-                     completion: (()->Void)? = nil) {
+    public func save(withForeignKey foreignKey: String? = nil, completion: (()->Void)? = nil) {
         SundeedQLite.instance.save(objects: [self], withForeignKey: foreignKey,
                                    completion: {
                                     SundeedQLite.notify(for: self, operation: .save)
@@ -37,8 +36,9 @@ extension SundeedQLiter {
     }
     /** deletes the object locally */
     @discardableResult
-    public func delete(completion: (()->Void)? = nil) throws -> Bool {
+    public func delete(deleteSubObjects: Bool = false, completion: (()->Void)? = nil) throws -> Bool {
         let result = try SundeedQLite.instance.deleteFromDB(object: self,
+                                                            deleteSubObjects: deleteSubObjects,
                                                             completion: {
                  SundeedQLite.notify(for: self, operation: .delete)
                         completion?()
@@ -64,11 +64,13 @@ extension SundeedQLiter {
     public static func retrieve(withFilter filter: SundeedExpression<Bool>? = nil,
                                 orderBy order: SundeedColumn? = nil,
                                 ascending asc: Bool = true,
-                                completion: ((_ data: [Self]) -> Void)?) {
+                                excludeIfIsForeign: Bool = false,
+                                completion: ((_ data: [Self]) -> Void )?) {
         SundeedQLite.instance.retrieve(forClass: self,
                                        withFilter: filter,
                                        orderBy: order,
                                        ascending: asc,
+                                       excludeIfIsForeign: excludeIfIsForeign,
                                        completion: { (objects) in
                                         DispatchQueue.main.async {
                                             SundeedQLite.notify(for: objects, operation: .retrieve)

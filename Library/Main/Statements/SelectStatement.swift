@@ -48,6 +48,13 @@ class SelectStatement: Statement {
         self.filters = filters.compactMap({$0})
         return self
     }
+    @discardableResult
+    func excludeIfIsForeign(_ exclude: Bool) -> Self {
+        if exclude {
+            self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == ""]
+        }
+        return self
+    }
     func build() -> String? {
         var statement = "SELECT * FROM \(tableName)"
         addFilters(toStatement: &statement)

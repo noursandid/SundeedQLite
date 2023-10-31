@@ -12,6 +12,7 @@ import SQLite3
 class RetrieveProcessor {
     func retrieve(objectWrapper: ObjectWrapper,
                   withFilter filters: SundeedExpression<Bool>?...,
+                  excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
         var database: OpaquePointer? = try? SundeedQLiteConnection.pool.getConnection()
         let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
@@ -24,6 +25,7 @@ class RetrieveProcessor {
                 .isAscending(objectWrapper.asc)
                 .isCaseInsensitive(true)
                 .withFilters(filters)
+                .excludeIfIsForeign(excludeIfIsForeign)
                 .build()
             
             sqlite3_prepare_v2(database, query, -1, &statement, nil)
@@ -93,6 +95,7 @@ class RetrieveProcessor {
                         dictionary[row.key] = self
                             .retrieve(objectWrapper: subObject,
                                       withFilter: filter1, filter2, filter3,
+                                      excludeIfIsForeign: false,
                                       subObjectHandler: subObjectHandler)
                     }
                 } else if value.starts(with: Sundeed.shared.foreignPrimitivePrefix) {

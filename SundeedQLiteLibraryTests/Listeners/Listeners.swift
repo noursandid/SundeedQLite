@@ -16,9 +16,8 @@ class Listeners: XCTestCase {
         employer?.fillData()
     }
     
-    override class func tearDown() {
+    override func tearDown() {
         SundeedQLite.deleteDatabase()
-        UserDefaults.standard.removeObject(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
     }
     
     func testSpecificOnAllEventsListener() {

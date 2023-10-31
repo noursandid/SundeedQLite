@@ -15,10 +15,8 @@ class OperationTests: XCTestCase {
     override func setUp() {
         employer?.fillData()
     }
-    override class func tearDown() {
+    override func tearDown() {
         SundeedQLite.deleteDatabase()
-        UserDefaults.standard
-            .removeObject(forKey: Sundeed.shared.shouldCopyDatabaseToFilePathKey)
     }
     
     func testDeleting() {
@@ -26,10 +24,62 @@ class OperationTests: XCTestCase {
         employer?.save {
             do {
                 if try !(self.employer?.delete(completion: {
-                    EmployerForTesting.retrieve(completion: { (allEmployers) in
+                    EmployerForTesting.retrieve(completion: { allEmployers in
                         XCTAssert(allEmployers.isEmpty)
-                        _ = try? self.employer?.delete()
-                        expectation.fulfill()
+                        EmployeeForTesting.retrieve { allEmployees in
+                            XCTAssertEqual(allEmployees.count, 6)
+                            expectation.fulfill()
+                        }
+                    })
+                }) ?? false) {
+                    XCTFail("Couldn't delete class")
+                    expectation.fulfill()
+                }
+            } catch {
+                XCTFail("Couldn't delete class")
+                expectation.fulfill()
+            }
+            
+        }
+        wait(for: [expectation], timeout: 6.0)
+    }
+    
+    func testDeletingWithoutDeletingSubObjects() {
+        let expectation = XCTestExpectation(description: "Deleted Employer")
+        employer?.save {
+            do {
+                if try !(self.employer?.delete(deleteSubObjects: false, completion: {
+                    EmployerForTesting.retrieve(completion: { allEmployers in
+                        XCTAssert(allEmployers.isEmpty)
+                        EmployeeForTesting.retrieve { allEmployees in
+                            XCTAssertEqual(allEmployees.count, 6)
+                            expectation.fulfill()
+                        }
+                    })
+                }) ?? false) {
+                    XCTFail("Couldn't delete class")
+                    expectation.fulfill()
+                }
+            } catch {
+                XCTFail("Couldn't delete class")
+                expectation.fulfill()
+            }
+            
+        }
+        wait(for: [expectation], timeout: 6.0)
+    }
+    
+    func testDeletingWithDeletingSubObjects() {
+        let expectation = XCTestExpectation(description: "Deleted Employer")
+        employer?.save {
+            do {
+                if try !(self.employer?.delete(deleteSubObjects: true, completion: {
+                    EmployerForTesting.retrieve(completion: { allEmployers in
+                        XCTAssert(allEmployers.isEmpty)
+                        EmployeeForTesting.retrieve { allEmployees in
+                            XCTAssertEqual(allEmployees.count, 0)
+                            expectation.fulfill()
+                        }
                     })
                 }) ?? false) {
                     XCTFail("Couldn't delete class")
@@ -48,10 +98,12 @@ class OperationTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Deleted All Employers")
         employer?.save {
             EmployerForTesting.delete {
-                EmployerForTesting.retrieve(completion: { (allEmployers) in
+                EmployerForTesting.retrieve(completion: { allEmployers in
                     XCTAssert(allEmployers.isEmpty)
-                    expectation.fulfill()
-                    _ = try? self.employer?.delete()
+                    EmployeeForTesting.retrieve { allEmployees in
+                        XCTAssertEqual(allEmployees.count, 6)
+                        expectation.fulfill()
+                    }
                 })
             }
         }
@@ -61,14 +113,15 @@ class OperationTests: XCTestCase {
     func testRetrieve() {
         let expectation = XCTestExpectation(description: "Retrieve Employer")
         employer?.save {
-            EmployerForTesting.retrieve(completion: { (allEmployers) in
+            EmployerForTesting.retrieve(completion: { [unowned self] (allEmployers) in
                 guard let employer = allEmployers.first else {
                     XCTFail("Couldn't Retrieve From Database")
                     return
                 }
                 self.checkEmployer(employer)
-                expectation.fulfill()
-                _ = try? self.employer?.delete()
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 4.0)
@@ -78,14 +131,15 @@ class OperationTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Retrieve Employer With Filter")
         employer?.save {
             EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
-                                        completion: { (allEmployers) in
-                                            guard let employer = allEmployers.first else {
-                                                XCTFail("Couldn't Retrieve From Database")
-                                                return
-                                            }
-                                            self.checkEmployer(employer)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                guard let employer = allEmployers.first else {
+                    XCTFail("Couldn't Retrieve From Database")
+                    return
+                }
+                self.checkEmployer(employer)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2.0)
@@ -95,10 +149,11 @@ class OperationTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Retrieve Employer With Wrong Filter")
         employer?.save {
             EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "ABCD",
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 0)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 0)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2.0)
@@ -113,15 +168,17 @@ class OperationTests: XCTestCase {
         [employer!, employer2].save {
             EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
                                         ascending: true,
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            self.checkEmployer(firstEmployer)
-                                            XCTAssertEqual(secondEmployer.integer, 2)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                self.checkEmployer(firstEmployer)
+                XCTAssertEqual(secondEmployer.integer, 2)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -136,15 +193,17 @@ class OperationTests: XCTestCase {
         [employer!, employer2].save {
             EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
                                         ascending: false,
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            XCTAssertEqual(firstEmployer.integer, 3)
-                                            self.checkEmployer(secondEmployer)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                XCTAssertEqual(firstEmployer.integer, 3)
+                self.checkEmployer(secondEmployer)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -159,15 +218,17 @@ class OperationTests: XCTestCase {
         [employer!, employer2].save {
             EmployerForTesting.retrieve(orderBy: SundeedColumn("string"),
                                         ascending: true,
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            self.checkEmployer(firstEmployer)
-                                            XCTAssertEqual(secondEmployer.integer, 2)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                self.checkEmployer(firstEmployer)
+                XCTAssertEqual(secondEmployer.integer, 2)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -183,19 +244,21 @@ class OperationTests: XCTestCase {
             EmployerForTesting
                 .retrieve(orderBy: SundeedColumn("string"),
                           ascending: false,
-                          completion: { (allEmployers) in
-                            XCTAssertEqual(allEmployers.count, 2)
-                            guard allEmployers.count == 2 else {
-                                XCTFail()
-                                return
-                            }
-                            let firstEmployer = allEmployers[0]
-                            let secondEmployer = allEmployers[1]
-                            XCTAssertEqual(firstEmployer.integer, 3)
-                            self.checkEmployer(secondEmployer)
+                          completion: { [unowned self] (allEmployers) in
+                    XCTAssertEqual(allEmployers.count, 2)
+                    guard allEmployers.count == 2 else {
+                        XCTFail()
+                        return
+                    }
+                    let firstEmployer = allEmployers[0]
+                    let secondEmployer = allEmployers[1]
+                    XCTAssertEqual(firstEmployer.integer, 3)
+                    self.checkEmployer(secondEmployer)
+                    _ = try? self.employer?.delete(deleteSubObjects: true) {
+                        _ = try? employer2.delete(deleteSubObjects: true) {
                             expectation.fulfill()
-                            _ = try? self.employer?.delete()
-                            _ = try? employer2.delete()
+                        }
+                    }
                 })
         }
         wait(for: [expectation], timeout: 5)
@@ -211,15 +274,17 @@ class OperationTests: XCTestCase {
         [employer!, employer2].save {
             EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
                                         ascending: true,
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            self.checkEmployer(firstEmployer)
-                                            XCTAssertEqual(secondEmployer.integer, 2)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                self.checkEmployer(firstEmployer)
+                XCTAssertEqual(secondEmployer.integer, 2)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -235,15 +300,17 @@ class OperationTests: XCTestCase {
         [employer!, employer2].save {
             EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
                                         ascending: false,
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            XCTAssertEqual(firstEmployer.integer, 3)
-                                            self.checkEmployer(secondEmployer)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                XCTAssertEqual(firstEmployer.integer, 3)
+                self.checkEmployer(secondEmployer)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -259,15 +326,17 @@ class OperationTests: XCTestCase {
         [employer!, employer2].save {
             EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
                                         ascending: true,
-                                        completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            self.checkEmployer(firstEmployer)
-                                            XCTAssertEqual(secondEmployer.integer, 2)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                                        completion: { [unowned self] (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                self.checkEmployer(firstEmployer)
+                XCTAssertEqual(secondEmployer.integer, 2)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -280,18 +349,75 @@ class OperationTests: XCTestCase {
         employer2.string = "string3"
         employer2.integer = 3
         employer2.type = .ceo
-        [employer!, employer2].save {
+        [employer!, employer2].save { [unowned self] in
             EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
                                         ascending: false,
                                         completion: { (allEmployers) in
-                                            XCTAssertEqual(allEmployers.count, 2)
-                                            let firstEmployer = allEmployers[0]
-                                            let secondEmployer = allEmployers[1]
-                                            self.checkEmployer(firstEmployer)
-                                            XCTAssertEqual(secondEmployer.integer, 3)
-                                            expectation.fulfill()
-                                            _ = try? self.employer?.delete()
-                                            _ = try? employer2.delete()
+                XCTAssertEqual(allEmployers.count, 2)
+                let firstEmployer = allEmployers[0]
+                let secondEmployer = allEmployers[1]
+                self.checkEmployer(firstEmployer)
+                XCTAssertEqual(secondEmployer.integer, 3)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
+            })
+        }
+        wait(for: [expectation], timeout: 5)
+    }
+    
+    func testRetrieveForeignObjectWithExcludingIfIsForeignDisabled() {
+        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
+        EmployeeForTesting.retrieve(excludeIfIsForeign: false, completion: { [unowned self] (employees) in
+            XCTAssertEqual(employees.count, 0)
+            [employer!].save {
+                EmployeeForTesting.retrieve(excludeIfIsForeign: false, completion: { [unowned self] (allEmployees) in
+                    XCTAssertEqual(allEmployees.count, 6)
+                    _ = try? self.employer?.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                })
+            }
+        })
+        wait(for: [expectation], timeout: 5)
+    }
+    
+    func testRetrieveForeignObjectWithExcludingIfIsForeignEnabled() {
+        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
+        [employer!].save {
+            EmployeeForTesting.retrieve(excludeIfIsForeign: true, completion: { (allEmployees) in
+                XCTAssertEqual(allEmployees.count, 0)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
+            })
+        }
+        wait(for: [expectation], timeout: 5)
+    }
+    
+    func testRetrieveIndependentObjectWithExcludingIfIsForeignDisabled() {
+        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
+        [employer!].save { [unowned self] in
+            EmployerForTesting.retrieve(excludeIfIsForeign: false, completion: { (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 1)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
+            })
+        }
+        wait(for: [expectation], timeout: 5)
+    }
+    
+    func testRetrieveIndependentObjectWithExcludingIfIsForeignEnabled() {
+        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
+        [self.employer!].save { [unowned self] in
+            EmployerForTesting.retrieve(excludeIfIsForeign: true, completion: { (allEmployers) in
+                XCTAssertEqual(allEmployers.count, 1)
+                _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -304,7 +430,9 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithSubClass.save {
             ClassWithNoPrimaryWithSubClass.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
-                expectation.fulfill()
+                let _ = try? classWithNoPrimaryWithSubClass.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -317,7 +445,9 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithSubClassArray.save {
             ClassWithNoPrimaryWithSubClassArray.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
-                expectation.fulfill()
+                let _ = try? classWithNoPrimaryWithSubClassArray.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -330,7 +460,9 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithImage.save {
             ClassWithNoPrimaryWithImage.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
-                expectation.fulfill()
+                let _ = try? classWithNoPrimaryWithImage.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -345,7 +477,9 @@ class OperationTests: XCTestCase {
                 ClassWithNoPrimaryWithImageArray.retrieve(completion: { (results) in
                     XCTAssertEqual(results.count, 1)
                     XCTAssertNil(results.first?.images)
-                    expectation.fulfill()
+                    let _ = try? classWithNoPrimaryWithImageArray.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
                 })
             }
         }
@@ -359,7 +493,9 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithPrimitiveArray.save {
             ClassWithNoPrimaryWithPrimitiveArray.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
-                expectation.fulfill()
+                let _ = try? classWithNoPrimaryWithPrimitiveArray.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -372,7 +508,9 @@ class OperationTests: XCTestCase {
         classWithNoPrimaryWithDate.save {
             ClassWithNoPrimaryWithDate.retrieve(completion: { (results) in
                 XCTAssert(results.isEmpty)
-                expectation.fulfill()
+                let _ = try? classWithNoPrimaryWithDate.delete(deleteSubObjects: true) {
+                    expectation.fulfill()
+                }
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -385,7 +523,7 @@ class OperationTests: XCTestCase {
         employer2.integer = 2
         let expectation = XCTestExpectation(description: "Array Saving Employer")
         [employer2, employer!].save {
-            EmployerForTesting.retrieve(completion: { (allEmployers) in
+            EmployerForTesting.retrieve(completion: { [unowned self] (allEmployers) in
                 guard let employer1 = allEmployers.first else {
                     XCTFail("Couldn't Retrieve From Database")
                     return
@@ -393,7 +531,11 @@ class OperationTests: XCTestCase {
                 self.checkEmployer(allEmployers[1])
                 XCTAssertEqual(employer1.integer, 2)
                 XCTAssertEqual(employer1.string, "string1")
-                expectation.fulfill()
+                let _ = try? self.employer?.delete(deleteSubObjects: true) {
+                    let _ = try? employer2.delete(deleteSubObjects: true) {
+                        expectation.fulfill()
+                    }
+                }
             })
         }
         wait(for: [expectation], timeout: 5)
@@ -435,7 +577,6 @@ class OperationTests: XCTestCase {
         XCTAssertNotNil(employer.optionalDate)
         XCTAssertEqual(employer.image.jpegData(compressionQuality: 1)?.description,
                        UIImage(named: "1")?.jpegData(compressionQuality: 1)?.description)
-       
         XCTAssertEqual(employer.optionalImage?.jpegData(compressionQuality: 1)?.description,
                        UIImage(named: "2")?.jpegData(compressionQuality: 1)?.description)
         XCTAssertEqual(employer.arrayOfStrings, ["string1", "string2"])

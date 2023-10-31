@@ -36,8 +36,6 @@ class Sundeed {
     final let foreignPrimitivePrefix: String = "SUNDEED_PRIMITIVE_FOREIGN|"
     /// SQLiteDB.sqlite
     final let databaseFileName: String = "SQLiteDB.sqlite"
-    /// shouldCopyDatabaseToFilePath
-    final let shouldCopyDatabaseToFilePathKey: String = "shouldCopyDatabaseToFilePath"
     /// SUNDEED_FOREIGN|#tableName#|#foreignKey#
     final func sundeedForeignValue(tableName: Any,
                                    fieldNameLink: String,

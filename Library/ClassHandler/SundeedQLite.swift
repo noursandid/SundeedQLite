@@ -6,7 +6,8 @@
 //  Copyright © 2018 LUMBERCODE. All rights reserved.
 //
 
-import UIKit
+import Foundation
+
 public enum Operation {
     case any
     case retrieve
@@ -168,6 +169,7 @@ extension SundeedQLite {
                                     withFilter filter: SundeedExpression<Bool>? = nil,
                                     orderBy order: SundeedColumn? = nil,
                                     ascending asc: Bool = true,
+                                    excludeIfIsForeign: Bool = false,
                                     completion: ((_ data: [T]) -> Void)?) {
         Sundeed.shared.backgroundQueue.async {
             let map = SundeedQLiteMap(fetchingColumns: true)
@@ -177,6 +179,7 @@ extension SundeedQLite {
                 .retrieveProcessor
                 .retrieve(objectWrapper: instance.toObjectWrapper(),
                           withFilter: filter,
+                          excludeIfIsForeign: excludeIfIsForeign,
                           subObjectHandler: self.classToObjectWrapper)
             var objectsArray: [T] = []
             for dictionnary in dictionnariesArray {
@@ -238,6 +241,7 @@ extension SundeedQLite {
 // Delete
 extension SundeedQLite {
     func deleteFromDB<T: SundeedQLiter>(object: T,
+                                        deleteSubObjects: Bool,
                                         completion: (()->Void)? = nil) throws -> Bool {
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
@@ -248,11 +252,35 @@ extension SundeedQLite {
                     .primaryKeyError(tableName: object.getTableName())
         }
         let filter = SundeedColumn(map.primaryKey) == primaryValue
+        var depth: Int = 0
+        if deleteSubObjects {
+            depth = map.columns.values.filter({$0 is SundeedQLiter}).count
+            for value in map.columns.values where value is SundeedQLiter {
+                guard let value = value as? SundeedQLiter else { continue }
+                let filter = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
+                Processor()
+                    .saveProcessor
+                    .deleteFromDB(tableName: value.getTableName(),
+                                  withFilters: [filter]) {
+                        if depth == 0 {
+                            completion?()
+                        } else {
+                            depth -= 1
+                        }
+                    }
+            }
+        }
         Processor()
             .saveProcessor
             .deleteFromDB(tableName: object.getTableName(),
                           withFilters: [filter],
-                          completion: completion)
+                          completion: {
+                if depth == 0 {
+                    completion?()
+                } else {
+                    depth -= 1
+                }
+            })
         SundeedQLiteMap.removeReference(value: primaryValue as AnyObject,
                                         andClassName: "\(T.self)")
         return true

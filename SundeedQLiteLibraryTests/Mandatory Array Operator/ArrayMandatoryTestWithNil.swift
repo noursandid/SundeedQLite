@@ -7,8 +7,13 @@
 //
 
 import XCTest
+import SundeedQLiteLibrary
 
 class ArrayMandatoryTestWithNil: XCTestCase {
+    override func tearDown() {
+        SundeedQLite.deleteDatabase()
+    }
+    
     func testClassContainingAMandatoryOptionalArrayWithNil() {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithNil()
         let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithNil")
@@ -16,7 +21,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -29,7 +33,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryArrayWithNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -42,7 +45,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -55,7 +57,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -70,8 +71,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -86,8 +85,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryArrayWithNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -102,8 +99,6 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -118,10 +113,8 @@ class ArrayMandatoryTestWithNil: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
 }

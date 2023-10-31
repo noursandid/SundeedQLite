@@ -10,7 +10,7 @@ import UIKit
 import SQLite3
 
 /** Filter in local database */
-public func == (left: SundeedColumn, right: String) -> SundeedExpression<Bool>? {
+public func == (left: SundeedColumn, right: String) -> SundeedExpression<Bool> {
 return SundeedExpression(left.value, right)
 }
 infix operator <~

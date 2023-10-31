@@ -6,7 +6,7 @@
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class Processor {
     var createTableProcessor: CreateTableProcessor {

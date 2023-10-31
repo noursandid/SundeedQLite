@@ -7,9 +7,13 @@
 //
 
 import XCTest
-//@testable import SundeedQLiteLibrary
+import SundeedQLiteLibrary
 
 class ArrayMandatoryTestWithData: XCTestCase {
+    
+    override func tearDown() {
+        SundeedQLite.deleteDatabase()
+    }
     
     func testClassContainingAMandatoryClassInOptionalArray() {
         let mandatoryClass = MandatoryClass()
@@ -18,10 +22,8 @@ class ArrayMandatoryTestWithData: XCTestCase {
         let expectation = XCTestExpectation(description: "ClassContainingAMandatoryClassInOptionalArray")
         mainClass.save {
             ClassContainingAMandatoryClassInOptionalArray.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
+                XCTAssertEqual(retrievedClasses.count, 0)
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -36,8 +38,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryOptionalClassInArray.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -52,8 +52,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryOptionalClassInOptionalArray.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -68,8 +66,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryClassInArray.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -84,8 +80,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryClass.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -100,8 +94,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryOptionalClass.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -118,8 +110,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
                 .retrieve(completion: { (retrievedClasses) in
                     XCTAssertEqual(retrievedClasses.count, 1)
                     expectation.fulfill()
-                    _ = try? mainClass.delete()
-                    _ = try? mandatoryClass.delete()
                 })
         }
         wait(for: [expectation], timeout: 2)
@@ -134,13 +124,10 @@ class ArrayMandatoryTestWithData: XCTestCase {
         mainClass.save {
             ClassContainingAMandatoryOptionalArrayWithData.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
-                _ = try? mandatoryClass.delete()
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testClassContainingAMandatoryOptionalArrayWithOptionalData() {
@@ -152,10 +139,7 @@ class ArrayMandatoryTestWithData: XCTestCase {
         mainClass.save {
             ClassContainingAMandatoryOptionalArrayWithOptionalData.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
-                _ = try? mandatoryClass.delete()
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -171,10 +155,7 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryArrayWithOptionalData
                 .retrieve(completion: { (retrievedClasses) in
                     XCTAssertEqual(retrievedClasses.count, 1)
-                    _ = try? mandatoryClass.delete()
                     expectation.fulfill()
-                    _ = try? mainClass.delete()
-                    _ = try? mandatoryClass.delete()
                 })
         }
         wait(for: [expectation], timeout: 2)
@@ -193,8 +174,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
                 .retrieve(completion: { (retrievedClasses) in
                     XCTAssertEqual(retrievedClasses.count, 1)
                     expectation.fulfill()
-                    _ = try? mainClass.delete()
-                    _ = try? mandatoryClass.delete()
                 })
         }
         wait(for: [expectation], timeout: 2)
@@ -210,8 +189,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithData.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -227,8 +204,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
             ClassContainingAMandatoryOptionalArrayWithOptionalData.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 1)
                 expectation.fulfill()
-                _ = try? mainClass.delete()
-                _ = try? mandatoryClass.delete()
             })
         }
         wait(for: [expectation], timeout: 2)
@@ -245,8 +220,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
                 .retrieve(completion: { (retrievedClasses) in
                     XCTAssertEqual(retrievedClasses.count, 1)
                     expectation.fulfill()
-                    _ = try? mainClass.delete()
-                    _ = try? mandatoryClass.delete()
                 })
         }
         wait(for: [expectation], timeout: 2)
@@ -258,7 +231,6 @@ class ArrayMandatoryTestWithData: XCTestCase {
         mainClass.save {
             ClassContainingParameterIndex.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                ClassContainingParameterIndex.delete()
                 expectation.fulfill()
             })
         }

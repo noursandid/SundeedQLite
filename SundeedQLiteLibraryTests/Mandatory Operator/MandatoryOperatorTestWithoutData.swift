@@ -12,13 +12,16 @@ import XCTest
 
 class MandatoryOperatorTestWithoutData: XCTestCase {
     
+    override func tearDown() {
+        SundeedQLite.deleteDatabase()
+    }
+    
     func testClassWithMandatoryOptionalString() {
         let mainClass = ClassWithMandatoryOptionalString()
         let expectation = XCTestExpectation(description: "ClassWithMandatoryOptionalString")
         mainClass.save {
             ClassWithMandatoryOptionalString.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -31,7 +34,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalInt.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -44,7 +46,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalDate.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -57,7 +58,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalDouble.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -70,7 +70,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalFloat.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -83,7 +82,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalImage.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -96,7 +94,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfImages.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -109,7 +106,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalImages.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -122,7 +118,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfFloats.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -135,7 +130,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalFloats.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -148,7 +142,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfDoubles.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -161,7 +154,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalDoubles.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -174,7 +166,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfInts.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -187,7 +178,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalInts.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -200,7 +190,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfStrings.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -213,7 +202,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalStrings.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -226,7 +214,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfObjects.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -239,7 +226,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalArrayOfOptionalObjects.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }
@@ -252,7 +238,6 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
         mainClass.save {
             ClassWithMandatoryOptionalObjects.retrieve(completion: { (retrievedClasses) in
                 XCTAssertEqual(retrievedClasses.count, 0)
-                _ = try? mainClass.delete()
                 expectation.fulfill()
             })
         }

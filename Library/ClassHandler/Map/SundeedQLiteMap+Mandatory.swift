@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 // if this value does not exist, dont add the whole object
 infix operator <*>
 public func <*> <T>(left: inout T?, right: (SundeedQLiteMap, SundeedQLiteConverter)) {

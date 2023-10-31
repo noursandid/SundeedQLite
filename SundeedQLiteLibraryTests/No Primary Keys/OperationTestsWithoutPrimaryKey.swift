@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import SundeedQLiteLibrary
+import SundeedQLiteLibrary
 
 class OperationTestsWithoutPrimaryKey: XCTestCase {
     var noPrimary: ClassWithNoPrimary?
@@ -35,7 +35,6 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
                 .retrieve(completion: { (employers) in
                     XCTAssert(employers.isEmpty)
                     expectation.fulfill()
-                    _ = try? self.employerWithNoPrimary?.delete()
                 })
         }
         wait(for: [expectation], timeout: 1)
@@ -53,7 +52,6 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
                 XCTAssertEqual(noPrimary.firstName, "TestFirst")
                 XCTAssertEqual(noPrimary.lastName, "TestLast")
                 expectation.fulfill()
-                _ = try? self.noPrimary?.delete()
             })
         }
         wait(for: [expectation], timeout: 1)
@@ -72,7 +70,6 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
                             XCTAssertEqual(noPrimary.firstName, "TestFirst")
                             XCTAssertEqual(noPrimary.lastName, "TestLast")
                             expectation.fulfill()
-                            _ = try? self.noPrimary?.delete()
                 })
         }
         wait(for: [expectation], timeout: 1)
@@ -88,7 +85,6 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
                 expectation.fulfill()
             } catch {
                 expectation.fulfill()
-                _ = try? self.noPrimary?.delete()
             }
             
         }
@@ -104,7 +100,6 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
                 expectation.fulfill()
             } catch {
                 expectation.fulfill()
-                _ = try? self.noPrimary?.delete()
             }
             
         }
