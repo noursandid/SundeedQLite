@@ -19,7 +19,8 @@ jobs:
         xcodebuild clean build test -project "SundeedQLiteLibrary.xcodeproj" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,OS=16.2,name=iPhone 13 Pro" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
     - name: Install Slather
       run: gem install slather
-    - slather
+    - name: Convert .xcresult to .lcov
+      run: slather
     - name: Upload code coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
