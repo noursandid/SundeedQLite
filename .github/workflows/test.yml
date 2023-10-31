@@ -21,6 +21,8 @@ jobs:
       run: gem install slather
     - name: Convert .xcresult to .lcov
       run: slather coverage --binary-basename SundeedQLiteLibrary --input-format profdata --scheme SundeedQLiteLibrary --output-directory . --simple-output --ignore "Pods/**/*" SundeedQLiteLibrary.xcodeproj
+    - name: List files
+      run: ls -ltr
     - name: Upload code coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
