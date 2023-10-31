@@ -184,7 +184,8 @@ do {
 ```
 
 ### Delete
-To delete an instance, you need to call the `delete(completion: (()->Void)? = nil) throws -> Bool` function that will delete the instance from the database and return a boolean if it was deleted or not, and of course call the right listeners (mentioned at a later stage in this documentation).
+To delete an instance, you need to call the `delete(deleteSubObjects: Bool = false, completion: (()->Void)? = nil) throws -> Bool` function that will delete the instance from the database and return a boolean if it was deleted or not, and of course call the right listeners (mentioned at a later stage in this documentation).
+You can use `deleteSubObjects` to propagate the deletion of the object to it's sub-objects (in the properties)
 ```swift
 let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
