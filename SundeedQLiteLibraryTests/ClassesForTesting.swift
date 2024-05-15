@@ -59,6 +59,9 @@ enum Type {
 class EmployerForTesting: SundeedQLiter {
     var type: Type?
     var mandatoryType: Type = .manager
+    var data: Data?
+    var mandatoryData: Data = "Test Data".data(using: .utf8) ?? Data()
+    var optionalData: Data?
     var arrayOfTypes: [Type] = []
     var optionalArrayOfTypes: [Type]?
     var optionalArrayOfOptionalTypes: [Type?]?
@@ -152,6 +155,9 @@ class EmployerForTesting: SundeedQLiter {
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         type <~> (map["type"], TypeConverter())
         mandatoryType <~> (map["mandatoryType"], TypeConverter())
+        data <~> map["data"]
+        mandatoryData <~> map["mandatoryData"]
+        optionalData <~> map["optionalData"]
         arrayOfTypes <~> (map["arrayOfTypes"], TypeConverter())
         optionalArrayOfTypes <~> (map["optionalArrayOfTypes"], TypeConverter())
         optionalArrayOfOptionalTypes <~> (map["optionalArrayOfOptionalTypes"], TypeConverter())
@@ -254,6 +260,9 @@ class EmployerForTesting: SundeedQLiter {
         }
         type = .manager
         mandatoryType = .ceo
+        data = "Testing Data".data(using: .utf8)
+        mandatoryData = "Testing Mandatory Data".data(using: .utf8) ?? Data()
+        optionalData = "Testing Optional Data".data(using: .utf8)
         arrayOfTypes = [.manager, .ceo]
         optionalArrayOfTypes = [.manager, .ceo]
         optionalArrayOfOptionalTypes = [.manager, .ceo]
@@ -318,6 +327,9 @@ class EmployerForTesting: SundeedQLiter {
 
 class EmployerWithNoPrimaryForTesting: SundeedQLiter {
     var type: Type?
+    var data: Data?
+    var mandatoryData: Data = "Test Data".data(using: .utf8) ?? Data()
+    var optionalData: Data?
     var string: String = ""
     var optionalString: String?
     var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456")
@@ -406,6 +418,9 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
     required init() {}
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         type <~> (map["type"], TypeConverter())
+        data <~> map["data"]
+        mandatoryData <~> map["mandatoryData"]
+        optionalData <~> map["optionalData"]
         string <~> map["string"]
         optionalString <~> map["optionalString"]
         object <~> map["object"]
@@ -503,6 +518,9 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
             employees.append(employee)
         }
         type = .manager
+        data = "Testing Data".data(using: .utf8)
+        mandatoryData = "Testing Mandatory Data".data(using: .utf8) ?? Data()
+        optionalData = "Testing Optional Data".data(using: .utf8)
         string = "string"
         optionalString = "optionalString"
         object = employees[0]

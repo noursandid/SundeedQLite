@@ -113,6 +113,14 @@ class SaveProcessor {
                                     completion?()
                                     throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
                                 }
+                            } else if let attribute = attribute as? Data {
+                                if objects[Sundeed.shared.primaryKey] as? String != nil {
+                                    insertStatement.add(key: columnName,
+                                                        value: attribute)
+                                } else {
+                                    completion?()
+                                    throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+                                }
                             } else if let attribute = attribute as? [UIImage?] {
                                 let compactAttribute = attribute.compactMap({$0})
                                 if compactAttribute.count > 0,
@@ -162,8 +170,9 @@ class SaveProcessor {
                                 insertStatement.add(key: columnName, value: String(describing: attribute))
                             }
                         }
-                        let query = insertStatement.build()
-                        SundeedQLiteConnection.pool.execute(query: query, completion:
+                        let statement = insertStatement.build()
+                        SundeedQLiteConnection.pool.execute(query: statement?.query,
+                                                            parameters: statement?.parameters, completion:
                             {
                                 depth = self.completionIfNeeded(depth: depth, completion: completion)
                         })
@@ -189,7 +198,8 @@ class SaveProcessor {
                                         .add(key: Sundeed.shared.foreignKey, value: foreignKey)
                                         .add(key: Sundeed.shared.valueColumnName, value: String(describing: string))
                                         .build()
-                                    SundeedQLiteConnection.pool.execute(query: insertStatement, completion: {
+                                    SundeedQLiteConnection.pool.execute(query: insertStatement?.query,
+                                                                        parameters: insertStatement?.parameters, completion: {
                                         depth = self.completionIfNeeded(depth: depth) {
                                             completion?()
                                         }

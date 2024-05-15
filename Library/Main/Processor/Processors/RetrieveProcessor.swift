@@ -42,17 +42,22 @@ class RetrieveProcessor {
     }
     
     func fetchStatementResult(statement: OpaquePointer?,
-                              columns: [Int : String],
+                              columns: [(columnName: String, columnType: ParameterType)],
                               objectWrapper: ObjectWrapper,
                               subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [[String: Any]] {
         var array: [[String: Any]] = []
         while sqlite3_step(statement) == SQLITE_ROW {
             var dictionary: [String: Any] = [:]
             var primaryValue: String?
-            for column in columns {
-                if let databaseValue = sqlite3_column_text(statement, Int32(column.key)) {
+            for (index, column) in columns.enumerated() {
+                if case .blob = column.columnType,
+                   let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
+                    let size = Int(sqlite3_column_bytes(statement, Int32(index)))
+                    let value: Data = Data(bytes: databaseValue, count: size)
+                    dictionary[column.columnName] = value
+                } else if let databaseValue = sqlite3_column_text(statement, Int32(index)) {
                     let value: String = normalizeColumnValue(databaseValue)
-                    let columnName = column.value
+                    let columnName = column.columnName
                     if value != Sundeed.shared.databaseNull {
                         dictionary[columnName] = value
                     }
@@ -119,9 +124,9 @@ class RetrieveProcessor {
         if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK {
             let columns = getDatabaseColumns(forTable: table)
             var array: [String] = []
-            for column in columns where column.value == Sundeed.shared.valueColumnName {
+            for (index, column) in columns.enumerated() where column.columnName == Sundeed.shared.valueColumnName {
                 while sqlite3_step(statement) == SQLITE_ROW {
-                    if let columnValue = sqlite3_column_text(statement, Int32(column.key)) {
+                    if let columnValue = sqlite3_column_text(statement, Int32(index)) {
                         let value: String = String(cString: columnValue)
                         if value != Sundeed.shared.databaseNull {
                             array.append(value.replacingOccurrences(of: "\\\"", with: "\""))
@@ -135,23 +140,23 @@ class RetrieveProcessor {
         SundeedQLiteConnection.pool.closeConnection(database: database)
         return nil
     }
-    func getDatabaseColumns(forTable table: String) -> [Int: String] {
+    func getDatabaseColumns(forTable table: String) -> [(columnName: String, columnType: ParameterType)] {
         let database = try? SundeedQLiteConnection.pool.getConnection(toWrite: false)
         var columnsStatement: OpaquePointer?
-        var array: [String] = []
-        var dictionary: [Int: String] = [:]
+        var array: [(columnName: String, columnType: ParameterType)] = []
         sqlite3_prepare_v2(database,
                            "PRAGMA table_info(\(table));",-1,
                            &columnsStatement, nil)
         while sqlite3_step(columnsStatement) == SQLITE_ROW {
-            if let columnName = sqlite3_column_text(columnsStatement, 1) {
-                array.append(String(cString: columnName))
+            if let columnName = sqlite3_column_text(columnsStatement, 1),
+               let columnType = sqlite3_column_text(columnsStatement, 2) {
+                array.append((columnName: String(cString: columnName),
+                              columnType: ParameterType(typeString: String(cString: columnType))))
             }
         }
-        array.enumerated().forEach({dictionary[$0] = $1})
         columnsStatement = nil
         SundeedQLiteConnection.pool.closeConnection(database: database)
-        return dictionary
+        return array
     }
     func normalizeColumnValue(_ columnValue: UnsafePointer<UInt8>) -> String {
         String(cString: columnValue).replacingOccurrences(of: "\\\"", with: "\"")

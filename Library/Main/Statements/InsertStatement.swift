@@ -10,28 +10,29 @@ import Foundation
 
 class InsertStatement: Statement {
     private var tableName: String
-    private var keyValues: [(String, String?)] = []
+    private var keyValues: [(String, Any?)] = []
+    private var values: [ParameterType] = []
     init(with tableName: String) {
         self.tableName = tableName
     }
     @discardableResult
-    func add(key: String, value: String?) -> Self {
+    func add(key: String, value: Any?) -> Self {
         keyValues.append((key, value))
         return self
     }
-    func build() -> String? {
+    func build() -> (query: String, parameters: [ParameterType])? {
         guard !keyValues.isEmpty else { return nil }
         var statement: String = "REPLACE INTO \(tableName) ("
         addKeysAndValues(toStatement: &statement)
-        return statement
+        return (query: statement, parameters: values)
     }
     private func addKeysAndValues(toStatement statement: inout String) {
         var valuesStatement: String = ") VALUES ("
         for (index, (key, value)) in keyValues.enumerated() {
             let value = value ?? ""
-            let quotation = getQuotation(forValue: value)
             statement.append(key)
-            valuesStatement.append("\(quotation)\(value)\(quotation)")
+            valuesStatement.append("?")
+            values.append(getParameter(value))
             let needed = isLastIndex(index: index, in: keyValues)
             addSeparatorIfNeeded(separator: ", ",
                                  forStatement: &statement,

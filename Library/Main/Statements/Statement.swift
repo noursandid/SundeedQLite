@@ -21,4 +21,11 @@ class Statement {
     final func isLastIndex<T>(index: Int, in array: [T]) -> Bool {
         index != array.count - 1
     }
+    final func getParameter(_ value: Any) -> ParameterType {
+        if let value = value as? Data {
+            return .blob(value)
+        } else {
+            return .text("\(value)")
+        }
+    }
 }

@@ -10,13 +10,14 @@ import Foundation
 
 class UpdateStatement: Statement {
     private var tableName: String
-    private var keyValues: [(String, String)] = []
+    private var keyValues: [(String, Any?)] = []
+    private var values: [ParameterType] = []
     private var filters: [SundeedExpression<Bool>] = []
     init(with tableName: String) {
         self.tableName = tableName
     }
     @discardableResult
-    func add(key: String, value: String) -> Self {
+    func add(key: String, value: Any?) -> Self {
         keyValues.append((key, value))
         return self
     }
@@ -25,18 +26,18 @@ class UpdateStatement: Statement {
         self.filters = filters.compactMap({$0})
         return self
     }
-    func build() -> String? {
+    func build() -> (query: String, parameters: [ParameterType])? {
         guard !keyValues.isEmpty else { return nil }
         var statement = "UPDATE \(tableName) SET "
         addKeyValues(toStatement: &statement)
         addFilters(toStatement: &statement)
-        return statement
+        return (query: statement, parameters: values)
     }
     private func addKeyValues(toStatement statement: inout String) {
         for (index, (key, value)) in keyValues.enumerated() {
-            let value = value
-            let quotation = getQuotation(forValue: value)
-            statement.append("\(key) = \(quotation)\(value)\(quotation)")
+            let value = value ?? ""
+            statement.append("\(key) = ?")
+            values.append(getParameter(value))
             addSeparatorIfNeeded(separator: ", ",
                                  forStatement: &statement,
                                  needed: isLastIndex(index: index, in: keyValues))

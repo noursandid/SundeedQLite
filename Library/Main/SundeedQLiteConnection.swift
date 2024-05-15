@@ -9,14 +9,29 @@
 import Foundation
 import SQLite3
 
+enum ParameterType {
+    case text(String)
+    case blob(Data)
+    
+    init(typeString: String) {
+        switch typeString {
+        case "BLOB":
+            self = .blob(Data())
+        default:
+            self = .text("")
+        }
+    }
+}
 class SundeedQLiteConnection {
     static var pool: SundeedQLiteConnection = SundeedQLiteConnection()
-    var sqlStatements: [(String, (()->Void)?)] = []
+    var sqlStatements: [(String, [ParameterType]?, (()->Void)?)] = []
     var canExecute: Bool = true
     let fileManager = FileManager.default
     let destPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
                                                        .userDomainMask,
                                                        true).first!
+    let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+    
     lazy var fullDestPath = NSURL(fileURLWithPath: destPath)
         .appendingPathComponent(Sundeed.shared.databaseFileName)
     func getConnection(toWrite: Bool = false) throws -> OpaquePointer? {
@@ -48,7 +63,7 @@ class SundeedQLiteConnection {
             closeConnection(database: database)
         }
     }
-    func execute(query: String?, force: Bool = false, completion: (()->Void)? = nil) {
+    func execute(query: String?, parameters: [ParameterType]? = nil, force: Bool = false, completion: (()->Void)? = nil) {
         guard let query = query else {
             completion?()
             return
@@ -61,16 +76,26 @@ class SundeedQLiteConnection {
                     var statement: OpaquePointer?
                     let prepare = sqlite3_prepare_v2(writeConnection, query, -1, &statement, nil)
                     if  prepare == SQLITE_OK {
+                        parameters?.enumerated().forEach({ (index, value) in
+                            switch value {
+                            case .text(let value):
+                                sqlite3_bind_text(statement, Int32(index+1),
+                                                  value, -1, self.SQLITE_TRANSIENT)
+                            case .blob(let data):
+                                sqlite3_bind_blob(statement, Int32(index+1),
+                                                  NSData(data: data).bytes, Int32(NSData(data: data).length), self.SQLITE_TRANSIENT)
+                            }
+                        })
                         if sqlite3_step(statement) == SQLITE_DONE {
                             sqlite3_finalize(statement)
                         } else {
                             sqlite3_finalize(statement)
-                            self.sqlStatements.insert((query, completion), at: 0)
+                            self.sqlStatements.insert((query, parameters, completion), at: 0)
                         }
                     } else {
                         if prepare != SQLITE_ERROR {
                             sqlite3_finalize(statement)
-                            self.sqlStatements.insert((query, completion), at: 0)
+                            self.sqlStatements.insert((query, parameters, completion), at: 0)
                         }
                     }
                     let combination = self.sqlStatements.popLast()
@@ -78,7 +103,7 @@ class SundeedQLiteConnection {
                         self.closeConnection(database: writeConnection)
                         statement = nil
                         writeConnection = nil
-                        self.execute(query: oldQuery, force: true, completion: combination?.1)
+                        self.execute(query: oldQuery, parameters: combination?.1, force: true, completion: combination?.2)
                     } else {
                         completion?()
                         self.closeConnection(database: writeConnection)
@@ -87,10 +112,10 @@ class SundeedQLiteConnection {
                         self.canExecute = true
                     }
                 } else {
-                    self.sqlStatements.insert((query, completion), at: 0)
+                    self.sqlStatements.insert((query, parameters, completion), at: 0)
                 }
             } catch {
-                self.sqlStatements.insert((query, completion), at: 0)
+                self.sqlStatements.insert((query, parameters, completion), at: 0)
             }
         }
     }

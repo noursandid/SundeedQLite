@@ -96,7 +96,32 @@ class SundeedQLiteLibraryTests: XCTestCase {
         let query = UpdateStatement(with: "table")
             .add(key: "column1", value: "value1")
             .build()
-        XCTAssertEqual(query, "UPDATE table SET column1 = \'value1\' WHERE 1")
+        XCTAssertEqual(query?.query, "UPDATE table SET column1 = ? WHERE 1")
+        XCTAssertEqual(query?.parameters.count, 1)
+        switch query?.parameters.first {
+        case .text(let text):
+            XCTAssertEqual(text, "value1")
+        case .blob:
+            XCTFail("UPDATE IS NOT BLOB")
+        case .none:
+            XCTFail("PARAMETERS SHOULDN'T BE NIL")
+        }
+    }
+    
+    func testUpdateDataWithNoFilter() {
+        let query = UpdateStatement(with: "table")
+            .add(key: "column1", value: "value1".data(using: .utf8))
+            .build()
+        XCTAssertEqual(query?.query, "UPDATE table SET column1 = ? WHERE 1")
+        XCTAssertEqual(query?.parameters.count, 1)
+        switch query?.parameters.first {
+        case .text:
+            XCTFail("UPDATE IS NOT TEXT")
+        case .blob(let data):
+            XCTAssertEqual(String(data: data, encoding: .utf8), "value1")
+        case .none:
+            XCTFail("PARAMETERS SHOULDN'T BE NIL")
+        }
     }
     
     func testDeleteWithNoFilter() {

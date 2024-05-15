@@ -556,6 +556,9 @@ class OperationTests: XCTestCase {
     
     private func checkEmployer(_ employer: EmployerForTesting) {
         XCTAssertEqual(employer.type, .manager)
+        XCTAssertEqual(employer.data, "Testing Data".data(using: .utf8))
+        XCTAssertEqual(employer.mandatoryData, "Testing Mandatory Data".data(using: .utf8) ?? Data())
+        XCTAssertEqual(employer.optionalData, "Testing Optional Data".data(using: .utf8))
         XCTAssertEqual(employer.mandatoryType, .ceo)
         XCTAssertEqual(employer.arrayOfTypes, [.manager, .ceo])
         XCTAssertEqual(employer.optionalArrayOfTypes, [.manager, .ceo])

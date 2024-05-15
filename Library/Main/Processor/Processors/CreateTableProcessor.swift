@@ -24,11 +24,15 @@ class CreateTableProcessor {
                     if let firstAttribute = attribute.first {
                         try createTableIfNeeded(for: firstAttribute)
                     }
-                } else
-                    if attribute is [Any] {
+                } else if attribute is [Any] {
                     createTableForPrimitiveDataTypes(withTableName: columnName)
                 }
-                createTableStatement.addColumn(with: columnName)
+                
+                if attribute is Data {
+                    createTableStatement.addColumn(with: columnName, type: .blob)
+                } else {
+                    createTableStatement.addColumn(with: columnName, type: .text)
+                }
                 if columnName == "index" {
                     throw SundeedQLiteError.cantUseNameIndex(tableName: object.tableName)
                 }
@@ -36,8 +40,9 @@ class CreateTableProcessor {
             if objects[Sundeed.shared.primaryKey] != nil {
                 createTableStatement.withPrimaryKey()
             }
-            let query: String? = createTableStatement.build()
-            SundeedQLiteConnection.pool.execute(query: query)
+            let statement: String? = createTableStatement.build()
+            SundeedQLiteConnection.pool.execute(query: statement,
+                                                parameters: nil)
             Sundeed.shared.tables.append(object.tableName)
         }
     }
@@ -46,9 +51,9 @@ class CreateTableProcessor {
         if  !Sundeed.shared.tables.contains(tableName) {
             let createTableStatement = StatementBuilder()
                 .createTableStatement(tableName: tableName)
-                .addColumn(with: Sundeed.shared.valueColumnName)
+                .addColumn(with: Sundeed.shared.valueColumnName, type: .text)
                 .build()
-            SundeedQLiteConnection.pool.execute(query: createTableStatement)
+            SundeedQLiteConnection.pool.execute(query: createTableStatement, parameters: nil)
             Sundeed.shared.tables.append(tableName)
         }
     }
