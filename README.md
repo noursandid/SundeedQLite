@@ -62,6 +62,7 @@ dependencies: [
 - Date
 - UIImage
 - Array
+- Data
 - enum/struct (see below documentation)
 
 *P.S:*
