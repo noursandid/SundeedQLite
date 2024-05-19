@@ -10,58 +10,48 @@ import XCTest
 import SundeedQLiteLibrary
 
 class ArrayMandatoryTestWithEmpty: XCTestCase {
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await ClassContainingAMandatoryArrayWithEmpty.delete()
+            await ClassContainingAMandatoryOptionalArrayWithEmpty.delete()
+            await ClassContainingAMandatoryOptionalArrayWithOptionalEmpty.delete()
+            await ClassContainingAMandatoryArrayWithOptionalEmpty.delete()
+            completion(nil)
+        }
     }
     
-    func testClassContainingAMandatoryArrayWithEmpty() {
+    func testClassContainingAMandatoryArrayWithEmpty() async {
         let mainClass = ClassContainingAMandatoryArrayWithEmpty()
         mainClass.mandatoryClasses = [MandatoryClass()]
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithEmpty")
-        mainClass.save {
-            ClassContainingAMandatoryArrayWithEmpty.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithEmpty.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryOptionalArrayWithEmpty() {
+    func testClassContainingAMandatoryOptionalArrayWithEmpty() async {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithEmpty()
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithEmpty")
-        mainClass.save {
-            ClassContainingAMandatoryOptionalArrayWithEmpty.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithEmpty.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryOptionalArrayWithOptionalEmpty() {
+    func testClassContainingAMandatoryOptionalArrayWithOptionalEmpty() async {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalEmpty()
         mainClass.mandatoryClasses = []
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithOptionalEmpty")
-        mainClass.save {
-            ClassContainingAMandatoryOptionalArrayWithOptionalEmpty.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalEmpty.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryArrayWithOptionalEmpty() {
+    func testClassContainingAMandatoryArrayWithOptionalEmpty() async {
         let mainClass = ClassContainingAMandatoryArrayWithOptionalEmpty()
         mainClass.mandatoryClasses = [MandatoryClass()]
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithOptionalEmpty")
-        mainClass.save {
-            ClassContainingAMandatoryArrayWithOptionalEmpty.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalEmpty.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
 }

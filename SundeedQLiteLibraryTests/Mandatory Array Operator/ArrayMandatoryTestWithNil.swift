@@ -10,111 +10,85 @@ import XCTest
 import SundeedQLiteLibrary
 
 class ArrayMandatoryTestWithNil: XCTestCase {
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await ClassContainingAMandatoryOptionalArrayWithNil.delete()
+            await ClassContainingAMandatoryArrayWithNil.delete()
+            await ClassContainingAMandatoryArrayWithOptionalNil.delete()
+            await ClassContainingAMandatoryOptionalArrayWithOptionalNil.delete()
+            completion(nil)
+        }
     }
     
-    func testClassContainingAMandatoryOptionalArrayWithNil() {
+    func testClassContainingAMandatoryOptionalArrayWithNil() async {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithNil()
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithNil")
-        mainClass.save {
-            ClassContainingAMandatoryOptionalArrayWithNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryArrayWithNil() {
+    func testClassContainingAMandatoryArrayWithNil() async {
         let mainClass = ClassContainingAMandatoryArrayWithNil()
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithNil")
-        mainClass.save {
-            ClassContainingAMandatoryArrayWithNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryArrayWithOptionalNil() {
+    func testClassContainingAMandatoryArrayWithOptionalNil() async {
         let mainClass = ClassContainingAMandatoryArrayWithOptionalNil()
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithOptionalNil")
-        mainClass.save {
-            ClassContainingAMandatoryArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryOptionalArrayWithOptionalNil() {
+    func testClassContainingAMandatoryOptionalArrayWithOptionalNil() async {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalNil()
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithOptionalNil")
-        mainClass.save {
-            ClassContainingAMandatoryOptionalArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryOptionalArrayWithNilSubObject() {
+    func testClassContainingAMandatoryOptionalArrayWithNilSubObject() async {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithNil()
         let mandatoryClass = MandatoryClass()
         mainClass.mandatoryClasses = [mandatoryClass]
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithNil")
-        mainClass.save {
-            ClassContainingAMandatoryOptionalArrayWithNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryArrayWithNilSubObject() {
+    func testClassContainingAMandatoryArrayWithNilSubObject() async {
         let mainClass = ClassContainingAMandatoryArrayWithNil()
         let mandatoryClass = MandatoryClass()
         mainClass.mandatoryClasses = [mandatoryClass]
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithNil")
-        mainClass.save {
-            ClassContainingAMandatoryArrayWithNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryArrayWithOptionalNilSubObject() {
+    func testClassContainingAMandatoryArrayWithOptionalNilSubObject() async {
         let mainClass = ClassContainingAMandatoryArrayWithOptionalNil()
         let mandatoryClass = MandatoryClass()
         mainClass.mandatoryClasses = [mandatoryClass]
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryArrayWithOptionalNil")
-        mainClass.save {
-            ClassContainingAMandatoryArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
     
-    func testClassContainingAMandatoryOptionalArrayWithOptionalNilSubObject() {
+    func testClassContainingAMandatoryOptionalArrayWithOptionalNilSubObject() async {
         let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalNil()
         let mandatoryClass = MandatoryClass()
         mainClass.mandatoryClasses = [mandatoryClass]
-        let expectation = XCTestExpectation(description: "ClassContainingAMandatoryOptionalArrayWithOptionalNil")
-        mainClass.save {
-            ClassContainingAMandatoryOptionalArrayWithOptionalNil.retrieve(completion: { (retrievedClasses) in
-                XCTAssertEqual(retrievedClasses.count, 0)
-                expectation.fulfill()
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalNil.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
     }
 }

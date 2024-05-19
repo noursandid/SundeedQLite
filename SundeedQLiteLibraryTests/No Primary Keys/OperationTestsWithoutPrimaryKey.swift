@@ -20,90 +20,68 @@ class OperationTestsWithoutPrimaryKey: XCTestCase {
         noPrimary = ClassWithNoPrimary()
         noPrimary?.fillData()
     }
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerWithNoPrimaryForTesting.delete()
+            await ClassWithNoPrimary.delete()
+            noPrimary = nil
+            employerWithNoPrimary = nil
+            completion(nil)
+        }
+    }
     
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
-        noPrimary = nil
-        employerWithNoPrimary = nil
+    func testSaveEmployerWithNoPrimary() async {
+        await employerWithNoPrimary?.save()
+        let employers = await EmployerWithNoPrimaryForTesting.retrieve()
+        XCTAssert(employers.isEmpty)
     }
     
     
-    func testSaveEmployerWithNoPrimary() {
-        let expectation = XCTestExpectation(description: "SaveEmployerWithNoPrimary")
-        employerWithNoPrimary?.save {
-            EmployerWithNoPrimaryForTesting
-                .retrieve(completion: { (employers) in
-                    XCTAssert(employers.isEmpty)
-                    expectation.fulfill()
-                })
+    func testRetrieve() async {
+        
+        await noPrimary?.save()
+        let noPrimaries = await ClassWithNoPrimary.retrieve()
+        guard let noPrimary = noPrimaries.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
         }
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(noPrimary.firstName, "TestFirst")
+        XCTAssertEqual(noPrimary.lastName, "TestLast")
     }
     
-    
-    func testRetrieve() {
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        noPrimary?.save {
-            ClassWithNoPrimary.retrieve(completion: { (noPrimaries) in
-                guard let noPrimary = noPrimaries.first else {
-                    XCTFail("Couldn't Retrieve From Database")
-                    return
-                }
-                XCTAssertEqual(noPrimary.firstName, "TestFirst")
-                XCTAssertEqual(noPrimary.lastName, "TestLast")
-                expectation.fulfill()
-            })
+    func testRetrieveWithFilter() async {
+        
+        await noPrimary?.save()
+            let noPrimaries = await ClassWithNoPrimary.retrieve(withFilter: SundeedColumn("firstName") == "TestFirst")
+        
+        guard let noPrimary = noPrimaries.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
         }
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(noPrimary.firstName, "TestFirst")
+        XCTAssertEqual(noPrimary.lastName, "TestLast")
     }
     
-    func testRetrieveWithFilter() {
-        let expectation = XCTestExpectation(description: "RetrieveWithFilter")
-        noPrimary?.save {
-            ClassWithNoPrimary
-                .retrieve(withFilter: SundeedColumn("firstName") == "TestFirst",
-                          completion: { (noPrimaries) in
-                            guard let noPrimary = noPrimaries.first else {
-                                XCTFail("Couldn't Retrieve From Database")
-                                return
-                            }
-                            XCTAssertEqual(noPrimary.firstName, "TestFirst")
-                            XCTAssertEqual(noPrimary.lastName, "TestLast")
-                            expectation.fulfill()
-                })
+    func testUpdate() async {
+        await noPrimary?.save()
+        do {
+            self.noPrimary?.firstName = "TestFirstUpdated"
+            try await self.noPrimary?.update(columns: SundeedColumn("firstName"))
+            XCTFail("It shouldn't be able to update")
+        } catch {
+            XCTAssertTrue(true)
         }
-        wait(for: [expectation], timeout: 1)
     }
     
-    func testUpdate() {
-        let expectation = XCTestExpectation(description: "Update")
-        noPrimary?.save {
-            do {
-                self.noPrimary?.firstName = "TestFirstUpdated"
-                try self.noPrimary?.update(columns: SundeedColumn("firstName"))
-                XCTFail("It shouldn't be able to update")
-                expectation.fulfill()
-            } catch {
-                expectation.fulfill()
-            }
-            
+    func testGlobalUpdate() async {
+        
+        await noPrimary?.save()
+        do {
+            try await ClassWithNoPrimary.update(changes: SundeedColumn("firstName") <~ "TestFirstUpdated")
+            XCTFail("It shouldn't be able to update")
+        } catch {
+            XCTAssertTrue(true)
         }
-        wait(for: [expectation], timeout: 2)
-    }
-    
-    func testGlobalUpdate() {
-        let expectation = XCTestExpectation(description: "GlobalUpdate")
-        noPrimary?.save {
-            do {
-                try ClassWithNoPrimary.update(changes: SundeedColumn("firstName") <~ "TestFirstUpdated")
-                XCTFail("It shouldn't be able to update")
-                expectation.fulfill()
-            } catch {
-                expectation.fulfill()
-            }
-            
-        }
-        wait(for: [expectation], timeout: 1)
     }
     
 }

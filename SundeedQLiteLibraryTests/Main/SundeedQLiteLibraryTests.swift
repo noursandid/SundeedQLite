@@ -10,8 +10,12 @@ import XCTest
 @testable import SundeedQLiteLibrary
 
 class SundeedQLiteLibraryTests: XCTestCase {
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerForTesting.delete()
+            await EmployeeForTesting.delete()
+            completion(nil)
+        }
     }
     
     func testSubscript() {
@@ -142,9 +146,9 @@ class SundeedQLiteLibraryTests: XCTestCase {
         XCTAssertNil(wrapper)
     }
     
-    func testDeleteWithNoPrimary() {
+    func testDeleteWithNoPrimary()async  {
         do {
-            _ = try SundeedQLite.instance.deleteFromDB(object: ClassWithNoPrimary(), deleteSubObjects: false)
+            _ = try await SundeedQLite.instance.deleteFromDB(object: ClassWithNoPrimary(), deleteSubObjects: false)
             XCTFail("Shouldn't continue")
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {
@@ -155,12 +159,12 @@ class SundeedQLiteLibraryTests: XCTestCase {
         }
     }
     
-    func testCreateTableWithNilObjectWrapper() {
+    func testCreateTableWithNilObjectWrapper() async {
         let objectWrapper = ObjectWrapper(tableName: "Table",
                                           className: "Class",
                                           objects: nil)
         do {
-            try CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
+            try await CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
             XCTFail("Weirdly it continued without throwing an error")
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {

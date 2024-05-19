@@ -9,7 +9,7 @@
 import Foundation
 
 class CreateTableProcessor {
-    func createTableIfNeeded(for object: ObjectWrapper?) throws {
+    func createTableIfNeeded(for object: ObjectWrapper?) async throws {
         guard let object = object,
             let objects = object.objects else {
                 throw SundeedQLiteError.noObjectPassed
@@ -19,13 +19,13 @@ class CreateTableProcessor {
                 .createTableStatement(tableName: object.tableName)
             for (columnName, attribute) in objects {
                 if let attribute = attribute as? ObjectWrapper {
-                    try createTableIfNeeded(for: attribute)
+                    try await createTableIfNeeded(for: attribute)
                 } else if let attribute = attribute as? [ObjectWrapper] {
                     if let firstAttribute = attribute.first {
-                        try createTableIfNeeded(for: firstAttribute)
+                        try await createTableIfNeeded(for: firstAttribute)
                     }
                 } else if attribute is [Any] {
-                    createTableForPrimitiveDataTypes(withTableName: columnName)
+                    await createTableForPrimitiveDataTypes(withTableName: columnName)
                 }
                 
                 if attribute is Data {
@@ -41,19 +41,19 @@ class CreateTableProcessor {
                 createTableStatement.withPrimaryKey()
             }
             let statement: String? = createTableStatement.build()
-            SundeedQLiteConnection.pool.execute(query: statement,
+            await SundeedQLiteConnection.pool.execute(query: statement,
                                                 parameters: nil)
             Sundeed.shared.tables.append(object.tableName)
         }
     }
     /** Try to create table for primitive data types if not already exists */
-    func createTableForPrimitiveDataTypes(withTableName tableName: String) {
+    func createTableForPrimitiveDataTypes(withTableName tableName: String) async {
         if  !Sundeed.shared.tables.contains(tableName) {
             let createTableStatement = StatementBuilder()
                 .createTableStatement(tableName: tableName)
                 .addColumn(with: Sundeed.shared.valueColumnName, type: .text)
                 .build()
-            SundeedQLiteConnection.pool.execute(query: createTableStatement, parameters: nil)
+            await SundeedQLiteConnection.pool.execute(query: createTableStatement, parameters: nil)
             Sundeed.shared.tables.append(tableName)
         }
     }

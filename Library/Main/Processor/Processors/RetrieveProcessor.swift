@@ -14,7 +14,7 @@ class RetrieveProcessor {
                   withFilter filters: SundeedExpression<Bool>?...,
                   excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
-        var database: OpaquePointer? = try? SundeedQLiteConnection.pool.getConnection()
+        var database: OpaquePointer? = SundeedQLiteConnection.pool.connection
         let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
         if !columns.isEmpty {
             var statement: OpaquePointer?
@@ -115,7 +115,7 @@ class RetrieveProcessor {
     }
     func getPrimitiveValues(forTable table: String,
                             withFilter filter: SundeedExpression<Bool>?) -> [String]? {
-        let database = try? SundeedQLiteConnection.pool.getConnection()
+        let database = SundeedQLiteConnection.pool.connection
         var statement: OpaquePointer?
         let selectStatement = StatementBuilder()
             .selectStatement(tableName: table)
@@ -141,7 +141,7 @@ class RetrieveProcessor {
         return nil
     }
     func getDatabaseColumns(forTable table: String) -> [(columnName: String, columnType: ParameterType)] {
-        let database = try? SundeedQLiteConnection.pool.getConnection(toWrite: false)
+        let database = SundeedQLiteConnection.pool.connection
         var columnsStatement: OpaquePointer?
         var array: [(columnName: String, columnType: ParameterType)] = []
         sqlite3_prepare_v2(database,

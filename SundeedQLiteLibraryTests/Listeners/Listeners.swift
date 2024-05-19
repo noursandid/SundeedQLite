@@ -16,8 +16,11 @@ class Listeners: XCTestCase {
         employer?.fillData()
     }
     
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerForTesting.delete()
+            completion(nil)
+        }
     }
     
     func testSpecificOnAllEventsListener() {
@@ -26,8 +29,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        EmployerForTesting.delete {
-            self.employer?.save()
+        Task {
+            await EmployerForTesting.delete()
+            await self.employer?.save()
         }
         wait(for: [expectation], timeout: 5)
         listener?.stop()
@@ -39,8 +43,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        EmployerForTesting.delete {
-            self.employer?.save()
+        Task {
+            await EmployerForTesting.delete()
+            await self.employer?.save()
         }
         wait(for: [expectation], timeout: 5)
         listener?.stop()
@@ -52,9 +57,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "test")
             expectation.fulfill()
         })
-        self.employer?.save() {
+        Task {
+            await self.employer?.save()
             self.employer?.string = "test"
-            try? self.employer?.update(columns: SundeedColumn("string"))
+            try? await self.employer?.update(columns: SundeedColumn("string"))
         }
         wait(for: [expectation], timeout: 5)
         listener?.stop()
@@ -66,10 +72,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        EmployerForTesting.delete {
-            self.employer?.save {
-                EmployerForTesting.retrieve(completion: { _ in })
-            }
+        Task {
+            await EmployerForTesting.delete()
+            await self.employer?.save()
+            let _ = await EmployerForTesting.retrieve()
         }
         wait(for: [expectation], timeout: 5)
         listener?.stop()
@@ -81,7 +87,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        _ = try? employer?.delete()
+        Task {
+            try? await employer?.delete()
+        }
         wait(for: [expectation], timeout: 5)
         listener?.stop()
     }
@@ -93,8 +101,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        EmployerForTesting.delete {
-            self.employer?.save()
+        Task {
+            await EmployerForTesting.delete()
+            await self.employer?.save()
         }
         wait(for: [expectation], timeout: 5)
         listener.stop()
@@ -106,8 +115,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        EmployerForTesting.delete {
-            self.employer?.save()
+        Task {
+            await EmployerForTesting.delete()
+            await self.employer?.save()
         }
         wait(for: [expectation], timeout: 5)
         listener.stop()
@@ -119,9 +129,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "test")
             expectation.fulfill()
         })
-        employer?.save {
+        Task {
+            await employer?.save()
             self.employer?.string = "test"
-            try? self.employer?.update(columns: SundeedColumn("string"))
+            try? await self.employer?.update(columns: SundeedColumn("string"))
         }
         wait(for: [expectation], timeout: 5)
         listener.stop()
@@ -133,10 +144,10 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        EmployerForTesting.delete {
-            self.employer?.save {
-                EmployerForTesting.retrieve(completion: { _ in })
-            }
+        Task {
+            await EmployerForTesting.delete()
+            await self.employer?.save()
+            let _ = await EmployerForTesting.retrieve()
         }
         wait(for: [expectation], timeout: 5)
         listener.stop()
@@ -148,7 +159,9 @@ class Listeners: XCTestCase {
             XCTAssertEqual(object.string, "string")
             expectation.fulfill()
         })
-        _ = try? self.employer?.delete()
+        Task {
+            try? await self.employer?.delete()
+        }
         wait(for: [expectation], timeout: 5)
         listener.stop()
     }
