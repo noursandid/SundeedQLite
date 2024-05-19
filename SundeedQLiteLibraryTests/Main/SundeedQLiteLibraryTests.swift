@@ -10,8 +10,12 @@ import XCTest
 @testable import SundeedQLiteLibrary
 
 class SundeedQLiteLibraryTests: XCTestCase {
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerForTesting.delete()
+            await EmployeeForTesting.delete()
+            completion(nil)
+        }
     }
     
     func testSubscript() {
@@ -96,7 +100,32 @@ class SundeedQLiteLibraryTests: XCTestCase {
         let query = UpdateStatement(with: "table")
             .add(key: "column1", value: "value1")
             .build()
-        XCTAssertEqual(query, "UPDATE table SET column1 = \'value1\' WHERE 1")
+        XCTAssertEqual(query?.query, "UPDATE table SET column1 = ? WHERE 1")
+        XCTAssertEqual(query?.parameters.count, 1)
+        switch query?.parameters.first {
+        case .text(let text):
+            XCTAssertEqual(text, "value1")
+        case .blob:
+            XCTFail("UPDATE IS NOT BLOB")
+        case .none:
+            XCTFail("PARAMETERS SHOULDN'T BE NIL")
+        }
+    }
+    
+    func testUpdateDataWithNoFilter() {
+        let query = UpdateStatement(with: "table")
+            .add(key: "column1", value: "value1".data(using: .utf8))
+            .build()
+        XCTAssertEqual(query?.query, "UPDATE table SET column1 = ? WHERE 1")
+        XCTAssertEqual(query?.parameters.count, 1)
+        switch query?.parameters.first {
+        case .text:
+            XCTFail("UPDATE IS NOT TEXT")
+        case .blob(let data):
+            XCTAssertEqual(String(data: data, encoding: .utf8), "value1")
+        case .none:
+            XCTFail("PARAMETERS SHOULDN'T BE NIL")
+        }
     }
     
     func testDeleteWithNoFilter() {
@@ -117,9 +146,9 @@ class SundeedQLiteLibraryTests: XCTestCase {
         XCTAssertNil(wrapper)
     }
     
-    func testDeleteWithNoPrimary() {
+    func testDeleteWithNoPrimary()async  {
         do {
-            _ = try SundeedQLite.instance.deleteFromDB(object: ClassWithNoPrimary(), deleteSubObjects: false)
+            _ = try await SundeedQLite.instance.deleteFromDB(object: ClassWithNoPrimary(), deleteSubObjects: false)
             XCTFail("Shouldn't continue")
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {
@@ -130,12 +159,12 @@ class SundeedQLiteLibraryTests: XCTestCase {
         }
     }
     
-    func testCreateTableWithNilObjectWrapper() {
+    func testCreateTableWithNilObjectWrapper() async {
         let objectWrapper = ObjectWrapper(tableName: "Table",
                                           className: "Class",
                                           objects: nil)
         do {
-            try CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
+            try await CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
             XCTFail("Weirdly it continued without throwing an error")
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {

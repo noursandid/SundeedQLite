@@ -5,7 +5,7 @@
 
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
-- ##### iOS 12.0+
+- ##### iOS 13.0+
 - ##### XCode 10.3+
 - ##### Swift 5+
 ### Installation
@@ -35,7 +35,7 @@ To install SundeedQLite using SPM,
 dependencies: [
   .package(
     url: "https://github.com/noursandid/SundeedQLite.git",
-    from: "1.3.0"
+    from: "3.0.0"
   ),
 ]
 ```
@@ -62,6 +62,7 @@ dependencies: [
 - Date
 - UIImage
 - Array
+- Data
 - enum/struct (see below documentation)
 
 *P.S:*
@@ -124,7 +125,8 @@ class Employee: SundeedQLiter {
 
 ### Save
 
-To save an instance of a Model, you just need to call `.save(withForeignKey foreignKey: String? = nil, completion: (()->Void)? = nil)` function on the instance itself and it should be sufficient to create the table with the right columns and propagate the data, and of course call the right listeners (mentioned at a later stage in this documentation).
+To save an instance of a Model, you just need to call `.save(withForeignKey foreignKey: String? = nil)` function on the instance itself and it should be sufficient to create the table with the right columns and propagate the data, and of course call the right listeners (mentioned at a later stage in this documentation).
+To save an instance of a Model, you just need to call `.save(withForeignKey foreignKey: String? = nil)` function on the instance itself and it should be sufficient to create the table with the right columns and propagate the data, and of course call the right listeners (mentioned at a later stage in this documentation).
 The foreign key gives the ability to save a specific instance and link it to another one.
 
 ```swift
@@ -135,7 +137,7 @@ employer.save()
 
 let employee = Employee()
 employee.firstName = "Nour"
-employee.save(withForeignKey: "ABCD-1234-EFGH-5678")
+await employee.save(withForeignKey: "ABCD-1234-EFGH-5678")
 ```
 
 You can also save an array of `SundeedQLiter` objects
@@ -150,11 +152,11 @@ employer2.fullName = "Test Employer"
 
 // time to save
 let employers = [employer1, employer2]
-employers.save()
+await employers.save()
 ```
 
 ### Update
-To update an instance of a Model, you need to update the value in that instance, and then call the `update(columns: SundeedColumn..., completion: (()->Void)? = nil) throws` function. This will update the instance value in the database, and of course call the right listeners (mentioned at a later stage in this documentation).
+To update an instance of a Model, you need to update the value in that instance, and then call the `update(columns: SundeedColumn...) throws` function. This will update the instance value in the database, and of course call the right listeners (mentioned at a later stage in this documentation).
 
 ```swift
 let employer = Employer()
@@ -163,20 +165,20 @@ employer.fullName = "Nour Sandid"
 employer.save()
 
 employer.fullName = "Test"
-employer.update(columns: SundeedColumn("fullName")) // this string should be exactly as the one in the `sundeedQLiterMapping` function.
+await employer.update(columns: SundeedColumn("fullName")) // this string should be exactly as the one in the `sundeedQLiterMapping` function.
 ```
 
-To update all instances of the same type from the database, you can call the static function `update(changes: SundeedUpdateSetStatement..., withFilter filter: SundeedExpression<Bool>? = nil, completion: (()->Void)? = nil) throws)` that would update specific columns for all the rows respecting the filters.
+To update all instances of the same type from the database, you can call the static function `update(changes: SundeedUpdateSetStatement..., withFilter filter: SundeedExpression<Bool>? = nil) async throws)` that would update specific columns for all the rows respecting the filters.
 
 ```swift
 let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
 employer.fullName = "Nour Sandid"
-employer.save()
+await employer.save()
 
 // time to update
 do {
-    try CoreUser.update(changes: SundeedColumn("fullName") <~ "Test",
+    try await CoreUser.update(changes: SundeedColumn("fullName") <~ "Test",
                                  withFilter: SundeedColumn("fullName") == "Nour Sandid")
 } catch {
     print(error)
@@ -184,31 +186,31 @@ do {
 ```
 
 ### Delete
-To delete an instance, you need to call the `delete(deleteSubObjects: Bool = false, completion: (()->Void)? = nil) throws -> Bool` function that will delete the instance from the database and return a boolean if it was deleted or not, and of course call the right listeners (mentioned at a later stage in this documentation).
+To delete an instance, you need to call the `delete(deleteSubObjects: Bool = false) async throws -> Bool` function that will delete the instance from the database and return a boolean if it was deleted or not, and of course call the right listeners (mentioned at a later stage in this documentation).
 You can use `deleteSubObjects` to propagate the deletion of the object to it's sub-objects (in the properties)
 ```swift
 let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
 employer.fullName = "Nour Sandid"
-employer.save()
+await employer.save()
 
 // time to delete
-employer.delete()
+await employer.delete()
 ```
 
-To delete all the instances of the same type from the database, you can call the static function `delete(withFilter filters: SundeedExpression<Bool>..., completion: (()->Void)? = nil)`, you can also pass filters to be more specific.
+To delete all the instances of the same type from the database, you can call the static function `delete(withFilter filters: SundeedExpression<Bool>...)`, you can also pass filters to be more specific.
 ```swift
 let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
 employer.fullName = "Nour Sandid"
-employer.save()
+await employer.save()
 
 // time to delete
-employer.delete(withFilter: SundeedColumn("fullName") == "Nour Sandid") 
+await employer.delete(withFilter: SundeedColumn("fullName") == "Nour Sandid") 
 ```
 
 ### Retrieve
-To retrieve instances saved previously in the database, you need to call the static function  `.retrieve(withFilter filter: SundeedExpression<Bool>? = nil, orderBy order: SundeedColumn? = nil, ascending asc: Bool = true, excludeIfIsForeign: Bool = false, completion: ((_ data: [Self]) -> Void )?)`, which will retrieve all the instance of that type respecting the filters and the order. `excludeIfIsForeign` is responsible to exclude all the instances that are related to other instances (values for properties in other instances)
+To retrieve instances saved previously in the database, you need to call the static function  `.retrieve(withFilter filter: SundeedExpression<Bool>? = nil, orderBy order: SundeedColumn? = nil, ascending asc: Bool = true, excludeIfIsForeign: Bool = false) async -> [Self]`, which will retrieve all the instance of that type respecting the filters and the order. `excludeIfIsForeign` is responsible to exclude all the instances that are related to other instances (values for properties in other instances)
 
 ```swift
  let employee = Employee()
@@ -220,22 +222,18 @@ employer.fullName = "Nour Sandid"
 employer.employees = [employee]
 employer.save()
 
-Employee.retrieve { data in
-        print(data) // [Employee(firstName: "Nour")]
-}
+let data = await Employee.retrieve()
+print(data) // [Employee(firstName: "Nour")]
 
 // now since employee is not an independent instance, it will be excluded from the below result.
-Employee.retrieve(excludeIfIsForeign: true) { data in
-        print(data) // []
-}
+let data = await Employee.retrieve(excludeIfIsForeign: true)
+print(data) // []
 
-Employee.retrieve(withFilter: SundeedColumn("firstName") == "Nour", excludeIfIsForeign: true) { data in
-    print(data) // [Employee(firstName: "Nour")]
-}
+let data = await Employee.retrieve(withFilter: SundeedColumn("firstName") == "Nour", excludeIfIsForeign: true)
+print(data) // [Employee(firstName: "Nour")]
 
-Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid", orderBy: SundeedColumn("fullName"), ascending: false, excludeIfIsForeign: true) { data in
-    print(data) // [Employer(id: "ABCD-1234-EFGH-5678", firstName: "Nour", employees: [Employee(firstName: "Nour")])]
-}
+let data = await Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid", orderBy: SundeedColumn("fullName"), ascending: false, excludeIfIsForeign: true)
+print(data) // [Employer(id: "ABCD-1234-EFGH-5678", firstName: "Nour", employees: [Employee(firstName: "Nour")])]
 ```
 
 ### Add Listeners
@@ -339,22 +337,20 @@ class Employer: SundeedQLiter {
 # CheatSheet
 ### To Save
 ```swift
-employer.save()
+await employer.save()
 ```
 ### To Retrieve
 ```swift
-Employer.retrieve { (employers) in
-    for employer in employers {
-        print(employer.fullName)
-    }
+let employers = await Employer.retrieve()
+for employer in employers {
+    print(employer.fullName)
 }
 
-Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid",
+let employers = await Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid",
                   orderBy: SundeedColumn("fullName"),
-                  ascending: true) { (employers) in
-    for employer in employers {
-        print(employer.fullName)
-    }
+                  ascending: true)
+for employer in employers {
+    print(employer.fullName)
 }
 ```
 ### To Reset The Database

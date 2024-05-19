@@ -59,6 +59,9 @@ enum Type {
 class EmployerForTesting: SundeedQLiter {
     var type: Type?
     var mandatoryType: Type = .manager
+    var data: Data?
+    var mandatoryData: Data = "Test Data".data(using: .utf8) ?? Data()
+    var optionalData: Data?
     var arrayOfTypes: [Type] = []
     var optionalArrayOfTypes: [Type]?
     var optionalArrayOfOptionalTypes: [Type?]?
@@ -83,6 +86,10 @@ class EmployerForTesting: SundeedQLiter {
     var arrayOfOptionalStrings: [String?] = []
     var optionalArrayOfStrings: [String]?
     var optionalArrayOfOptionalStrings: [String?]?
+    var arrayOfData: [Data] = []
+    var arrayOfOptionalData: [Data?] = []
+    var optionalArrayOfData: [Data]?
+    var optionalArrayOfOptionalData: [Data?]?
     var arrayOfObjects: [EmployeeForTesting] = []
     var arrayOfOptionalObjects: [EmployeeForTesting?] = []
     var optionalArrayOfObjects: [EmployeeForTesting]?
@@ -152,6 +159,9 @@ class EmployerForTesting: SundeedQLiter {
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         type <~> (map["type"], TypeConverter())
         mandatoryType <~> (map["mandatoryType"], TypeConverter())
+        data <~> map["data"]
+        mandatoryData <~> map["mandatoryData"]
+        optionalData <~> map["optionalData"]
         arrayOfTypes <~> (map["arrayOfTypes"], TypeConverter())
         optionalArrayOfTypes <~> (map["optionalArrayOfTypes"], TypeConverter())
         optionalArrayOfOptionalTypes <~> (map["optionalArrayOfOptionalTypes"], TypeConverter())
@@ -176,6 +186,10 @@ class EmployerForTesting: SundeedQLiter {
         arrayOfOptionalStrings <~> map["arrayOfOptionalStrings"]
         optionalArrayOfStrings <~> map["optionalArrayOfStrings"]
         optionalArrayOfOptionalStrings <~> map["optionalArrayOfOptionalStrings"]
+        arrayOfData <~> map["arrayOfData"]
+        arrayOfOptionalData <~> map["arrayOfOptionalData"]
+        optionalArrayOfData <~> map["optionalArrayOfData"]
+        optionalArrayOfOptionalData <~> map["optionalArrayOfOptionalData"]
         arrayOfObjects <~> map["arrayOfObjects"]
         arrayOfOptionalObjects <~> map["arrayOfOptionalObjects"]
         optionalArrayOfObjects <~> map["optionalArrayOfObjects"]
@@ -254,6 +268,9 @@ class EmployerForTesting: SundeedQLiter {
         }
         type = .manager
         mandatoryType = .ceo
+        data = "Testing Data".data(using: .utf8)
+        mandatoryData = "Testing Mandatory Data".data(using: .utf8) ?? Data()
+        optionalData = "Testing Optional Data".data(using: .utf8)
         arrayOfTypes = [.manager, .ceo]
         optionalArrayOfTypes = [.manager, .ceo]
         optionalArrayOfOptionalTypes = [.manager, .ceo]
@@ -278,6 +295,10 @@ class EmployerForTesting: SundeedQLiter {
         arrayOfOptionalStrings = ["string3", nil]
         optionalArrayOfStrings = ["string4", "string6"]
         optionalArrayOfOptionalStrings = ["string7", nil]
+        arrayOfData = ["Testing Array Of Data".data(using: .utf8)!]
+        arrayOfOptionalData = ["Testing Array Of Optional Data".data(using: .utf8), nil]
+        optionalArrayOfData = ["Testing Optional Array Of Data".data(using: .utf8)!]
+        optionalArrayOfOptionalData = ["Testing Optional Array Of Optional Data".data(using: .utf8), nil]
         arrayOfObjects = [employees[2]]
         arrayOfOptionalObjects = [employees[3], nil]
         optionalArrayOfObjects = [employees[4]]
@@ -318,6 +339,9 @@ class EmployerForTesting: SundeedQLiter {
 
 class EmployerWithNoPrimaryForTesting: SundeedQLiter {
     var type: Type?
+    var data: Data?
+    var mandatoryData: Data = "Test Data".data(using: .utf8) ?? Data()
+    var optionalData: Data?
     var string: String = ""
     var optionalString: String?
     var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456")
@@ -338,6 +362,10 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
     var arrayOfOptionalStrings: [String?] = []
     var optionalArrayOfStrings: [String]?
     var optionalArrayOfOptionalStrings: [String?]?
+    var arrayOfData: [Data] = []
+    var arrayOfOptionalData: [Data?] = []
+    var optionalArrayOfData: [Data]?
+    var optionalArrayOfOptionalData: [Data?]?
     var arrayOfObjects: [EmployeeForTesting] = []
     var arrayOfOptionalObjects: [EmployeeForTesting?] = []
     var optionalArrayOfObjects: [EmployeeForTesting]?
@@ -406,6 +434,9 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
     required init() {}
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         type <~> (map["type"], TypeConverter())
+        data <~> map["data"]
+        mandatoryData <~> map["mandatoryData"]
+        optionalData <~> map["optionalData"]
         string <~> map["string"]
         optionalString <~> map["optionalString"]
         object <~> map["object"]
@@ -426,6 +457,10 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
         arrayOfOptionalStrings <~> map["arrayOfOptionalStrings"]
         optionalArrayOfStrings <~> map["optionalArrayOfStrings"]
         optionalArrayOfOptionalStrings <~> map["optionalArrayOfOptionalStrings"]
+        arrayOfData <~> map["arrayOfData"]
+        arrayOfOptionalData <~> map["arrayOfOptionalData"]
+        optionalArrayOfData <~> map["optionalArrayOfData"]
+        optionalArrayOfOptionalData <~> map["optionalArrayOfOptionalData"]
         arrayOfObjects <~> map["arrayOfObjects"]
         arrayOfOptionalObjects <~> map["arrayOfOptionalObjects"]
         optionalArrayOfObjects <~> map["optionalArrayOfObjects"]
@@ -503,6 +538,9 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
             employees.append(employee)
         }
         type = .manager
+        data = "Testing Data".data(using: .utf8)
+        mandatoryData = "Testing Mandatory Data".data(using: .utf8) ?? Data()
+        optionalData = "Testing Optional Data".data(using: .utf8)
         string = "string"
         optionalString = "optionalString"
         object = employees[0]
@@ -523,6 +561,10 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
         arrayOfOptionalStrings = ["string3", nil]
         optionalArrayOfStrings = ["string4", "string6"]
         optionalArrayOfOptionalStrings = ["string7", nil]
+        arrayOfData = ["Testing Array Of Data".data(using: .utf8)!]
+        arrayOfOptionalData = ["Testing Array Of Optional Data".data(using: .utf8), nil]
+        optionalArrayOfData = ["Testing Optional Array Of Data".data(using: .utf8)!]
+        optionalArrayOfOptionalData = ["Testing Optional Array Of Optional Data".data(using: .utf8), nil]
         arrayOfObjects = [employees[2]]
         arrayOfOptionalObjects = [employees[3], nil]
         optionalArrayOfObjects = [employees[4]]

@@ -411,6 +411,42 @@ public func <~> (left: inout [Float?]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!)
     }
 }
+public func <~> (left: inout [Data], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [Data] {
+            left = value.compactMap({$0})
+        }
+    } else {
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout [Data?], right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [Data] {
+            left = value.map({$0})
+        }
+    } else {
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout [Data]?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [Data] {
+            left = value.compactMap({$0})
+        }
+    } else {
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout [Data?]?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? [Data] {
+            left = value.map({$0})
+        }
+    } else {
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
 public func <~> (left: inout [UIImage], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
@@ -620,6 +656,24 @@ public func <~> (left: inout Float?, right: SundeedQLiteMap) {
 public func <~> (left: inout Float, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? String, let value = Float(rightValue) {
+            left = value
+        }
+    } else {
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Data?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? Data {
+            left = rightValue
+        }
+    } else {
+        right.addColumn(attribute: left, withColumnName: right.key!)
+    }
+}
+public func <~> (left: inout Data, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let value = right.currentValue as? Data {
             left = value
         }
     } else {

@@ -11,10 +11,9 @@ import UIKit
 class UpdateProcessor {
     func update(objectWrapper: ObjectWrapper,
                 columns: [SundeedColumn],
-                withFilters filters: [SundeedExpression<Bool>?],
-                completion: (()->Void)?) throws {
+                withFilters filters: [SundeedExpression<Bool>?]) async throws {
         var depth: Int = 1
-        try Processor()
+        try await Processor()
             .createTableProcessor
             .createTableIfNeeded(for: objectWrapper)
         guard objectWrapper.hasPrimaryKey else {
@@ -34,29 +33,21 @@ class UpdateProcessor {
                     let className = attribute.className {
                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
                         depth += 1
-                        self.saveForeignObjects(attributes: [attribute],
+                        await self.saveForeignObjects(attributes: [attribute],
                                                 primaryValue: primaryValue,
                                                 column: column,
                                                 className: className,
-                                                updateStatement: updateStatement,
-                                                completion: {
-                                                    depth = self.completionIfNeeded(depth: depth,
-                                                                            completion: completion)
-                        })
+                                                updateStatement: updateStatement)
                     }
                 } else if let attributes = attribute as? [ObjectWrapper?] {
                     if let firstAttribute = attributes.first as? ObjectWrapper,
                         let className = firstAttribute.className {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                            self.saveForeignObjects(attributes: attributes,
+                            await self.saveForeignObjects(attributes: attributes,
                                                     primaryValue: primaryValue,
                                                     column: column,
                                                     className: className,
-                                                    updateStatement: updateStatement,
-                                                                            completion: {
-                                                                                depth = self.completionIfNeeded(depth: depth,
-                                                                                                        completion: completion)
-                                                    })
+                                                    updateStatement: updateStatement)
                         }
                     }
                 } else if let attribute = attribute as? UIImage {
@@ -75,14 +66,10 @@ class UpdateProcessor {
                     if !attributes.isEmpty {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
                             depth += 1
-                            self.saveArrayOfImages(attributes: attributes,
+                            await self.saveArrayOfImages(attributes: attributes,
                                                    primaryValue: primaryValue,
                                                    column: column,
-                                                   updateStatement: updateStatement,
-                                                                           completion: {
-                                                                               depth = self.completionIfNeeded(depth: depth,
-                                                                                                       completion: completion)
-                                                   })
+                                                   updateStatement: updateStatement)
                         }
                     }
                 } else if let attributes = attribute as? [Any] {
@@ -90,15 +77,11 @@ class UpdateProcessor {
                     if !attributes.isEmpty {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
                             depth += 1
-                            Processor()
+                            await Processor()
                                 .saveProcessor
                                 .saveArrayOfPrimitives(tableName: column.value,
                                                        objects: attributes,
-                                                       withForeignKey: primaryValue,
-                                                                               completion: {
-                                                                                   depth = self.completionIfNeeded(depth: depth,
-                                                                                                           completion: completion)
-                                                       })
+                                                       withForeignKey: primaryValue)
                             updateStatement
                                 .add(key: column.value,
                                      value: Sundeed.shared
@@ -116,25 +99,21 @@ class UpdateProcessor {
                     }
                 }
             } else {
-                completion?()
                 throw SundeedQLiteError
                     .noColumnWithThisName(tableName: objectWrapper.tableName,
                                           columnName: column.value)
             }
         }
         updateStatement.withFilters(filters)
-        let query: String? = updateStatement.build()
-        SundeedQLiteConnection.pool.execute(query: query, completion:
-            {
-                depth = self.completionIfNeeded(depth: depth, completion: completion)
-        })
+        let statement = updateStatement.build()
+        await SundeedQLiteConnection.pool.execute(query: statement?.query,
+                                            parameters: statement?.parameters)
     }
     
     func saveArrayOfImages(attributes: [UIImage],
                            primaryValue: String,
                            column: SundeedColumn,
-                           updateStatement: UpdateStatement,
-                           completion: (()->Void)?) {
+                           updateStatement: UpdateStatement) async {
             let attributes: [String] = attributes.enumerated()
                 .map({
                     let index = $0
@@ -142,12 +121,11 @@ class UpdateProcessor {
                     let objectID = "\(primaryValue)\(column.value)\(indexString)"
                     return $1.dataTypeValue(forObjectID: objectID)
                 })
-            Processor()
+            await Processor()
                 .saveProcessor
                 .saveArrayOfPrimitives(tableName: column.value,
                                        objects: attributes,
-                                       withForeignKey: primaryValue,
-                                       completion: completion)
+                                       withForeignKey: primaryValue)
             updateStatement
                 .add(key: column.value,
                      value: Sundeed.shared
@@ -159,27 +137,17 @@ class UpdateProcessor {
                             primaryValue: String,
                             column: SundeedColumn,
                             className: String,
-                            updateStatement: UpdateStatement,
-                            completion: (()->Void)?) {
-        Processor()
+                            updateStatement: UpdateStatement) async {
+        await Processor()
             .saveProcessor
             .save(objects: attributes.compactMap({$0}),
                   withForeignKey: primaryValue,
-                  withFieldNameLink: column.value,
-                  completion: completion)
+                  withFieldNameLink: column.value)
         
         updateStatement
             .add(key: column.value,
                  value: Sundeed.shared
                     .sundeedForeignValue(tableName: className,
                                          fieldNameLink: column.value))
-    }
-    
-    private func completionIfNeeded(depth: Int, completion: (()->Void)?) -> Int {
-        let depth = depth - 1
-        if depth <= 0 {
-            completion?()
-        }
-        return depth
     }
 }

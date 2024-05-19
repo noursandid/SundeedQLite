@@ -15,536 +15,375 @@ class OperationTests: XCTestCase {
     override func setUp() {
         employer?.fillData()
     }
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerForTesting.delete()
+            await EmployeeForTesting.delete()
+            completion(nil)
+        }
     }
     
-    func testDeleting() {
-        let expectation = XCTestExpectation(description: "Deleted Employer")
-        employer?.save {
-            do {
-                if try !(self.employer?.delete(completion: {
-                    EmployerForTesting.retrieve(completion: { allEmployers in
-                        XCTAssert(allEmployers.isEmpty)
-                        EmployeeForTesting.retrieve { allEmployees in
-                            XCTAssertEqual(allEmployees.count, 6)
-                            expectation.fulfill()
-                        }
-                    })
-                }) ?? false) {
-                    XCTFail("Couldn't delete class")
-                    expectation.fulfill()
-                }
-            } catch {
-                XCTFail("Couldn't delete class")
-                expectation.fulfill()
-            }
+    func testDeleting() async {
+        
+        await employer?.save()
+        do {
+            try await self.employer?.delete()
+            let allEmployers = await EmployerForTesting.retrieve()
+            XCTAssert(allEmployers.isEmpty)
+            let allEmployees = await EmployeeForTesting.retrieve()
+            XCTAssertEqual(allEmployees.count, 6)
+        } catch {
+            XCTFail("Couldn't delete class")
+        }
+    }
+    
+    func testDeletingWithoutDeletingSubObjects() async {
+        await employer?.save()
+        do {
+            try await self.employer?.delete(deleteSubObjects: false)
+            let allEmployers = await EmployerForTesting.retrieve()
+            XCTAssert(allEmployers.isEmpty)
+            let allEmployees = await EmployeeForTesting.retrieve()
+            XCTAssertEqual(allEmployees.count, 6)
+        } catch {
+            XCTFail("Couldn't delete class")
+        }
+    }
+    
+    func testDeletingWithDeletingSubObjects() async {
+        
+        await employer?.save()
+        do {
+            try await self.employer?.delete(deleteSubObjects: true)
+            let allEmployers = await EmployerForTesting.retrieve()
+            XCTAssert(allEmployers.isEmpty)
+            let allEmployees = await EmployeeForTesting.retrieve()
+            XCTAssertEqual(allEmployees.count, 0)
+        } catch {
+            XCTFail("Couldn't delete class")
             
         }
-        wait(for: [expectation], timeout: 6.0)
     }
     
-    func testDeletingWithoutDeletingSubObjects() {
-        let expectation = XCTestExpectation(description: "Deleted Employer")
-        employer?.save {
-            do {
-                if try !(self.employer?.delete(deleteSubObjects: false, completion: {
-                    EmployerForTesting.retrieve(completion: { allEmployers in
-                        XCTAssert(allEmployers.isEmpty)
-                        EmployeeForTesting.retrieve { allEmployees in
-                            XCTAssertEqual(allEmployees.count, 6)
-                            expectation.fulfill()
-                        }
-                    })
-                }) ?? false) {
-                    XCTFail("Couldn't delete class")
-                    expectation.fulfill()
-                }
-            } catch {
-                XCTFail("Couldn't delete class")
-                expectation.fulfill()
-            }
-            
+    func testDeletingAll() async {
+        await employer?.save()
+        await EmployerForTesting.delete()
+        let allEmployers = await EmployerForTesting.retrieve()
+        XCTAssert(allEmployers.isEmpty)
+        let allEmployees = await EmployeeForTesting.retrieve()
+        XCTAssertEqual(allEmployees.count, 6)
+    }
+    
+    func testRetrieve() async {
+        
+        await employer?.save()
+        let allEmployers = await EmployerForTesting.retrieve()
+        guard let employer = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
         }
-        wait(for: [expectation], timeout: 6.0)
+        self.checkEmployer(employer)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testDeletingWithDeletingSubObjects() {
-        let expectation = XCTestExpectation(description: "Deleted Employer")
-        employer?.save {
-            do {
-                if try !(self.employer?.delete(deleteSubObjects: true, completion: {
-                    EmployerForTesting.retrieve(completion: { allEmployers in
-                        XCTAssert(allEmployers.isEmpty)
-                        EmployeeForTesting.retrieve { allEmployees in
-                            XCTAssertEqual(allEmployees.count, 0)
-                            expectation.fulfill()
-                        }
-                    })
-                }) ?? false) {
-                    XCTFail("Couldn't delete class")
-                    expectation.fulfill()
-                }
-            } catch {
-                XCTFail("Couldn't delete class")
-                expectation.fulfill()
-            }
-            
+    func testRetrieveWithFilter() async {
+        
+        await employer?.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string")
+        guard let employer = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
         }
-        wait(for: [expectation], timeout: 6.0)
+        self.checkEmployer(employer)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testDeletingAll() {
-        let expectation = XCTestExpectation(description: "Deleted All Employers")
-        employer?.save {
-            EmployerForTesting.delete {
-                EmployerForTesting.retrieve(completion: { allEmployers in
-                    XCTAssert(allEmployers.isEmpty)
-                    EmployeeForTesting.retrieve { allEmployees in
-                        XCTAssertEqual(allEmployees.count, 6)
-                        expectation.fulfill()
-                    }
-                })
-            }
-        }
-        wait(for: [expectation], timeout: 6.0)
+    
+    func testRetrieveWithWrongFilter() async {
+        
+        await employer?.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "ABCD")
+        XCTAssertEqual(allEmployers.count, 0)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testRetrieve() {
-        let expectation = XCTestExpectation(description: "Retrieve Employer")
-        employer?.save {
-            EmployerForTesting.retrieve(completion: { [unowned self] (allEmployers) in
-                guard let employer = allEmployers.first else {
-                    XCTFail("Couldn't Retrieve From Database")
-                    return
-                }
-                self.checkEmployer(employer)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 4.0)
-    }
-    
-    func testRetrieveWithFilter() {
-        let expectation = XCTestExpectation(description: "Retrieve Employer With Filter")
-        employer?.save {
-            EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string",
-                                        completion: { [unowned self] (allEmployers) in
-                guard let employer = allEmployers.first else {
-                    XCTFail("Couldn't Retrieve From Database")
-                    return
-                }
-                self.checkEmployer(employer)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2.0)
-    }
-    
-    func testRetrieveWithWrongFilter() {
-        let expectation = XCTestExpectation(description: "Retrieve Employer With Wrong Filter")
-        employer?.save {
-            EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "ABCD",
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 0)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2.0)
-    }
-    
-    func testRetrieveWithSortingIntAsc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Int ASC")
+    func testRetrieveWithSortingIntAsc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "str"
         employer2.integer = 2
-        [employer!, employer2].save {
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
-                                        ascending: true,
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                self.checkEmployer(firstEmployer)
-                XCTAssertEqual(secondEmployer.integer, 2)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
+                                                             ascending: true)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        self.checkEmployer(firstEmployer)
+        XCTAssertEqual(secondEmployer.integer, 2)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveWithSortingIntDesc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Int DESC")
+    func testRetrieveWithSortingIntDesc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "stri"
         employer2.integer = 3
-        [employer!, employer2].save {
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
-                                        ascending: false,
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                XCTAssertEqual(firstEmployer.integer, 3)
-                self.checkEmployer(secondEmployer)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("integer"),
+                                                             ascending: false)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        XCTAssertEqual(firstEmployer.integer, 3)
+        self.checkEmployer(secondEmployer)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
+        
     }
     
-    func testRetrieveWithSortingStringAsc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer String ASC")
+    func testRetrieveWithSortingStringAsc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string2"
         employer2.integer = 2
-        [employer!, employer2].save {
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("string"),
-                                        ascending: true,
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                self.checkEmployer(firstEmployer)
-                XCTAssertEqual(secondEmployer.integer, 2)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("string"),
+                                                             ascending: true)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        self.checkEmployer(firstEmployer)
+        XCTAssertEqual(secondEmployer.integer, 2)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveWithSortingStringDesc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer String DESC")
+    func testRetrieveWithSortingStringDesc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string3"
         employer2.integer = 3
-        [employer!, employer2].save {
-            EmployerForTesting
-                .retrieve(orderBy: SundeedColumn("string"),
-                          ascending: false,
-                          completion: { [unowned self] (allEmployers) in
-                    XCTAssertEqual(allEmployers.count, 2)
-                    guard allEmployers.count == 2 else {
-                        XCTFail()
-                        return
-                    }
-                    let firstEmployer = allEmployers[0]
-                    let secondEmployer = allEmployers[1]
-                    XCTAssertEqual(firstEmployer.integer, 3)
-                    self.checkEmployer(secondEmployer)
-                    _ = try? self.employer?.delete(deleteSubObjects: true) {
-                        _ = try? employer2.delete(deleteSubObjects: true) {
-                            expectation.fulfill()
-                        }
-                    }
-                })
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting
+            .retrieve(orderBy: SundeedColumn("string"),
+                      ascending: false)
+        XCTAssertEqual(allEmployers.count, 2)
+        guard allEmployers.count == 2 else {
+            XCTFail()
+            return
         }
-        wait(for: [expectation], timeout: 5)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        XCTAssertEqual(firstEmployer.integer, 3)
+        self.checkEmployer(secondEmployer)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveWithSortingDateAsc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Date ASC")
+    func testRetrieveWithSortingDateAsc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string2"
         employer2.integer = 2
         employer2.date = Date().addingTimeInterval(500)
-        [employer!, employer2].save {
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
-                                        ascending: true,
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                self.checkEmployer(firstEmployer)
-                XCTAssertEqual(secondEmployer.integer, 2)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
+                                                             ascending: true)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        self.checkEmployer(firstEmployer)
+        XCTAssertEqual(secondEmployer.integer, 2)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveWithSortingDateDesc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Date DESC")
+    func testRetrieveWithSortingDateDesc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string3"
         employer2.integer = 3
         employer2.date = Date().addingTimeInterval(500)
-        [employer!, employer2].save {
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
-                                        ascending: false,
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                XCTAssertEqual(firstEmployer.integer, 3)
-                self.checkEmployer(secondEmployer)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("date"),
+                                                             ascending: false)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        XCTAssertEqual(firstEmployer.integer, 3)
+        self.checkEmployer(secondEmployer)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
+        
     }
     
-    func testRetrieveWithSortingEnumAsc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum ASC")
+    func testRetrieveWithSortingEnumAsc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string2"
         employer2.integer = 2
         employer2.type = .ceo
-        [employer!, employer2].save {
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
-                                        ascending: true,
-                                        completion: { [unowned self] (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                self.checkEmployer(firstEmployer)
-                XCTAssertEqual(secondEmployer.integer, 2)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
+                                                             ascending: true)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        self.checkEmployer(firstEmployer)
+        XCTAssertEqual(secondEmployer.integer, 2)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
+        
     }
     
-    func testRetrieveWithSortingEnumDesc() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
+    func testRetrieveWithSortingEnumDesc() async {
+        
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string3"
         employer2.integer = 3
         employer2.type = .ceo
-        [employer!, employer2].save { [unowned self] in
-            EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
-                                        ascending: false,
-                                        completion: { (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 2)
-                let firstEmployer = allEmployers[0]
-                let secondEmployer = allEmployers[1]
-                self.checkEmployer(firstEmployer)
-                XCTAssertEqual(secondEmployer.integer, 3)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+        await [employer!, employer2].save()
+        let allEmployers = await EmployerForTesting.retrieve(orderBy: SundeedColumn("type"),
+                                                             ascending: false)
+        XCTAssertEqual(allEmployers.count, 2)
+        let firstEmployer = allEmployers[0]
+        let secondEmployer = allEmployers[1]
+        self.checkEmployer(firstEmployer)
+        XCTAssertEqual(secondEmployer.integer, 3)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+        _ = try? await employer2.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveForeignObjectWithExcludingIfIsForeignDisabled() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
-        EmployeeForTesting.retrieve(excludeIfIsForeign: false, completion: { [unowned self] (employees) in
-            XCTAssertEqual(employees.count, 0)
-            [employer!].save {
-                EmployeeForTesting.retrieve(excludeIfIsForeign: false, completion: { [unowned self] (allEmployees) in
-                    XCTAssertEqual(allEmployees.count, 6)
-                    _ = try? self.employer?.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                })
-            }
-        })
-        wait(for: [expectation], timeout: 5)
+    func testRetrieveForeignObjectWithExcludingIfIsForeignDisabled() async {
+        
+        let employees = await EmployeeForTesting.retrieve(excludeIfIsForeign: false)
+        XCTAssertEqual(employees.count, 0)
+        await [employer!].save()
+        let allEmployees = await EmployeeForTesting.retrieve(excludeIfIsForeign: false)
+        XCTAssertEqual(allEmployees.count, 6)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveForeignObjectWithExcludingIfIsForeignEnabled() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
-        [employer!].save {
-            EmployeeForTesting.retrieve(excludeIfIsForeign: true, completion: { (allEmployees) in
-                XCTAssertEqual(allEmployees.count, 0)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+    func testRetrieveForeignObjectWithExcludingIfIsForeignEnabled() async {
+        
+        await [employer!].save()
+        let allEmployees = await EmployeeForTesting.retrieve(excludeIfIsForeign: true)
+        XCTAssertEqual(allEmployees.count, 0)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveIndependentObjectWithExcludingIfIsForeignDisabled() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
-        [employer!].save { [unowned self] in
-            EmployerForTesting.retrieve(excludeIfIsForeign: false, completion: { (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 1)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+    func testRetrieveIndependentObjectWithExcludingIfIsForeignDisabled() async {
+        
+        await [employer!].save()
+        let allEmployers = await EmployerForTesting.retrieve(excludeIfIsForeign: false)
+        XCTAssertEqual(allEmployers.count, 1)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testRetrieveIndependentObjectWithExcludingIfIsForeignEnabled() {
-        let expectation = XCTestExpectation(description: "Retrieve Sorted Employer Enum DESC")
-        [self.employer!].save { [unowned self] in
-            EmployerForTesting.retrieve(excludeIfIsForeign: true, completion: { (allEmployers) in
-                XCTAssertEqual(allEmployers.count, 1)
-                _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 5)
+    func testRetrieveIndependentObjectWithExcludingIfIsForeignEnabled() async {
+        
+        await [self.employer!].save()
+        let allEmployers = await EmployerForTesting.retrieve(excludeIfIsForeign: true)
+        XCTAssertEqual(allEmployers.count, 1)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
-    func testNoPrimaryForClassWithSubclass() {
+    func testNoPrimaryForClassWithSubclass() async {
         let classWithNoPrimaryWithSubClass = ClassWithNoPrimaryWithSubClass()
         classWithNoPrimaryWithSubClass.fillData()
-        let expectation = XCTestExpectation(description: "ClassWithNoPrimaryWithSubClass")
-        classWithNoPrimaryWithSubClass.save {
-            ClassWithNoPrimaryWithSubClass.retrieve(completion: { (results) in
-                XCTAssert(results.isEmpty)
-                let _ = try? classWithNoPrimaryWithSubClass.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await classWithNoPrimaryWithSubClass.save()
+        let results = await ClassWithNoPrimaryWithSubClass.retrieve()
+        XCTAssert(results.isEmpty)
+        let _ = try? await classWithNoPrimaryWithSubClass.delete(deleteSubObjects: true)
+        
     }
     
-    func testNoPrimaryForClassWithSubclassArray() {
+    func testNoPrimaryForClassWithSubclassArray() async {
         let classWithNoPrimaryWithSubClassArray = ClassWithNoPrimaryWithSubClassArray()
         classWithNoPrimaryWithSubClassArray.fillData()
-        let expectation = XCTestExpectation(description: "ClassWithNoPrimaryWithSubClassArray")
-        classWithNoPrimaryWithSubClassArray.save {
-            ClassWithNoPrimaryWithSubClassArray.retrieve(completion: { (results) in
-                XCTAssert(results.isEmpty)
-                let _ = try? classWithNoPrimaryWithSubClassArray.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await classWithNoPrimaryWithSubClassArray.save()
+        let results = await ClassWithNoPrimaryWithSubClassArray.retrieve()
+        XCTAssert(results.isEmpty)
+        let _ = try? await classWithNoPrimaryWithSubClassArray.delete(deleteSubObjects: true)
     }
     
-    func testNoPrimaryForClassWithImage() {
+    func testNoPrimaryForClassWithImage() async {
         let classWithNoPrimaryWithImage = ClassWithNoPrimaryWithImage()
         classWithNoPrimaryWithImage.fillData()
-        let expectation = XCTestExpectation(description: "ClassWithNoPrimaryWithImage")
-        classWithNoPrimaryWithImage.save {
-            ClassWithNoPrimaryWithImage.retrieve(completion: { (results) in
-                XCTAssert(results.isEmpty)
-                let _ = try? classWithNoPrimaryWithImage.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await classWithNoPrimaryWithImage.save()
+        let results = await ClassWithNoPrimaryWithImage.retrieve()
+        XCTAssert(results.isEmpty)
+        let _ = try? await classWithNoPrimaryWithImage.delete(deleteSubObjects: true)
     }
     
-    func testNoPrimaryForClassWithImageArray() {
-        let expectation = XCTestExpectation(description: "ClassWithNoPrimaryWithImageArray")
-        ClassWithNoPrimaryWithImageArray.delete {
-            let classWithNoPrimaryWithImageArray = ClassWithNoPrimaryWithImageArray()
-            classWithNoPrimaryWithImageArray.fillData()
-            classWithNoPrimaryWithImageArray.save {
-                ClassWithNoPrimaryWithImageArray.retrieve(completion: { (results) in
-                    XCTAssertEqual(results.count, 1)
-                    XCTAssertNil(results.first?.images)
-                    let _ = try? classWithNoPrimaryWithImageArray.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                })
-            }
-        }
-        wait(for: [expectation], timeout: 2)
+    func testNoPrimaryForClassWithImageArray() async {
+        
+        await ClassWithNoPrimaryWithImageArray.delete()
+        let classWithNoPrimaryWithImageArray = ClassWithNoPrimaryWithImageArray()
+        classWithNoPrimaryWithImageArray.fillData()
+        await classWithNoPrimaryWithImageArray.save()
+        let results = await ClassWithNoPrimaryWithImageArray.retrieve()
+        XCTAssertEqual(results.count, 1)
+        XCTAssertNil(results.first?.images)
+        let _ = try? await classWithNoPrimaryWithImageArray.delete(deleteSubObjects: true)
+        
     }
     
-    func testNoPrimaryForClassWithPrimitiveArray() {
+    func testNoPrimaryForClassWithPrimitiveArray() async {
         let classWithNoPrimaryWithPrimitiveArray = ClassWithNoPrimaryWithPrimitiveArray()
         classWithNoPrimaryWithPrimitiveArray.fillData()
-        let expectation = XCTestExpectation(description: "ClassWithNoPrimaryWithPrimitiveArray")
-        classWithNoPrimaryWithPrimitiveArray.save {
-            ClassWithNoPrimaryWithPrimitiveArray.retrieve(completion: { (results) in
-                XCTAssert(results.isEmpty)
-                let _ = try? classWithNoPrimaryWithPrimitiveArray.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await classWithNoPrimaryWithPrimitiveArray.save()
+        let results = await ClassWithNoPrimaryWithPrimitiveArray.retrieve()
+        XCTAssert(results.isEmpty)
+        let _ = try? await classWithNoPrimaryWithPrimitiveArray.delete(deleteSubObjects: true)
     }
     
-    func testNoPrimaryForClassWithDate() {
+    func testNoPrimaryForClassWithDate() async {
         let classWithNoPrimaryWithDate = ClassWithNoPrimaryWithDate()
         classWithNoPrimaryWithDate.fillData()
-        let expectation = XCTestExpectation(description: "ClassWithNoPrimaryWithDate")
-        classWithNoPrimaryWithDate.save {
-            ClassWithNoPrimaryWithDate.retrieve(completion: { (results) in
-                XCTAssert(results.isEmpty)
-                let _ = try? classWithNoPrimaryWithDate.delete(deleteSubObjects: true) {
-                    expectation.fulfill()
-                }
-            })
-        }
-        wait(for: [expectation], timeout: 2)
+        
+        await classWithNoPrimaryWithDate.save()
+        let results = await ClassWithNoPrimaryWithDate.retrieve()
+        XCTAssert(results.isEmpty)
+        let _ = try? await classWithNoPrimaryWithDate.delete(deleteSubObjects: true)
     }
     
-    func testArraySaving() {
+    func testArraySaving() async {
         let employer2 = EmployerForTesting()
         employer2.fillData()
         employer2.string = "string1"
         employer2.integer = 2
-        let expectation = XCTestExpectation(description: "Array Saving Employer")
-        [employer2, employer!].save {
-            EmployerForTesting.retrieve(completion: { [unowned self] (allEmployers) in
-                guard let employer1 = allEmployers.first else {
-                    XCTFail("Couldn't Retrieve From Database")
-                    return
-                }
-                self.checkEmployer(allEmployers[1])
-                XCTAssertEqual(employer1.integer, 2)
-                XCTAssertEqual(employer1.string, "string1")
-                let _ = try? self.employer?.delete(deleteSubObjects: true) {
-                    let _ = try? employer2.delete(deleteSubObjects: true) {
-                        expectation.fulfill()
-                    }
-                }
-            })
+        
+        await [employer2, employer!].save()
+        let allEmployers = await EmployerForTesting.retrieve()
+        guard let employer1 = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
         }
-        wait(for: [expectation], timeout: 5)
+        self.checkEmployer(allEmployers[1])
+        XCTAssertEqual(employer1.integer, 2)
+        XCTAssertEqual(employer1.string, "string1")
+        let _ = try? await self.employer?.delete(deleteSubObjects: true)
+        let _ = try? await employer2.delete(deleteSubObjects: true)
         
     }
     
-    func testUpdateWithNoChanges() {
+    func testUpdateWithNoChanges() async {
         do {
-            try EmployerForTesting.update()
+            try await EmployerForTesting.update()
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {
                 XCTFail("Wrong Error")
@@ -556,6 +395,9 @@ class OperationTests: XCTestCase {
     
     private func checkEmployer(_ employer: EmployerForTesting) {
         XCTAssertEqual(employer.type, .manager)
+        XCTAssertEqual(employer.data, "Testing Data".data(using: .utf8))
+        XCTAssertEqual(employer.mandatoryData, "Testing Mandatory Data".data(using: .utf8) ?? Data())
+        XCTAssertEqual(employer.optionalData, "Testing Optional Data".data(using: .utf8))
         XCTAssertEqual(employer.mandatoryType, .ceo)
         XCTAssertEqual(employer.arrayOfTypes, [.manager, .ceo])
         XCTAssertEqual(employer.optionalArrayOfTypes, [.manager, .ceo])
@@ -583,6 +425,10 @@ class OperationTests: XCTestCase {
         XCTAssertEqual(employer.arrayOfOptionalStrings, ["string3"])
         XCTAssertEqual(employer.optionalArrayOfStrings, ["string4", "string6"])
         XCTAssertEqual(employer.optionalArrayOfOptionalStrings, ["string7"])
+        XCTAssertEqual(employer.arrayOfData, ["Testing Array Of Data".data(using: .utf8)!])
+        XCTAssertEqual(employer.arrayOfOptionalData, ["Testing Array Of Optional Data".data(using: .utf8)])
+        XCTAssertEqual(employer.optionalArrayOfData, ["Testing Optional Array Of Data".data(using: .utf8)!])
+        XCTAssertEqual(employer.optionalArrayOfOptionalData, ["Testing Optional Array Of Optional Data".data(using: .utf8)])
         XCTAssertNotNil(employer.arrayOfObjects)
         XCTAssertFalse(employer.arrayOfObjects.isEmpty)
         XCTAssertNotNil(employer.arrayOfOptionalObjects)
