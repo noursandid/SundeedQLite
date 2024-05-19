@@ -25,7 +25,11 @@ class CreateTableProcessor {
                         try await createTableIfNeeded(for: firstAttribute)
                     }
                 } else if attribute is [Any] {
-                    await createTableForPrimitiveDataTypes(withTableName: columnName)
+                    if let array = attribute as? [Any], let _ = array.first as? Data {
+                        await createTableForPrimitiveDataTypes(withTableName: columnName, type: .blob)
+                    } else {
+                        await createTableForPrimitiveDataTypes(withTableName: columnName)
+                    }
                 }
                 
                 if attribute is Data {
@@ -47,11 +51,12 @@ class CreateTableProcessor {
         }
     }
     /** Try to create table for primitive data types if not already exists */
-    func createTableForPrimitiveDataTypes(withTableName tableName: String) async {
+    func createTableForPrimitiveDataTypes(withTableName tableName: String,
+                                          type: CreateTableStatement.ColumnType = .text) async {
         if  !Sundeed.shared.tables.contains(tableName) {
             let createTableStatement = StatementBuilder()
                 .createTableStatement(tableName: tableName)
-                .addColumn(with: Sundeed.shared.valueColumnName, type: .text)
+                .addColumn(with: Sundeed.shared.valueColumnName, type: type)
                 .build()
             await SundeedQLiteConnection.pool.execute(query: createTableStatement, parameters: nil)
             Sundeed.shared.tables.append(tableName)

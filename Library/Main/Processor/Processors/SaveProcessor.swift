@@ -124,17 +124,21 @@ class SaveProcessor {
                                 insertStatement.add(key: columnName, value: nil)
                             }
                         } else if let attribute = attribute as? [Any] {
-                            if attribute.compactMap({$0}).count > 0,
-                               self.acceptDataType(forObject: attribute.first as AnyObject) {
-                                let attributeValue = Sundeed.shared
-                                    .sundeedPrimitiveForeignValue(tableName: columnName)
-                                insertStatement.add(key: columnName, value: attributeValue)
-                                if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                                    await self.saveArrayOfPrimitives(tableName: columnName,
-                                                                     objects: attribute,
-                                                                     withForeignKey: primaryValue)
-                                } else {
-                                    throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+                            if attribute.compactMap({$0}).count > 0 {
+                                if self.acceptDataType(forObject: attribute.first as AnyObject)
+                                    || attribute.first is Data {
+                                    let type: CreateTableStatement.ColumnType = attribute.first is Data ? .blob : .text
+                                    let attributeValue = Sundeed.shared
+                                        .sundeedPrimitiveForeignValue(tableName: columnName)
+                                    insertStatement.add(key: columnName, value: attributeValue)
+                                    if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                                        await self.saveArrayOfPrimitives(tableName: columnName,
+                                                                         objects: attribute,
+                                                                         withForeignKey: primaryValue,
+                                                                         type: type)
+                                    } else {
+                                        throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+                                    }
                                 }
                             } else {
                                 insertStatement.add(key: columnName, value: nil)
@@ -152,17 +156,23 @@ class SaveProcessor {
             print("\(error)")
         }
     }
-    func saveArrayOfPrimitives<T>(tableName: String, objects: [T?], withForeignKey foreignKey: String) async {
-        await Processor().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName)
+    func saveArrayOfPrimitives<T>(tableName: String, objects: [T?], withForeignKey foreignKey: String,
+                                  type: CreateTableStatement.ColumnType = .text) async {
+        await Processor().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName, type: type)
         let filter = SundeedColumn(Sundeed.shared.foreignKey) == foreignKey
         await self.deleteFromDB(tableName: tableName,
                           withFilters: [filter])
-        for string in objects.compactMap({$0}) {
-            let insertStatement = StatementBuilder()
+        for object in objects.compactMap({$0}) {
+            let builder = StatementBuilder()
                 .insertStatement(tableName: tableName)
                 .add(key: Sundeed.shared.foreignKey, value: foreignKey)
-                .add(key: Sundeed.shared.valueColumnName, value: String(describing: string))
-                .build()
+            if let data = object as? Data {
+                builder.add(key: Sundeed.shared.valueColumnName, value: data)
+            } else {
+                builder.add(key: Sundeed.shared.valueColumnName, value: String(describing: object))
+            }
+                
+            let insertStatement = builder.build()
             await SundeedQLiteConnection.pool.execute(query: insertStatement?.query,
                                                       parameters: insertStatement?.parameters)
         }

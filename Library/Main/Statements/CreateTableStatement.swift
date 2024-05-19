@@ -32,7 +32,7 @@ class CreateTableStatement {
     func build() -> String? {
         var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (\(Sundeed.shared.offlineID) INTEGER PRIMARY KEY, \(Sundeed.shared.foreignKey) TEXT, \(Sundeed.shared.fieldNameLink) TEXT" 
         for column in columns {
-            statement.append(",\(column.name) \(column.type)")
+            statement.append(", \(column.name) \(column.type)")
         }
         if hasPrimaryKey {
             statement.append(",CONSTRAINT unq\(tableName) UNIQUE (\(Sundeed.shared.foreignKey),\(Sundeed.shared.primaryKey),\(Sundeed.shared.fieldNameLink))")

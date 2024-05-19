@@ -50,7 +50,7 @@ class RetrieveProcessor {
             var dictionary: [String: Any] = [:]
             var primaryValue: String?
             for (index, column) in columns.enumerated() {
-                if case .blob = column.columnType,
+                if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
                    let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
                     let size = Int(sqlite3_column_bytes(statement, Int32(index)))
                     let value: Data = Data(bytes: databaseValue, count: size)
@@ -114,7 +114,7 @@ class RetrieveProcessor {
         }
     }
     func getPrimitiveValues(forTable table: String,
-                            withFilter filter: SundeedExpression<Bool>?) -> [String]? {
+                            withFilter filter: SundeedExpression<Bool>?) -> [Any]? {
         let database = SundeedQLiteConnection.pool.connection
         var statement: OpaquePointer?
         let selectStatement = StatementBuilder()
@@ -123,10 +123,15 @@ class RetrieveProcessor {
             .build()
         if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK {
             let columns = getDatabaseColumns(forTable: table)
-            var array: [String] = []
+            var array: [Any] = []
             for (index, column) in columns.enumerated() where column.columnName == Sundeed.shared.valueColumnName {
                 while sqlite3_step(statement) == SQLITE_ROW {
-                    if let columnValue = sqlite3_column_text(statement, Int32(index)) {
+                    if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
+                       let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
+                        let size = Int(sqlite3_column_bytes(statement, Int32(index)))
+                        let value: Data = Data(bytes: databaseValue, count: size)
+                        array.append(value)
+                    } else if let columnValue = sqlite3_column_text(statement, Int32(index)) {
                         let value: String = String(cString: columnValue)
                         if value != Sundeed.shared.databaseNull {
                             array.append(value.replacingOccurrences(of: "\\\"", with: "\""))
