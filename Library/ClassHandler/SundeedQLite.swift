@@ -271,6 +271,14 @@ extension SundeedQLite {
             .deleteFromDB(tableName: object.getTableName(),
                           withFilters: filters)
     }
+    func dropTable<T: SundeedQLiter>(forClass sundeedClass: T.Type) async {
+        let object = sundeedClass.init()
+        let map = SundeedQLiteMap(fetchingColumns: true)
+        object.sundeedQLiterMapping(map: map)
+        await Processor()
+            .dropTableProcessor
+            .dropTable(tableName: object.getTableName())
+    }
     public static func deleteDatabase() {
         Sundeed.shared.tables.removeAll()
         SundeedQLiteConnection.pool.deleteDatabase()

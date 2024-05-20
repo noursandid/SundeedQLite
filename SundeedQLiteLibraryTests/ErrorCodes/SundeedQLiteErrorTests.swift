@@ -12,11 +12,15 @@ import XCTest
 class SundeedQLiteErrorTests: XCTestCase {
     var error: SundeedQLiteError?
     
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
-        error = nil
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerForTesting.delete()
+            await EmployeeForTesting.delete()
+            error = nil
+            completion(nil)
+        }
     }
-
+    
     func testPrimaryKeyError() {
         let employer = EmployerForTesting()
         employer.fillData()

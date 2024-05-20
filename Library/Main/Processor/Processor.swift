@@ -12,6 +12,9 @@ class Processor {
     var createTableProcessor: CreateTableProcessor {
         CreateTableProcessor()
     }
+    var dropTableProcessor: DropTableProcessor {
+        DropTableProcessor()
+    }
     var saveProcessor: SaveProcessor {
         SaveProcessor()
     }

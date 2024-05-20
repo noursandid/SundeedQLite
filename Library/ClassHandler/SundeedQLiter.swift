@@ -68,10 +68,15 @@ extension SundeedQLiter {
         return objects
     }
     
-    /** deletes all the objects of this type locally */
+    /** delete all the objects of this type saved locally */
     public static func delete(withFilter filters: SundeedExpression<Bool>...) async {
         await SundeedQLite.instance.deleteAllFromDB(forClass: self,
                                                   withFilters: filters)
+    }
+    
+    /** drop the scheme that holds all the objects of this type */
+    public static func drop() async {
+        await SundeedQLite.instance.dropTable(forClass: self)
     }
     
     /** updates specific columns of all objects of this class, or objects with a specific criteria */

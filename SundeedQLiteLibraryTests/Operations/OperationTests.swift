@@ -69,9 +69,21 @@ class OperationTests: XCTestCase {
         await employer?.save()
         await EmployerForTesting.delete()
         let allEmployers = await EmployerForTesting.retrieve()
-        XCTAssert(allEmployers.isEmpty)
+        XCTAssertTrue(allEmployers.isEmpty)
         let allEmployees = await EmployeeForTesting.retrieve()
         XCTAssertEqual(allEmployees.count, 6)
+    }
+    
+    func testDrop() async {
+        await employer?.save()
+        await EmployerForTesting.drop()
+        let allEmployers = await EmployerForTesting.retrieve()
+        XCTAssertTrue(allEmployers.isEmpty)
+        let allEmployees = await EmployeeForTesting.retrieve()
+        XCTAssertEqual(allEmployees.count, 6)
+        await EmployeeForTesting.drop()
+        let employees = await EmployeeForTesting.retrieve()
+        XCTAssertEqual(employees.count, 0)
     }
     
     func testRetrieve() async {

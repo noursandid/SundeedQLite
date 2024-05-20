@@ -15,8 +15,12 @@ class UpdateTests: XCTestCase {
     override func setUp() {
         employer?.fillData()
     }
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown(completion: @escaping ((any Error)?) -> Void) {
+        Task {
+            await EmployerForTesting.delete()
+            await EmployeeForTesting.delete()
+            completion(nil)
+        }
     }
     
     func testGlobalUpdate() async {

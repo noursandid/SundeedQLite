@@ -26,6 +26,8 @@
 		06BB09FA24746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09F924746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift */; };
 		06BB09FD2474723900BB668B /* NoPrimariesClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB09FC2474723900BB668B /* NoPrimariesClasses.swift */; };
 		06BB0A052474742E00BB668B /* Listeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB0A042474742E00BB668B /* Listeners.swift */; };
+		06D8C7AC2BFBA08F00F2ED75 /* DropTableProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8C7AB2BFBA08F00F2ED75 /* DropTableProcessor.swift */; };
+		06D8C7AE2BFBA0EB00F2ED75 /* DropTableStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8C7AD2BFBA0EB00F2ED75 /* DropTableStatement.swift */; };
 		06EF758A2467266E00BDA118 /* Processor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF75892467266E00BDA118 /* Processor.swift */; };
 		06EF758D246727CB00BDA118 /* StatementBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758C246727CB00BDA118 /* StatementBuilder.swift */; };
 		06EF758F2467291500BDA118 /* CreateTableStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF758E2467291500BDA118 /* CreateTableStatement.swift */; };
@@ -82,6 +84,8 @@
 		06BB09F924746D4400BB668B /* ArrayMandatoryTestWithEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayMandatoryTestWithEmpty.swift; sourceTree = "<group>"; };
 		06BB09FC2474723900BB668B /* NoPrimariesClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoPrimariesClasses.swift; sourceTree = "<group>"; };
 		06BB0A042474742E00BB668B /* Listeners.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Listeners.swift; sourceTree = "<group>"; };
+		06D8C7AB2BFBA08F00F2ED75 /* DropTableProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropTableProcessor.swift; sourceTree = "<group>"; };
+		06D8C7AD2BFBA0EB00F2ED75 /* DropTableStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropTableStatement.swift; sourceTree = "<group>"; };
 		06EF75892467266E00BDA118 /* Processor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Processor.swift; sourceTree = "<group>"; };
 		06EF758C246727CB00BDA118 /* StatementBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementBuilder.swift; sourceTree = "<group>"; };
 		06EF758E2467291500BDA118 /* CreateTableStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTableStatement.swift; sourceTree = "<group>"; };
@@ -243,6 +247,7 @@
 				062EE090246F2E410095C956 /* Statement.swift */,
 				06EF758C246727CB00BDA118 /* StatementBuilder.swift */,
 				06EF758E2467291500BDA118 /* CreateTableStatement.swift */,
+				06D8C7AD2BFBA0EB00F2ED75 /* DropTableStatement.swift */,
 				06EF759524677A0000BDA118 /* DeleteStatement.swift */,
 				06EF75972467848600BDA118 /* InsertStatement.swift */,
 				06EF75992468123200BDA118 /* UpdateStatement.swift */,
@@ -266,6 +271,7 @@
 			children = (
 				06EF75A72469740500BDA118 /* SaveProcessor.swift */,
 				06EF75A92469741500BDA118 /* CreateTableProcessor.swift */,
+				06D8C7AB2BFBA08F00F2ED75 /* DropTableProcessor.swift */,
 				06EF75AB2469742000BDA118 /* RetrieveProcessor.swift */,
 				06EF75AD24697F2100BDA118 /* UpdateProcessor.swift */,
 			);
@@ -438,6 +444,8 @@
 				06EF75A5246973C600BDA118 /* ObjectWrapper.swift in Sources */,
 				06EF7594246771FC00BDA118 /* Sundeed.swift in Sources */,
 				0611465D24707A1000E522A6 /* SundeedQLiteMap+ArrayMandatory.swift in Sources */,
+				06D8C7AE2BFBA0EB00F2ED75 /* DropTableStatement.swift in Sources */,
+				06D8C7AC2BFBA08F00F2ED75 /* DropTableProcessor.swift in Sources */,
 				06F8A19F234908C6001D1381 /* SundeedQLite.swift in Sources */,
 				061146592470794000E522A6 /* SundeedQLiteMap+Normal.swift in Sources */,
 				06EF758A2467266E00BDA118 /* Processor.swift in Sources */,
