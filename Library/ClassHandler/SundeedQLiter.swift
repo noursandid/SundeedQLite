@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol SundeedQLiter: AnyObject {
+public protocol SundeedQLiter: AnyObject, Sendable {
     /** A function that describes all the mappings between database and object */
     func sundeedQLiterMapping(map: SundeedQLiteMap)
     init()

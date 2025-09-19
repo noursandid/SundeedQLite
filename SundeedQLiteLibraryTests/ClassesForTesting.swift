@@ -12,6 +12,39 @@ import XCTest
 class EmployeeForTesting: SundeedQLiter {
     var id: String!
     var firstName: String?
+    var seniorEmployee: SeniorEmployeeForTesting?
+    required init() {}
+    init(id: String, seniorID: String, juniorID: String) {
+        self.id = id
+        self.seniorEmployee = SeniorEmployeeForTesting(id: seniorID, juniorID: juniorID)
+    }
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        id <~> map["id"]+
+        firstName <~> map["firstName"]
+        seniorEmployee <~> map["seniorEmployee"]
+    }
+}
+
+class SeniorEmployeeForTesting: SundeedQLiter {
+    var id: String!
+    var firstName: String?
+    var juniorEmployee: JuniorEmployeeForTesting?
+    required init() {}
+    init(id: String, juniorID: String) {
+        self.id = id
+        self.juniorEmployee = JuniorEmployeeForTesting(id: juniorID)
+    }
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        id <~> map["id"]+
+        firstName <~> map["firstName"]
+        juniorEmployee <~> map["juniorEmployee"]
+    }
+}
+
+class JuniorEmployeeForTesting: SundeedQLiter {
+    var id: String!
+    var firstName: String?
+
     required init() {}
     init(id: String) {
         self.id = id
@@ -68,7 +101,7 @@ class EmployerForTesting: SundeedQLiter {
     var arrayOfOptionalTypes: [Type?] = []
     var string: String = ""
     var optionalString: String?
-    var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456")
+    var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456", seniorID: "EFGH-9012-IJKL-3457", juniorID: "EFGH-9012-IJKL-3458")
     var optionalObject: EmployeeForTesting?
     var integer: Int = 0
     var optionalInteger: Int?
@@ -264,6 +297,7 @@ class EmployerForTesting: SundeedQLiter {
             let employee = EmployeeForTesting()
             employee.id = "EMP\(i)"
             employee.firstName = "Nour\(i)"
+            employee.seniorEmployee = SeniorEmployeeForTesting(id: "EFGH-9012-IJKL-3456-\(i)", juniorID: "EFGH-9012-IJKL-3456-j\(i)")
             employees.append(employee)
         }
         type = .manager
@@ -344,7 +378,7 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
     var optionalData: Data?
     var string: String = ""
     var optionalString: String?
-    var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456")
+    var object: EmployeeForTesting = EmployeeForTesting(id: "EFGH-9012-IJKL-3456", seniorID: "EFGH-9012-IJKL-3457", juniorID: "EFGH-9012-IJKL-3458")
     var optionalObject: EmployeeForTesting?
     var integer: Int = 0
     var optionalInteger: Int?

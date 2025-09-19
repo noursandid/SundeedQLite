@@ -41,7 +41,7 @@ public class Listener: Equatable {
     }
 }
 
-public class SundeedQLite {
+final public class SundeedQLite: Sendable {
     public static var instance: SundeedQLite = SundeedQLite()
     private static var listeners: [Listener] = []
     static func addListener<T>(object: Any?,
@@ -245,14 +245,7 @@ extension SundeedQLite {
         }
         let filter = SundeedColumn(map.primaryKey) == primaryValue
         if deleteSubObjects {
-            for value in map.columns.values where value is SundeedQLiter {
-                guard let value = value as? SundeedQLiter else { continue }
-                let filter = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
-                await Processor()
-                    .saveProcessor
-                    .deleteFromDB(tableName: value.getTableName(),
-                                  withFilters: [filter])
-            }
+            try await deleteSubObjectsRecursively(from: map, parentPrimaryValue: primaryValue)
         }
         await Processor()
             .saveProcessor
@@ -260,6 +253,40 @@ extension SundeedQLite {
                           withFilters: [filter])
         SundeedQLiteMap.removeReference(value: primaryValue as AnyObject,
                                         andClassName: "\(T.self)")
+    }
+    
+    private func deleteSubObjectsRecursively(from map: SundeedQLiteMap, parentPrimaryValue: String) async throws {
+        for value in map.columns.values {
+            if let singleObject = value as? SundeedQLiter {
+                let filter = SundeedColumn(Sundeed.shared.foreignKey) == parentPrimaryValue
+                await Processor()
+                    .saveProcessor
+                    .deleteFromDB(tableName: singleObject.getTableName(),
+                                  withFilters: [filter])
+                
+                let subMap = SundeedQLiteMap(fetchingColumns: true)
+                singleObject.sundeedQLiterMapping(map: subMap)
+                if let primaryValue = subMap.columns[subMap.primaryKey] as? String {
+                    try await deleteSubObjectsRecursively(from: subMap, parentPrimaryValue: primaryValue)
+                }
+            } else if let array = value as? [SundeedQLiter?] {
+                for arrayElement in array  {
+                    let filter = SundeedColumn(Sundeed.shared.foreignKey) == parentPrimaryValue
+                    if let tableName = arrayElement?.getTableName() {
+                        await Processor()
+                            .saveProcessor
+                            .deleteFromDB(tableName: tableName,
+                                          withFilters: [filter])
+                    }
+                    
+                    let subMap = SundeedQLiteMap(fetchingColumns: true)
+                    arrayElement?.sundeedQLiterMapping(map: subMap)
+                    if let primaryValue = subMap.columns[subMap.primaryKey] as? String {
+                        try await deleteSubObjectsRecursively(from: subMap, parentPrimaryValue: primaryValue)
+                    }
+                }
+            }
+        }
     }
     func deleteAllFromDB<T: SundeedQLiter>(forClass sundeedClass: T.Type,
                                            withFilters filters: [SundeedExpression<Bool>?]) async {

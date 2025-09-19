@@ -71,7 +71,7 @@ class ClassWithNoPrimaryWithSubClass: SundeedQLiter {
     }
     
     func fillData() {
-        object = EmployeeForTesting(id: "TestID")
+        object = EmployeeForTesting(id: "TestID", seniorID: "TestID1", juniorID: "TestID2")
     }
     
 }
@@ -85,7 +85,7 @@ class ClassWithNoPrimaryWithSubClassArray: SundeedQLiter {
     }
     
     func fillData() {
-        objects = [EmployeeForTesting(id: "TestID")]
+        objects = [EmployeeForTesting(id: "TestID", seniorID: "TestID1", juniorID: "TestID2")]
     }
     
 }

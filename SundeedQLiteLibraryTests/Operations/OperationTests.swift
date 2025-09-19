@@ -19,6 +19,7 @@ class OperationTests: XCTestCase {
         Task {
             await EmployerForTesting.delete()
             await EmployeeForTesting.delete()
+            SundeedQLite.deleteDatabase()
             completion(nil)
         }
     }
@@ -56,9 +57,13 @@ class OperationTests: XCTestCase {
         do {
             try await self.employer?.delete(deleteSubObjects: true)
             let allEmployers = await EmployerForTesting.retrieve()
-            XCTAssert(allEmployers.isEmpty)
+            XCTAssertTrue(allEmployers.isEmpty)
             let allEmployees = await EmployeeForTesting.retrieve()
             XCTAssertEqual(allEmployees.count, 0)
+            let allSeniorEmployees = await SeniorEmployeeForTesting.retrieve()
+            XCTAssertEqual(allSeniorEmployees.count, 0)
+            let allJuniorEmployees = await JuniorEmployeeForTesting.retrieve()
+            XCTAssertEqual(allJuniorEmployees.count, 0)
         } catch {
             XCTFail("Couldn't delete class")
             

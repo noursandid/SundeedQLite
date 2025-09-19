@@ -46,7 +46,7 @@ class UpdateTests: XCTestCase {
             self.employer?.arrayOfImages.append(UIImage(named: "5")!)
             self.employer?.nilImage = UIImage(named: "3")!
             self.employer?.nilDate = Date()
-            let employee = EmployeeForTesting(id: "LLLLLLL")
+            let employee = EmployeeForTesting(id: "LLLLLLL", seniorID: "TestID1", juniorID: "TestID2")
             self.employer?.arrayOfObjects.append(employee)
             try await self.employer?.update(columns: SundeedColumn("optionalString"),
                                             SundeedColumn("object"),
