@@ -5,7 +5,7 @@ on:
     branches:
       - '**'
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
 jobs:
   build:
     runs-on: macOS-latest
@@ -17,7 +17,7 @@ jobs:
         echo 'export PATH="/usr/bin:$PATH"' >> $GITHUB_PATH
     - name: Build and Test
       run: |
-        xcodebuild clean build test -project "SundeedQLiteLibrary.xcodeproj" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,OS=17.5,name=iPhone 15 Pro" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+        xcodebuild clean build test -project "SundeedQLiteLibrary.xcodeproj" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,OS=26.0,name=iPhone 17 Pro" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
     - name: Install Slather
       run: gem install slather
     - name: Convert .xcresult to .lcov
