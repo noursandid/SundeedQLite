@@ -18,15 +18,15 @@ infix operator <~
 public func <~ (left: SundeedColumn, right: String) -> SundeedUpdateSetStatement {
     return SundeedUpdateSetStatement(sundeedColumn: left, withValue: right as AnyObject)
 }
-public class SundeedColumn {
-    var value: String = ""
+final public class SundeedColumn: Sendable {
+    let value: String
     required public init(_ value: String) {
         self.value = value
     }
     public typealias StringLiteralType = String
 }
 /** SundeedColumn("columnName") == "value" */
-public struct SundeedExpression<Bool> {
+public struct SundeedExpression<Bool>: Sendable {
     public var template: String
     public var bindings: String
     public init(_ template: String, _ bindings: String) {
