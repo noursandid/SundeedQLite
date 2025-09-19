@@ -1,7 +1,7 @@
 ![Sundeed](https://raw.githubusercontent.com/noursandid/SundeedQLite/master/SundeedLogo.png)
 
 # SundeedQLite
-[![codecov.io](https://codecov.io/gh/noursandid/SundeedQLite/branch/master/graph/badge.svg)](https://codecov.io/gh/noursandid/SundeedQLite/branch/master) [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SundeedQLite.svg)](https://cocoapods.org/pods/SundeedQLite) [![Platform](https://img.shields.io/cocoapods/p/SundeedQLite.svg?style=flat)](https://noursandid.github.io/SundeedQLite) [![License](https://img.shields.io/cocoapods/l/MarkdownKit.svg?style=flat)](http://cocoapods.org/pods/SundeedQLite) [![Language](https://img.shields.io/badge/Language-Swift-brightgreen)](https://github.com/apple/swift) [![Last Commit](https://img.shields.io/github/last-commit/noursandid/SundeedQLite?style=flat)](https://github.com/noursandid/SundeedQLite)
+[![codecov.io](https://codecov.io/gh/noursandid/SundeedQLite/branch/master/graph/badge.svg)](https://codecov.io/gh/noursandid/SundeedQLite/branch/master) [![Language](https://img.shields.io/badge/Language-Swift-brightgreen)](https://github.com/apple/swift) [![Last Commit](https://img.shields.io/github/last-commit/noursandid/SundeedQLite?style=flat)](https://github.com/noursandid/SundeedQLite)
 
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
@@ -10,25 +10,7 @@
 - ##### Swift 5+
 ### Installation
 ----
-### Installation via CocoaPods
 
-SundeedQLite is available through [CocoaPods](http://cocoapods.org). CocoaPods is a dependency manager that automates and simplifies the process of using 3rd-party libraries like MarkdownKit in your projects. You can install CocoaPods with the following command:
-
-```bash
-gem install cocoapods
-```
-
-To integrate SundeedQLite into your Xcode project using CocoaPods, simply add the following line to your Podfile:
-
-```bash
-pod "SundeedQLite"
-```
-
-Afterwards, run the following command:
-
-```bash
-pod install
-```
 ### Installation via Swift Package Manager
 To install SundeedQLite using SPM, 
 ```swift
