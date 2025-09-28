@@ -14,8 +14,9 @@ class RetrieveProcessor {
                   withFilter filters: SundeedExpression<Bool>?...,
                   excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
-        var database: OpaquePointer? = SundeedQLiteConnection.pool.connection
+        var database: OpaquePointer? = SundeedQLiteConnection.pool.connection()
         let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
+        SundeedLogger.debug("Retrieving \(objectWrapper.tableName)")
         if !columns.isEmpty {
             var statement: OpaquePointer?
             let query: String? = StatementBuilder()
@@ -33,10 +34,11 @@ class RetrieveProcessor {
                                                               columns: columns,
                                                               objectWrapper: objectWrapper,
                                                               subObjectHandler: subObjectHandler)
-            SundeedQLiteConnection.pool.closeConnection(database: database)
-            statement = nil
-            database = nil
+            SundeedLogger.debug("Found for \(objectWrapper.tableName): \(array)")
+            SundeedQLiteConnection.pool.closeConnection(database)
             return array
+        } else {
+            SundeedQLiteConnection.pool.closeConnection(database)
         }
         return []
     }
@@ -115,7 +117,7 @@ class RetrieveProcessor {
     }
     func getPrimitiveValues(forTable table: String,
                             withFilter filter: SundeedExpression<Bool>?) -> [Any]? {
-        let database = SundeedQLiteConnection.pool.connection
+        var database = SundeedQLiteConnection.pool.connection()
         var statement: OpaquePointer?
         let selectStatement = StatementBuilder()
             .selectStatement(tableName: table)
@@ -124,8 +126,8 @@ class RetrieveProcessor {
         if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK {
             let columns = getDatabaseColumns(forTable: table)
             var array: [Any] = []
-            for (index, column) in columns.enumerated() where column.columnName == Sundeed.shared.valueColumnName {
-                while sqlite3_step(statement) == SQLITE_ROW {
+            while sqlite3_step(statement) == SQLITE_ROW {
+                for (index, column) in columns.enumerated() where column.columnName == Sundeed.shared.valueColumnName {
                     if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
                        let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
                         let size = Int(sqlite3_column_bytes(statement, Int32(index)))
@@ -139,14 +141,15 @@ class RetrieveProcessor {
                     }
                 }
             }
-            SundeedQLiteConnection.pool.closeConnection(database: database)
+            SundeedQLiteConnection.pool.closeConnection(database)
             return array
+        } else {
+            SundeedQLiteConnection.pool.closeConnection(database)
         }
-        SundeedQLiteConnection.pool.closeConnection(database: database)
         return nil
     }
     func getDatabaseColumns(forTable table: String) -> [(columnName: String, columnType: ParameterType)] {
-        let database = SundeedQLiteConnection.pool.connection
+        let database = SundeedQLiteConnection.pool.connection()
         var columnsStatement: OpaquePointer?
         var array: [(columnName: String, columnType: ParameterType)] = []
         sqlite3_prepare_v2(database,
@@ -160,7 +163,7 @@ class RetrieveProcessor {
             }
         }
         columnsStatement = nil
-        SundeedQLiteConnection.pool.closeConnection(database: database)
+        SundeedQLiteConnection.pool.closeConnection(database)
         return array
     }
     func normalizeColumnValue(_ columnValue: UnsafePointer<UInt8>) -> String {

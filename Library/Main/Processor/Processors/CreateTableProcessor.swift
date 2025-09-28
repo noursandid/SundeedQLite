@@ -15,6 +15,7 @@ class CreateTableProcessor {
                 throw SundeedQLiteError.noObjectPassed
         }
         if !Sundeed.shared.tables.contains(object.tableName) {
+            SundeedLogger.debug("Creating table for \(object.tableName)")
             let createTableStatement = StatementBuilder()
                 .createTableStatement(tableName: object.tableName)
             for (columnName, attribute) in objects {

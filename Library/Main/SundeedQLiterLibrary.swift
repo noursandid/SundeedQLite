@@ -52,22 +52,42 @@ extension UIImage {
         if let documentsDirectoryURL = FileManager
             .default.urls(for: .documentDirectory,
                           in: .userDomainMask)
-            .first {
-            let fileURL = documentsDirectoryURL.appendingPathComponent(filePath)
-            if FileManager.default.fileExists(atPath: fileURL.path),
-                let data = try? Data(contentsOf: fileURL) {
-                return  UIImage(data: data)
+                .first {
+            let fileURL = documentsDirectoryURL.appendingPathComponent("SundeedQLite/Image", isDirectory: true).appendingPathComponent(filePath)
+            do {
+                if FileManager.default.fileExists(atPath: fileURL.path) {
+                    return try autoreleasepool {
+                        let data = try Data(contentsOf: fileURL)
+                        SundeedLogger.debug("SundeedQLite: Fetching image from \(fileURL.absoluteString)")
+                        return  UIImage(data: data)
+                    }
+                }
+            } catch {
+                SundeedLogger.error(error)
             }
         }
         return nil
     }
     func dataTypeValue(forObjectID objectID: String) -> String {
         guard let documentsDirectoryURL = FileManager
-            .default.urls(for: .documentDirectory,
-                          in: .userDomainMask)
-            .first else { fatalError() }
-        let fileURL = documentsDirectoryURL.appendingPathComponent("\(objectID).png")
-        try? self.pngData()?.write(to: fileURL)
+            .default.urls(for: .documentDirectory, in: .userDomainMask)
+            .first else {
+            fatalError("Unable to access document directory")
+        }
+        
+        let directoryURL = documentsDirectoryURL.appendingPathComponent("SundeedQLite/Image", isDirectory: true)
+        let fileURL = directoryURL.appendingPathComponent("\(objectID).png")
+        
+        do {
+            try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+            SundeedLogger.debug("Saving image to \(fileURL.absoluteString)")
+            try self.pngData()?.write(to: fileURL, options: .completeFileProtectionUnlessOpen)
+            SundeedLogger.debug("Image Saved to \(fileURL.absoluteString)")
+        } catch {
+            SundeedLogger.error(error)
+            SundeedLogger.debug("Error saving PNG: \(error) \(#file) \(#line)")
+        }
+        
         return fileURL.lastPathComponent
     }
 }

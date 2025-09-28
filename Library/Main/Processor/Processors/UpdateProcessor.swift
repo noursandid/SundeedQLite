@@ -12,6 +12,7 @@ class UpdateProcessor {
     func update(objectWrapper: ObjectWrapper,
                 columns: [SundeedColumn],
                 withFilters filters: [SundeedExpression<Bool>?]) async throws {
+        SundeedLogger.debug("Updating \(objectWrapper.tableName)")
         var depth: Int = 1
         try await Processor()
             .createTableProcessor
@@ -32,6 +33,7 @@ class UpdateProcessor {
                 if let attribute = attribute as? ObjectWrapper,
                     let className = attribute.className {
                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                        SundeedLogger.debug("Updating foreign object found for \(objectWrapper.tableName) at property \(column): \(attribute.tableName) with Primary/foreign key: \(primaryValue)")
                         depth += 1
                         await self.saveForeignObjects(attributes: [attribute],
                                                 primaryValue: primaryValue,
@@ -43,6 +45,7 @@ class UpdateProcessor {
                     if let firstAttribute = attributes.first as? ObjectWrapper,
                         let className = firstAttribute.className {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                            SundeedLogger.debug("Updating array of foreign objects found for \(objectWrapper.tableName) at property \(column): \(firstAttribute.tableName) with Primary/foreign key: \(primaryValue)")
                             await self.saveForeignObjects(attributes: attributes,
                                                     primaryValue: primaryValue,
                                                     column: column,
@@ -52,12 +55,14 @@ class UpdateProcessor {
                     }
                 } else if let attribute = attribute as? UIImage {
                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                        SundeedLogger.debug("Updating image found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
                         updateStatement
                             .add(key: column.value,
                                  value: attribute
                                     .dataTypeValue(forObjectID: primaryValue))
                     }
                 } else if let attribute = attribute as? Date {
+                    SundeedLogger.debug("Updating date found for \(objectWrapper.tableName) at property \(column)")
                     updateStatement.add(key: column.value,
                                         value: Sundeed.shared
                                             .dateFormatter.string(from: attribute))
@@ -65,6 +70,7 @@ class UpdateProcessor {
                     let attributes = attributes.compactMap({$0})
                     if !attributes.isEmpty {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                            SundeedLogger.debug("Updating array of images found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
                             depth += 1
                             await self.saveArrayOfImages(attributes: attributes,
                                                    primaryValue: primaryValue,
@@ -76,6 +82,7 @@ class UpdateProcessor {
                     let attributes = attributes.compactMap({$0})
                     if !attributes.isEmpty {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                            SundeedLogger.debug("Updating array of primitive datatype found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
                             depth += 1
                             await Processor()
                                 .saveProcessor

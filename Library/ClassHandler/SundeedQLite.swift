@@ -107,6 +107,9 @@ final public class SundeedQLite: Sendable {
             return listener == listenerInstance
         }
     }
+    public static func setLogLevel(_ logLevel: SundeedLogLevel) {
+        SundeedLogger.logLevel = logLevel
+    }
 }
 
 // Save
