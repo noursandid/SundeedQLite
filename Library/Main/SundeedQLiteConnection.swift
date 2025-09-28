@@ -29,6 +29,7 @@ class SundeedQLiteConnection {
     let fileManager = FileManager.default
     let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
     private let queue = DispatchQueue(label: "thread-safe-statements", attributes: .concurrent)
+    private let connectionQueue = DispatchQueue(label: "thread-safe-connection", attributes: .concurrent)
     private let backgroundQueue = DispatchQueue(label: "thread-safe-background-statements", attributes: .concurrent)
     private var connections: [OpaquePointer] = []
     
@@ -47,32 +48,59 @@ class SundeedQLiteConnection {
     }()
     
     func connection(write: Bool = false) -> OpaquePointer? {
-        do {
-            var database: OpaquePointer?
-            try self.createDatabaseIfNeeded()
-            let response = sqlite3_open_v2(fullDestPath?.path,
-                                           &database,
-                                           write ? SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX : SQLITE_OPEN_READONLY,
-                                           nil)
-            if response != SQLITE_OK {
-                let error = String(cString: sqlite3_errmsg(database))
-                SundeedLogger.debug(error)
-                return self.connection(write: write)
+        connectionQueue.sync(flags: .barrier) {
+            guard let path = fullDestPath?.path else {
+                SundeedLogger.error("DB path missing")
+                return nil
             }
-            return database
-        } catch {
-            SundeedLogger.debug(error)
-            return self.connection(write: write)
+            
+            var connection: OpaquePointer?
+            var flags = write ? (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX): (SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX)
+            let rc = sqlite3_open_v2(path, &connection, flags, nil)
+            if rc != SQLITE_OK {
+                if let connection, let cmsg = sqlite3_errmsg(connection) {
+                    SundeedLogger.debug(String(cString: cmsg))
+                } else {
+                    SundeedLogger.debug("sqlite3_open_v2 returned \(rc)")
+                }
+                if connection != nil {
+                    sqlite3_close_v2(connection)
+                }
+                return nil
+            }
+            
+            let timeout: Int32 = 500
+            if sqlite3_busy_timeout(connection, timeout) != SQLITE_OK {
+                if let cmsg = sqlite3_errmsg(connection) {
+                    SundeedLogger.debug("Failed set busy_timeout: \(String(cString: cmsg))")
+                }
+            }
+            
+            return connection
         }
     }
     
     func closeConnection(_ connection: OpaquePointer?) {
-        while let stmt = sqlite3_next_stmt(connection, nil) {
-            sqlite3_finalize(stmt)
-        }
-        let rc2 = sqlite3_close(connection)
-        if rc2 == SQLITE_BUSY {
-            self.closeConnection(connection)
+        connectionQueue.sync(flags: .barrier) {
+            guard let db = connection else { return }
+            
+            while let stmt = sqlite3_next_stmt(db, nil) {
+                sqlite3_finalize(stmt)
+            }
+            
+#if SQLITE_ENABLE_COLUMN_METADATA
+            let rc = sqlite3_close_v2(db)
+#else
+            let rc = sqlite3_close(db)
+#endif
+            
+            if rc != SQLITE_OK && rc != SQLITE_DONE {
+                if let cmsg = sqlite3_errmsg(db) {
+                    SundeedLogger.debug("sqlite3_close returned \(rc): \(String(cString: cmsg))")
+                } else {
+                    SundeedLogger.debug("sqlite3_close returned \(rc)")
+                }
+            }
         }
     }
     func execute(query: String?, parameters: [ParameterType]? = nil, force: Bool = false) {
@@ -169,18 +197,23 @@ class SundeedQLiteConnection {
         }
     }
     private func setPragma() {
-        let connection = connection()
-        var statement: OpaquePointer?
-        sqlite3_prepare_v2(connection,
-                           "PRAGMA journal_mode = WAL;",-1,
-                           &statement, nil)
-        if sqlite3_step(statement) == SQLITE_DONE {
-            sqlite3_finalize(statement)
-        } else {
-            let error = String(cString: sqlite3_errmsg(connection))
-            SundeedLogger.debug(error)
-            sqlite3_finalize(statement)
+        guard let conn = connection(write: true) else {
+            SundeedLogger.debug("Could not open DB to set PRAGMA")
+            return
         }
-        SundeedQLiteConnection.pool.closeConnection(connection)
+
+        var errmsg: UnsafeMutablePointer<Int8>?
+        let sql = "PRAGMA journal_mode = WAL;"
+        if sqlite3_exec(conn, sql, nil, nil, &errmsg) != SQLITE_OK {
+            if let e = errmsg {
+                SundeedLogger.debug("PRAGMA error: \(String(cString: e))")
+                sqlite3_free(errmsg)
+            } else if let cmsg = sqlite3_errmsg(conn) {
+                SundeedLogger.debug("PRAGMA failed: \(String(cString: cmsg))")
+            }
+        } else {
+            SundeedLogger.debug("WAL mode set")
+        }
+        closeConnection(conn)
     }
 }
