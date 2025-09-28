@@ -22,7 +22,7 @@ enum SundeedQLiteError: Error, CustomStringConvertible {
         case .primaryKeyError(let tableName):
             return "Error with class \(tableName): \n No Primary Key \n - To add a primary key add a '+' sign in the mapping function in the class after the designated primary map \n  e.g: self.id = map[\"ID\"]+"
         case .unsupportedType(let tableName, let attribute):
-            return "SundeedQLiteError with class \(tableName): \n Unsupported Type \(attribute) \n - Try to change the type of this attribute, or send us a suggestion so we can add it"
+            return "Error with class \(tableName): \n Unsupported Type \(attribute) \n - Try to change the type of this attribute, or send us a suggestion so we can add it"
         case .noColumnWithThisName(let tableName, let columnName):
             return "Error with class \(tableName): \n No Column With Title \(columnName) \n - Try to change the column name and try again"
         case .noChangesMade(let tableName):

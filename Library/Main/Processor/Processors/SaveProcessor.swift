@@ -34,7 +34,7 @@ class SaveProcessor {
         do {
             try await Processor().createTableProcessor.createTableIfNeeded(for: objects.first)
             for object in objects {
-                SundeedLogger.debug("Saving \(object.tableName)")
+                SundeedLogger.info("Saving \(object.tableName)")
                 if let objects = object.objects {
                     let insertStatement = StatementBuilder()
                         .insertStatement(tableName: object.tableName)

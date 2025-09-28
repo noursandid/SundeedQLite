@@ -12,7 +12,7 @@ class UpdateProcessor {
     func update(objectWrapper: ObjectWrapper,
                 columns: [SundeedColumn],
                 withFilters filters: [SundeedExpression<Bool>?]) async throws {
-        SundeedLogger.debug("Updating \(objectWrapper.tableName)")
+        SundeedLogger.info("Updating \(objectWrapper.tableName)")
         var depth: Int = 1
         try await Processor()
             .createTableProcessor

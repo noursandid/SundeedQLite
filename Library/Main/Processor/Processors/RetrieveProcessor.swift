@@ -14,9 +14,9 @@ class RetrieveProcessor {
                   withFilter filters: SundeedExpression<Bool>?...,
                   excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
-        var database: OpaquePointer? = SundeedQLiteConnection.pool.connection()
+        let database: OpaquePointer? = SundeedQLiteConnection.pool.connection()
         let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
-        SundeedLogger.debug("Retrieving \(objectWrapper.tableName)")
+        SundeedLogger.info("Retrieving \(objectWrapper.tableName)")
         if !columns.isEmpty {
             var statement: OpaquePointer?
             let query: String? = StatementBuilder()
