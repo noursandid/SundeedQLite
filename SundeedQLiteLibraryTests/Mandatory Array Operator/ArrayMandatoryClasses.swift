@@ -9,7 +9,7 @@
 import Foundation
 @testable import SundeedQLiteLibrary
 
-class ClassContainingAMandatoryOptionalArrayWithNil: SundeedQLiter {
+class ClassContainingAMandatoryOptionalArrayWithNil: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass]?
     required init() {}
@@ -20,7 +20,7 @@ class ClassContainingAMandatoryOptionalArrayWithNil: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryArrayWithNil: SundeedQLiter {
+class ClassContainingAMandatoryArrayWithNil: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass] = []
     required init() {}
@@ -31,7 +31,7 @@ class ClassContainingAMandatoryArrayWithNil: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalArrayWithOptionalNil: SundeedQLiter {
+class ClassContainingAMandatoryOptionalArrayWithOptionalNil: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?]?
     required init() {}
@@ -42,7 +42,7 @@ class ClassContainingAMandatoryOptionalArrayWithOptionalNil: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryArrayWithOptionalNil: SundeedQLiter {
+class ClassContainingAMandatoryArrayWithOptionalNil: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?] = []
     required init() {}
@@ -53,7 +53,7 @@ class ClassContainingAMandatoryArrayWithOptionalNil: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryArrayWithEmpty: SundeedQLiter {
+class ClassContainingAMandatoryArrayWithEmpty: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass] = []
     required init() {}
@@ -64,7 +64,7 @@ class ClassContainingAMandatoryArrayWithEmpty: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalArrayWithOptionalEmpty: SundeedQLiter {
+class ClassContainingAMandatoryOptionalArrayWithOptionalEmpty: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?]?
     required init() {}
@@ -75,7 +75,7 @@ class ClassContainingAMandatoryOptionalArrayWithOptionalEmpty: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryArrayWithOptionalEmpty: SundeedQLiter {
+class ClassContainingAMandatoryArrayWithOptionalEmpty: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?] = []
     required init() {}
@@ -86,7 +86,7 @@ class ClassContainingAMandatoryArrayWithOptionalEmpty: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalArrayWithEmpty: SundeedQLiter {
+class ClassContainingAMandatoryOptionalArrayWithEmpty: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass]?
     required init() {}
@@ -97,7 +97,7 @@ class ClassContainingAMandatoryOptionalArrayWithEmpty: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryArrayWithData: SundeedQLiter {
+class ClassContainingAMandatoryArrayWithData: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass] = []
     required init() {}
@@ -108,7 +108,7 @@ class ClassContainingAMandatoryArrayWithData: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalArrayWithData: SundeedQLiter {
+class ClassContainingAMandatoryOptionalArrayWithData: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass]?
     required init() {}
@@ -119,7 +119,7 @@ class ClassContainingAMandatoryOptionalArrayWithData: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalArrayWithOptionalData: SundeedQLiter {
+class ClassContainingAMandatoryOptionalArrayWithOptionalData: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?]?
     required init() {}
@@ -130,7 +130,7 @@ class ClassContainingAMandatoryOptionalArrayWithOptionalData: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryArrayWithOptionalData: SundeedQLiter {
+class ClassContainingAMandatoryArrayWithOptionalData: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?] = []
     required init() {}

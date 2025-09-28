@@ -9,7 +9,7 @@
 import XCTest
 @testable import SundeedQLiteLibrary
 
-class EmployeeForTesting: SundeedQLiter {
+class EmployeeForTesting: @unchecked Sendable, SundeedQLiter {
     var id: String!
     var firstName: String?
     var seniorEmployee: SeniorEmployeeForTesting?
@@ -25,7 +25,7 @@ class EmployeeForTesting: SundeedQLiter {
     }
 }
 
-class SeniorEmployeeForTesting: SundeedQLiter {
+class SeniorEmployeeForTesting: @unchecked Sendable, SundeedQLiter {
     var id: String!
     var firstName: String?
     var juniorEmployee: JuniorEmployeeForTesting?
@@ -41,7 +41,7 @@ class SeniorEmployeeForTesting: SundeedQLiter {
     }
 }
 
-class JuniorEmployeeForTesting: SundeedQLiter {
+class JuniorEmployeeForTesting: @unchecked Sendable, SundeedQLiter {
     var id: String!
     var firstName: String?
 
@@ -89,7 +89,7 @@ enum Type {
     }
 }
 
-class EmployerForTesting: SundeedQLiter {
+class EmployerForTesting: @unchecked Sendable, SundeedQLiter {
     var type: Type?
     var mandatoryType: Type = .manager
     var data: Data?
@@ -371,7 +371,7 @@ class EmployerForTesting: SundeedQLiter {
     }
 }
 
-class EmployerWithNoPrimaryForTesting: SundeedQLiter {
+class EmployerWithNoPrimaryForTesting: @unchecked Sendable, SundeedQLiter {
     var type: Type?
     var data: Data?
     var mandatoryData: Data = "Test Data".data(using: .utf8) ?? Data()
@@ -638,7 +638,7 @@ class EmployerWithNoPrimaryForTesting: SundeedQLiter {
 }
 
 
-class MandatoryClass: SundeedQLiter {
+class MandatoryClass: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe"
     var firstName: String?
     required init() {}
@@ -650,7 +650,7 @@ class MandatoryClass: SundeedQLiter {
 }
 
 
-class ClassContainingAMandatoryOptionalClassInArray: SundeedQLiter {
+class ClassContainingAMandatoryOptionalClassInArray: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?] = []
     required init() {}
@@ -661,7 +661,7 @@ class ClassContainingAMandatoryOptionalClassInArray: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalClassInOptionalArray: SundeedQLiter {
+class ClassContainingAMandatoryOptionalClassInOptionalArray: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass?]?
     required init() {}
@@ -672,7 +672,7 @@ class ClassContainingAMandatoryOptionalClassInOptionalArray: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryClassInArray: SundeedQLiter {
+class ClassContainingAMandatoryClassInArray: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass] = []
     required init() {}
@@ -683,7 +683,7 @@ class ClassContainingAMandatoryClassInArray: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryClassInOptionalArray: SundeedQLiter {
+class ClassContainingAMandatoryClassInOptionalArray: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: [MandatoryClass]?
     required init() {}
@@ -694,7 +694,7 @@ class ClassContainingAMandatoryClassInOptionalArray: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryOptionalClass: SundeedQLiter {
+class ClassContainingAMandatoryOptionalClass: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: MandatoryClass?
     required init() {}
@@ -705,7 +705,7 @@ class ClassContainingAMandatoryOptionalClass: SundeedQLiter {
     }
 }
 
-class ClassContainingAMandatoryClass: SundeedQLiter {
+class ClassContainingAMandatoryClass: @unchecked Sendable, SundeedQLiter {
     var id: String = "ID"
     var mandatoryClasses: MandatoryClass = MandatoryClass()
     required init() {}
@@ -718,7 +718,7 @@ class ClassContainingAMandatoryClass: SundeedQLiter {
 
 
 
-class ClassContainingParameterIndex: SundeedQLiter {
+class ClassContainingParameterIndex: @unchecked Sendable, SundeedQLiter {
     var index: String?
     required init() {}
     
