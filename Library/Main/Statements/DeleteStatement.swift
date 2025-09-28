@@ -9,6 +9,7 @@
 import Foundation
 
 class DeleteStatement: Statement {
+    let queue = DispatchQueue(label: "thread-safe-delete-statement", attributes: .concurrent)
     private var tableName: String
     private var filters: [SundeedExpression<Bool>] = []
     init(with tableName: String) {
@@ -16,24 +17,31 @@ class DeleteStatement: Statement {
     }
     @discardableResult
     func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
-        self.filters = filters.compactMap({$0})
-        return self
+        queue.sync {
+            self.filters = filters.compactMap({$0})
+            return self
+        }
     }
     func build() -> String? {
-        var statement: String = "DELETE FROM \(tableName) WHERE "
-        addFilters(forStatement: &statement)
-        return statement
+        queue.sync {
+            var statement: String = "DELETE FROM \(tableName) WHERE "
+            addFilters(forStatement: &statement)
+            SundeedLogger.debug("Delete Statement: \(statement)")
+            return statement
+        }
     }
     private func addFilters(forStatement statement: inout String) {
-        if !filters.isEmpty {
-            for (index, filter) in filters.enumerated() {
-                statement.append(filter.toQuery())
-                addSeparatorIfNeeded(separator: " AND ",
-                                     forStatement: &statement,
-                                     needed: isLastIndex(index: index, in: filters))
+        queue.sync {
+            if !filters.isEmpty {
+                for (index, filter) in filters.enumerated() {
+                    statement.append(filter.toQuery())
+                    addSeparatorIfNeeded(separator: " AND ",
+                                         forStatement: &statement,
+                                         needed: isLastIndex(index: index, in: filters))
+                }
+            } else {
+                statement.append("1")
             }
-        } else {
-            statement.append("1")
         }
     }
 }

@@ -9,7 +9,7 @@
 import XCTest
 @testable import SundeedQLiteLibrary
 
-class ClassWithNoPrimaryWithImage: SundeedQLiter {
+class ClassWithNoPrimaryWithImage: @unchecked Sendable, SundeedQLiter {
     var image: UIImage?
     required init() {}
     
@@ -22,7 +22,7 @@ class ClassWithNoPrimaryWithImage: SundeedQLiter {
     }
 }
 
-class ClassWithNoPrimaryWithImageArray: SundeedQLiter {
+class ClassWithNoPrimaryWithImageArray: @unchecked Sendable, SundeedQLiter {
     var images: [UIImage?]?
     required init() {}
     
@@ -35,7 +35,7 @@ class ClassWithNoPrimaryWithImageArray: SundeedQLiter {
     }
 }
 
-class ClassWithNoPrimaryWithPrimitiveArray: SundeedQLiter {
+class ClassWithNoPrimaryWithPrimitiveArray: @unchecked Sendable, SundeedQLiter {
     var strings: [String]?
     required init() {}
     
@@ -48,7 +48,7 @@ class ClassWithNoPrimaryWithPrimitiveArray: SundeedQLiter {
     }
 }
 
-class ClassWithNoPrimaryWithDate: SundeedQLiter {
+class ClassWithNoPrimaryWithDate: @unchecked Sendable, SundeedQLiter {
     var date: Date?
     required init() {}
     
@@ -62,7 +62,7 @@ class ClassWithNoPrimaryWithDate: SundeedQLiter {
 }
 
 
-class ClassWithNoPrimaryWithSubClass: SundeedQLiter {
+class ClassWithNoPrimaryWithSubClass: @unchecked Sendable, SundeedQLiter {
     var object: EmployeeForTesting?
     required init() {}
     
@@ -76,7 +76,7 @@ class ClassWithNoPrimaryWithSubClass: SundeedQLiter {
     
 }
 
-class ClassWithNoPrimaryWithSubClassArray: SundeedQLiter {
+class ClassWithNoPrimaryWithSubClassArray: @unchecked Sendable, SundeedQLiter {
     var objects: [EmployeeForTesting?]?
     required init() {}
     
@@ -91,7 +91,7 @@ class ClassWithNoPrimaryWithSubClassArray: SundeedQLiter {
 }
 
 
-class ClassWithNoPrimary: SundeedQLiter {
+class ClassWithNoPrimary: @unchecked Sendable, SundeedQLiter {
     var firstName: String?
     var lastName: String?
     required init() {}

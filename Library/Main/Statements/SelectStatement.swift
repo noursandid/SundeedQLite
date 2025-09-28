@@ -9,6 +9,7 @@
 import Foundation
 
 class SelectStatement: Statement {
+    let queue = DispatchQueue(label: "thread-safe-select-statement", attributes: .concurrent)
     private var tableName: String
     private var filters: [SundeedExpression<Bool>] = []
     private var caseInSensitive: Bool = false
@@ -20,83 +21,108 @@ class SelectStatement: Statement {
     }
     @discardableResult
     func isCaseInsensitive(_ isCaseInsensitive: Bool) -> Self {
-        self.caseInSensitive = isCaseInsensitive
-        return self
+        queue.sync {
+            self.caseInSensitive = isCaseInsensitive
+            return self
+        }
     }
     @discardableResult
     func isAscending(_ isAscending: Bool) -> Self {
-        self.ascending = isAscending
-        return self
+        queue.sync {
+            self.ascending = isAscending
+            return self
+        }
     }
     @discardableResult
     func isOrdered(_ isOrdered: Bool) -> Self {
-        self.isOrdered = isOrdered
-        return self
+        queue.sync {
+            self.isOrdered = isOrdered
+            return self
+        }
     }
     @discardableResult
     func orderBy(columnName: String?) -> Self {
-        orderByColumnName = columnName
-        return self
+        queue.sync {
+            orderByColumnName = columnName
+            return self
+        }
     }
     @discardableResult
     func withFilters(_ filters: SundeedExpression<Bool>?...) -> Self {
-        self.filters = filters.compactMap({$0})
-        return self
+        queue.sync {
+            self.filters = filters.compactMap({$0})
+            return self
+        }
     }
     @discardableResult
     func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
-        self.filters = filters.compactMap({$0})
-        return self
+        queue.sync {
+            self.filters = filters.compactMap({$0})
+            return self
+        }
     }
     @discardableResult
     func excludeIfIsForeign(_ exclude: Bool) -> Self {
-        if exclude {
-            self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == ""]
+        queue.sync {
+            if exclude {
+                self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == ""]
+            }
+            return self
         }
-        return self
     }
     func build() -> String? {
-        var statement = "SELECT * FROM \(tableName)"
-        addFilters(toStatement: &statement)
-        addOrderBy(toStatement: &statement)
-        statement.append(";")
-        return statement
+        queue.sync {
+            var statement = "SELECT * FROM \(tableName)"
+            addFilters(toStatement: &statement)
+            addOrderBy(toStatement: &statement)
+            statement.append(";")
+            SundeedLogger.debug("Select Statement: \(statement)")
+            return statement
+        }
     }
     private func addFilters(toStatement statement: inout String) {
-        if !filters.isEmpty {
-            statement += " WHERE "
-            for (index, filter) in filters.enumerated() {
-                let whereStatement = filterToQuery(filter: filter)
-                statement.append(whereStatement)
-                addSeparatorIfNeeded(separator: " AND ",
-                                     forStatement: &statement,
-                                     needed: isLastIndex(index: index, in: filters))
+        queue.sync {
+            if !filters.isEmpty {
+                statement += " WHERE "
+                for (index, filter) in filters.enumerated() {
+                    let whereStatement = filterToQuery(filter: filter)
+                    statement.append(whereStatement)
+                    addSeparatorIfNeeded(separator: " AND ",
+                                         forStatement: &statement,
+                                         needed: isLastIndex(index: index, in: filters))
+                }
             }
         }
     }
     private func addOrderBy(toStatement statement: inout String) {
-        statement.append(" ORDER BY ")
-        if isOrdered,
-            let orderByColumnName = orderByColumnName {
-            let quoations = getQuotation(forValue: orderByColumnName)
-            let condition = "\(quoations)\(orderByColumnName)\(quoations)"
-            statement.append(condition)
-        } else {
-            statement.append("\'SUNDEED_OFFLINE_ID\'")
+        queue.sync {
+            statement.append(" ORDER BY ")
+            if isOrdered,
+               let orderByColumnName = orderByColumnName {
+                let quoations = getQuotation(forValue: orderByColumnName)
+                let condition = "\(quoations)\(orderByColumnName)\(quoations)"
+                statement.append(condition)
+            } else {
+                statement.append("\'SUNDEED_OFFLINE_ID\'")
+            }
+            addCaseInsensitive(toStatement: &statement)
+            let sorting = ascending ? " ASC" : " DESC"
+            statement.append(sorting)
         }
-        addCaseInsensitive(toStatement: &statement)
-        let sorting = ascending ? " ASC" : " DESC"
-        statement.append(sorting)
     }
     private func addCaseInsensitive(toStatement statement: inout String) {
-        if caseInSensitive {
-            statement.append(" COLLATE NOCASE")
+        queue.sync {
+            if caseInSensitive {
+                statement.append(" COLLATE NOCASE")
+            }
         }
     }
     private func filterToQuery(filter: SundeedExpression<Bool>) -> String {
-        let template = filter.template
-        let binding = filter.bindings
-        let quotation = getQuotation(forValue: binding)
-        return "\(template) = \(quotation)\(binding)\(quotation)"
+        queue.sync {
+            let template = filter.template
+            let binding = filter.bindings
+            let quotation = getQuotation(forValue: binding)
+            return "\(template) = \(quotation)\(binding)\(quotation)"
+        }
     }
 }

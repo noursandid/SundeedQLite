@@ -9,6 +9,7 @@
 import Foundation
 
 class CreateTableStatement {
+    let queue = DispatchQueue(label: "thread-safe-create-table-statement", attributes: .concurrent)
     enum ColumnType: String {
         case text = "TEXT"
         case blob = "BLOB"
@@ -21,8 +22,10 @@ class CreateTableStatement {
     }
     @discardableResult
     func addColumn(with columnName: String, type: ColumnType) -> Self {
-        columns.append((name: columnName, type: type.rawValue))
-        return self
+        queue.sync {
+            columns.append((name: columnName, type: type.rawValue))
+            return self
+        }
     }
     @discardableResult
     func withPrimaryKey() -> Self {
@@ -30,14 +33,17 @@ class CreateTableStatement {
         return self
     }
     func build() -> String? {
-        var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (\(Sundeed.shared.offlineID) INTEGER PRIMARY KEY, \(Sundeed.shared.foreignKey) TEXT, \(Sundeed.shared.fieldNameLink) TEXT" 
-        for column in columns {
-            statement.append(", \(column.name) \(column.type)")
+        queue.sync {
+            var statement = "CREATE TABLE IF NOT EXISTS \(tableName) (\(Sundeed.shared.offlineID) INTEGER PRIMARY KEY, \(Sundeed.shared.foreignKey) TEXT, \(Sundeed.shared.fieldNameLink) TEXT"
+            for column in columns {
+                statement.append(", \(column.name) \(column.type)")
+            }
+            if hasPrimaryKey {
+                statement.append(",CONSTRAINT unq\(tableName) UNIQUE (\(Sundeed.shared.foreignKey),\(Sundeed.shared.primaryKey),\(Sundeed.shared.fieldNameLink))")
+            }
+            statement.append(");")
+            SundeedLogger.debug("Create Table Statement: \(statement)")
+            return statement
         }
-        if hasPrimaryKey {
-            statement.append(",CONSTRAINT unq\(tableName) UNIQUE (\(Sundeed.shared.foreignKey),\(Sundeed.shared.primaryKey),\(Sundeed.shared.fieldNameLink))")
-        }
-        statement.append(");")
-        return statement
     }
 }

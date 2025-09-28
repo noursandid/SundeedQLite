@@ -9,6 +9,7 @@
 import Foundation
 
 class InsertStatement: Statement {
+    let queue = DispatchQueue(label: "thread-safe-insert-statement", attributes: .concurrent)
     private var tableName: String
     private var keyValues: [(String, Any?)] = []
     private var values: [ParameterType] = []
@@ -17,31 +18,38 @@ class InsertStatement: Statement {
     }
     @discardableResult
     func add(key: String, value: Any?) -> Self {
-        keyValues.append((key, value))
-        return self
+        queue.sync {
+            keyValues.append((key, value))
+            return self
+        }
     }
     func build() -> (query: String, parameters: [ParameterType])? {
-        guard !keyValues.isEmpty else { return nil }
-        var statement: String = "REPLACE INTO \(tableName) ("
-        addKeysAndValues(toStatement: &statement)
-        return (query: statement, parameters: values)
+        queue.sync {
+            guard !keyValues.isEmpty else { return nil }
+            var statement: String = "REPLACE INTO \(tableName) ("
+            addKeysAndValues(toStatement: &statement)
+            SundeedLogger.debug("Insert Statement: \(statement), with parameters: \(values)")
+            return (query: statement, parameters: values)
+        }
     }
     private func addKeysAndValues(toStatement statement: inout String) {
-        var valuesStatement: String = ") VALUES ("
-        for (index, (key, value)) in keyValues.enumerated() {
-            let value = value ?? ""
-            statement.append(key)
-            valuesStatement.append("?")
-            values.append(getParameter(value))
-            let needed = isLastIndex(index: index, in: keyValues)
-            addSeparatorIfNeeded(separator: ", ",
-                                 forStatement: &statement,
-                                 needed: needed)
-            addSeparatorIfNeeded(separator: ", ",
-                                 forStatement: &valuesStatement,
-                                 needed: needed)
+        queue.sync {
+            var valuesStatement: String = ") VALUES ("
+            for (index, (key, value)) in keyValues.enumerated() {
+                let value = value ?? ""
+                statement.append(key)
+                valuesStatement.append("?")
+                values.append(getParameter(value))
+                let needed = isLastIndex(index: index, in: keyValues)
+                addSeparatorIfNeeded(separator: ", ",
+                                     forStatement: &statement,
+                                     needed: needed)
+                addSeparatorIfNeeded(separator: ", ",
+                                     forStatement: &valuesStatement,
+                                     needed: needed)
+            }
+            valuesStatement.append(");")
+            statement = "\(statement)\(valuesStatement)"
         }
-        valuesStatement.append(");")
-        statement = "\(statement)\(valuesStatement)"
     }
 }

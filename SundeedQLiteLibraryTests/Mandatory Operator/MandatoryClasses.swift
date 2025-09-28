@@ -9,7 +9,7 @@
 import UIKit
 @testable import SundeedQLiteLibrary
 
-class ClassWithMandatoryOptionalString: SundeedQLiter {
+class ClassWithMandatoryOptionalString: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe1"
     var mandatory: String?
     required init() {}
@@ -20,7 +20,7 @@ class ClassWithMandatoryOptionalString: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalInt: SundeedQLiter {
+class ClassWithMandatoryOptionalInt: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe2"
     var mandatory: Int?
     required init() {}
@@ -31,7 +31,7 @@ class ClassWithMandatoryOptionalInt: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalDate: SundeedQLiter {
+class ClassWithMandatoryOptionalDate: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe3"
     var mandatory: Date?
     required init() {}
@@ -42,7 +42,7 @@ class ClassWithMandatoryOptionalDate: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalImage: SundeedQLiter {
+class ClassWithMandatoryOptionalImage: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe4"
     var mandatory: UIImage?
     required init() {}
@@ -53,7 +53,7 @@ class ClassWithMandatoryOptionalImage: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalDouble: SundeedQLiter {
+class ClassWithMandatoryOptionalDouble: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe5"
     var mandatory: Double?
     required init() {}
@@ -64,7 +64,7 @@ class ClassWithMandatoryOptionalDouble: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalFloat: SundeedQLiter {
+class ClassWithMandatoryOptionalFloat: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe6"
     var mandatory: Float?
     required init() {}
@@ -75,7 +75,7 @@ class ClassWithMandatoryOptionalFloat: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfFloats: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfFloats: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe7"
     var mandatory: [Float]?
     required init() {}
@@ -86,7 +86,7 @@ class ClassWithMandatoryOptionalArrayOfFloats: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfOptionalFloats: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfOptionalFloats: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe8"
     var mandatory: [Float?]?
     required init() {}
@@ -97,7 +97,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalFloats: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfOptionalDoubles: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfOptionalDoubles: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe9"
     var mandatory: [Double?]?
     required init() {}
@@ -108,7 +108,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalDoubles: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfDoubles: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfDoubles: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe10"
     var mandatory: [Double]?
     required init() {}
@@ -119,7 +119,7 @@ class ClassWithMandatoryOptionalArrayOfDoubles: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfOptionalInts: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfOptionalInts: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe11"
     var mandatory: [Int?]?
     required init() {}
@@ -130,7 +130,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalInts: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfInts: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfInts: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe12"
     var mandatory: [Int]?
     required init() {}
@@ -143,7 +143,7 @@ class ClassWithMandatoryOptionalArrayOfInts: SundeedQLiter {
 
 
 
-class ClassWithMandatoryOptionalArrayOfImages: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfImages: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe13"
     var mandatory: [UIImage]?
     required init() {}
@@ -154,7 +154,7 @@ class ClassWithMandatoryOptionalArrayOfImages: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfOptionalImages: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfOptionalImages: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe14"
     var mandatory: [UIImage?]?
     required init() {}
@@ -165,7 +165,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalImages: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfStrings: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfStrings: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe15"
     var mandatory: [String]?
     required init() {}
@@ -176,7 +176,7 @@ class ClassWithMandatoryOptionalArrayOfStrings: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfOptionalStrings: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfOptionalStrings: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe16"
     var mandatory: [String?]?
     required init() {}
@@ -187,7 +187,7 @@ class ClassWithMandatoryOptionalArrayOfOptionalStrings: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalObjects: SundeedQLiter {
+class ClassWithMandatoryOptionalObjects: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe17"
     var mandatory: MandatoryClass?
     required init() {}
@@ -198,7 +198,7 @@ class ClassWithMandatoryOptionalObjects: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfObjects: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfObjects: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe18"
     var mandatory: [MandatoryClass]?
     required init() {}
@@ -209,7 +209,7 @@ class ClassWithMandatoryOptionalArrayOfObjects: SundeedQLiter {
     }
 }
 
-class ClassWithMandatoryOptionalArrayOfOptionalObjects: SundeedQLiter {
+class ClassWithMandatoryOptionalArrayOfOptionalObjects: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe19"
     var mandatory: [MandatoryClass?]?
     required init() {}

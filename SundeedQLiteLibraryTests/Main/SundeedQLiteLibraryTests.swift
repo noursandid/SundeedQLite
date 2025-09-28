@@ -164,7 +164,7 @@ class SundeedQLiteLibraryTests: XCTestCase {
                                           className: "Class",
                                           objects: nil)
         do {
-            try await CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
+            try CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
             XCTFail("Weirdly it continued without throwing an error")
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {

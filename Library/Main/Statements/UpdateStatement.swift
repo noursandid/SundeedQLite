@@ -9,6 +9,7 @@
 import Foundation
 
 class UpdateStatement: Statement {
+    let queue = DispatchQueue(label: "thread-safe-update-statement", attributes: .concurrent)
     private var tableName: String
     private var keyValues: [(String, Any?)] = []
     private var values: [ParameterType] = []
@@ -18,42 +19,53 @@ class UpdateStatement: Statement {
     }
     @discardableResult
     func add(key: String, value: Any?) -> Self {
-        keyValues.append((key, value))
-        return self
+        queue.sync {
+            keyValues.append((key, value))
+            return self
+        }
     }
     @discardableResult
     func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
-        self.filters = filters.compactMap({$0})
-        return self
+        queue.sync {
+            self.filters = filters.compactMap({$0})
+            return self
+        }
     }
     func build() -> (query: String, parameters: [ParameterType])? {
-        guard !keyValues.isEmpty else { return nil }
-        var statement = "UPDATE \(tableName) SET "
-        addKeyValues(toStatement: &statement)
-        addFilters(toStatement: &statement)
-        return (query: statement, parameters: values)
+        queue.sync {
+            guard !keyValues.isEmpty else { return nil }
+            var statement = "UPDATE \(tableName) SET "
+            addKeyValues(toStatement: &statement)
+            addFilters(toStatement: &statement)
+            SundeedLogger.debug("Update Statement: \(statement), with parameters \(values)")
+            return (query: statement, parameters: values)
+        }
     }
     private func addKeyValues(toStatement statement: inout String) {
-        for (index, (key, value)) in keyValues.enumerated() {
-            let value = value ?? ""
-            statement.append("\(key) = ?")
-            values.append(getParameter(value))
-            addSeparatorIfNeeded(separator: ", ",
-                                 forStatement: &statement,
-                                 needed: isLastIndex(index: index, in: keyValues))
+        queue.sync {
+            for (index, (key, value)) in keyValues.enumerated() {
+                let value = value ?? ""
+                statement.append("\(key) = ?")
+                values.append(getParameter(value))
+                addSeparatorIfNeeded(separator: ", ",
+                                     forStatement: &statement,
+                                     needed: isLastIndex(index: index, in: keyValues))
+            }
         }
     }
     private func addFilters(toStatement statement: inout String) {
-        statement.append(" WHERE ")
-        if !filters.isEmpty {
-            for (index, filter) in filters.enumerated() {
-                statement.append(filter.toQuery())
-                addSeparatorIfNeeded(separator: " AND ",
-                                     forStatement: &statement,
-                                     needed: isLastIndex(index: index, in: filters))
+        queue.sync {
+            statement.append(" WHERE ")
+            if !filters.isEmpty {
+                for (index, filter) in filters.enumerated() {
+                    statement.append(filter.toQuery())
+                    addSeparatorIfNeeded(separator: " AND ",
+                                         forStatement: &statement,
+                                         needed: isLastIndex(index: index, in: filters))
+                }
+            } else {
+                statement.append("1")
             }
-        } else {
-            statement.append("1")
         }
     }
 }
