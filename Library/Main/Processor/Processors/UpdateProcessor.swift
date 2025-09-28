@@ -14,7 +14,7 @@ class UpdateProcessor {
                 withFilters filters: [SundeedExpression<Bool>?]) async throws {
         SundeedLogger.info("Updating \(objectWrapper.tableName)")
         var depth: Int = 1
-        try await Processor()
+        try Processor()
             .createTableProcessor
             .createTableIfNeeded(for: objectWrapper)
         guard objectWrapper.hasPrimaryKey else {
@@ -25,32 +25,32 @@ class UpdateProcessor {
             .updateStatement(tableName: objectWrapper.tableName)
         for column in columns {
             if let objects = objectWrapper.objects,
-                objects.contains(where: { (arg0) -> Bool in
-                    let (key, _) = arg0
-                    return key == column.value
-                }) {
+               objects.contains(where: { (arg0) -> Bool in
+                   let (key, _) = arg0
+                   return key == column.value
+               }) {
                 let attribute = objects[column.value]
                 if let attribute = attribute as? ObjectWrapper,
-                    let className = attribute.className {
+                   let className = attribute.className {
                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
                         SundeedLogger.debug("Updating foreign object found for \(objectWrapper.tableName) at property \(column): \(attribute.tableName) with Primary/foreign key: \(primaryValue)")
                         depth += 1
                         await self.saveForeignObjects(attributes: [attribute],
-                                                primaryValue: primaryValue,
-                                                column: column,
-                                                className: className,
-                                                updateStatement: updateStatement)
+                                                      primaryValue: primaryValue,
+                                                      column: column,
+                                                      className: className,
+                                                      updateStatement: updateStatement)
                     }
                 } else if let attributes = attribute as? [ObjectWrapper?] {
                     if let firstAttribute = attributes.first as? ObjectWrapper,
-                        let className = firstAttribute.className {
+                       let className = firstAttribute.className {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
                             SundeedLogger.debug("Updating array of foreign objects found for \(objectWrapper.tableName) at property \(column): \(firstAttribute.tableName) with Primary/foreign key: \(primaryValue)")
                             await self.saveForeignObjects(attributes: attributes,
-                                                    primaryValue: primaryValue,
-                                                    column: column,
-                                                    className: className,
-                                                    updateStatement: updateStatement)
+                                                          primaryValue: primaryValue,
+                                                          column: column,
+                                                          className: className,
+                                                          updateStatement: updateStatement)
                         }
                     }
                 } else if let attribute = attribute as? UIImage {
@@ -59,13 +59,13 @@ class UpdateProcessor {
                         updateStatement
                             .add(key: column.value,
                                  value: attribute
-                                    .dataTypeValue(forObjectID: primaryValue))
+                                .dataTypeValue(forObjectID: primaryValue))
                     }
                 } else if let attribute = attribute as? Date {
                     SundeedLogger.debug("Updating date found for \(objectWrapper.tableName) at property \(column)")
                     updateStatement.add(key: column.value,
                                         value: Sundeed.shared
-                                            .dateFormatter.string(from: attribute))
+                        .dateFormatter.string(from: attribute))
                 } else if let attributes = attribute as? [UIImage?] {
                     let attributes = attributes.compactMap({$0})
                     if !attributes.isEmpty {
@@ -73,9 +73,9 @@ class UpdateProcessor {
                             SundeedLogger.debug("Updating array of images found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
                             depth += 1
                             await self.saveArrayOfImages(attributes: attributes,
-                                                   primaryValue: primaryValue,
-                                                   column: column,
-                                                   updateStatement: updateStatement)
+                                                         primaryValue: primaryValue,
+                                                         column: column,
+                                                         updateStatement: updateStatement)
                         }
                     }
                 } else if let attributes = attribute as? [Any] {
@@ -92,7 +92,7 @@ class UpdateProcessor {
                             updateStatement
                                 .add(key: column.value,
                                      value: Sundeed.shared
-                                        .sundeedPrimitiveForeignValue(tableName: column.value))
+                                    .sundeedPrimitiveForeignValue(tableName: column.value))
                         }
                     }
                 } else {
@@ -113,7 +113,7 @@ class UpdateProcessor {
         }
         updateStatement.withFilters(filters)
         let statement = updateStatement.build()
-        await SundeedQLiteConnection.pool.execute(query: statement?.query,
+        SundeedQLiteConnection.pool.execute(query: statement?.query,
                                             parameters: statement?.parameters)
     }
     
@@ -121,22 +121,22 @@ class UpdateProcessor {
                            primaryValue: String,
                            column: SundeedColumn,
                            updateStatement: UpdateStatement) async {
-            let attributes: [String] = attributes.enumerated()
-                .map({
-                    let index = $0
-                    let indexString = String(describing: index)
-                    let objectID = "\(primaryValue)\(column.value)\(indexString)"
-                    return $1.dataTypeValue(forObjectID: objectID)
-                })
-            await Processor()
-                .saveProcessor
-                .saveArrayOfPrimitives(tableName: column.value,
-                                       objects: attributes,
-                                       withForeignKey: primaryValue)
-            updateStatement
-                .add(key: column.value,
-                     value: Sundeed.shared
-                        .sundeedPrimitiveForeignValue(tableName: column.value))
+        let attributes: [String] = attributes.enumerated()
+            .map({
+                let index = $0
+                let indexString = String(describing: index)
+                let objectID = "\(primaryValue)\(column.value)\(indexString)"
+                return $1.dataTypeValue(forObjectID: objectID)
+            })
+        await Processor()
+            .saveProcessor
+            .saveArrayOfPrimitives(tableName: column.value,
+                                   objects: attributes,
+                                   withForeignKey: primaryValue)
+        updateStatement
+            .add(key: column.value,
+                 value: Sundeed.shared
+                .sundeedPrimitiveForeignValue(tableName: column.value))
     }
     
     
@@ -154,7 +154,7 @@ class UpdateProcessor {
         updateStatement
             .add(key: column.value,
                  value: Sundeed.shared
-                    .sundeedForeignValue(tableName: className,
-                                         fieldNameLink: column.value))
+                .sundeedForeignValue(tableName: className,
+                                     fieldNameLink: column.value))
     }
 }

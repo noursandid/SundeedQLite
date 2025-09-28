@@ -9,10 +9,10 @@
 import Foundation
 
 class CreateTableProcessor {
-    func createTableIfNeeded(for object: ObjectWrapper?) async throws {
+    func createTableIfNeeded(for object: ObjectWrapper?) throws {
         guard let object = object,
-            let objects = object.objects else {
-                throw SundeedQLiteError.noObjectPassed
+              let objects = object.objects else {
+            throw SundeedQLiteError.noObjectPassed
         }
         if !Sundeed.shared.tables.contains(object.tableName) {
             SundeedLogger.info("Creating table for \(object.tableName)")
@@ -20,16 +20,16 @@ class CreateTableProcessor {
                 .createTableStatement(tableName: object.tableName)
             for (columnName, attribute) in objects {
                 if let attribute = attribute as? ObjectWrapper {
-                    try await createTableIfNeeded(for: attribute)
+                    try createTableIfNeeded(for: attribute)
                 } else if let attribute = attribute as? [ObjectWrapper] {
                     if let firstAttribute = attribute.first {
-                        try await createTableIfNeeded(for: firstAttribute)
+                        try createTableIfNeeded(for: firstAttribute)
                     }
                 } else if attribute is [Any] {
                     if let array = attribute as? [Any], let _ = array.first as? Data {
-                        await createTableForPrimitiveDataTypes(withTableName: columnName, type: .blob)
+                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .blob)
                     } else {
-                        await createTableForPrimitiveDataTypes(withTableName: columnName)
+                        createTableForPrimitiveDataTypes(withTableName: columnName)
                     }
                 }
                 
@@ -46,20 +46,20 @@ class CreateTableProcessor {
                 createTableStatement.withPrimaryKey()
             }
             let statement: String? = createTableStatement.build()
-            await SundeedQLiteConnection.pool.execute(query: statement,
+            SundeedQLiteConnection.pool.execute(query: statement,
                                                 parameters: nil)
             Sundeed.shared.tables.append(object.tableName)
         }
     }
     /** Try to create table for primitive data types if not already exists */
     func createTableForPrimitiveDataTypes(withTableName tableName: String,
-                                          type: CreateTableStatement.ColumnType = .text) async {
+                                          type: CreateTableStatement.ColumnType = .text) {
         if  !Sundeed.shared.tables.contains(tableName) {
             let createTableStatement = StatementBuilder()
                 .createTableStatement(tableName: tableName)
                 .addColumn(with: Sundeed.shared.valueColumnName, type: type)
                 .build()
-            await SundeedQLiteConnection.pool.execute(query: createTableStatement, parameters: nil)
+            SundeedQLiteConnection.pool.execute(query: createTableStatement, parameters: nil)
             Sundeed.shared.tables.append(tableName)
         }
     }

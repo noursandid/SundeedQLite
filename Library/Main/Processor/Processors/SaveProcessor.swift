@@ -13,26 +13,26 @@ class SaveProcessor {
     func acceptDataType(forObject object: AnyObject?) -> Bool {
         if object != nil {
             return object is String
-                || object is String?
-                || object is Int
-                || object is Int?
-                || object is Double
-                || object is Double?
-                || object is Float
-                || object is Float?
-                || object is Bool
-                || object is Bool?
-                || object is Date
-                || object is Date?
-                || object is UIImage
-                || object is UIImage?
+            || object is String?
+            || object is Int
+            || object is Int?
+            || object is Double
+            || object is Double?
+            || object is Float
+            || object is Float?
+            || object is Bool
+            || object is Bool?
+            || object is Date
+            || object is Date?
+            || object is UIImage
+            || object is UIImage?
         }
         return false
     }
     func save(objects: [ObjectWrapper], withForeignKey foreignKey: String? = nil,
               withFieldNameLink fieldNameLink: String? = nil) async {
         do {
-            try await Processor().createTableProcessor.createTableIfNeeded(for: objects.first)
+            try Processor().createTableProcessor.createTableIfNeeded(for: objects.first)
             for object in objects {
                 SundeedLogger.info("Saving \(object.tableName)")
                 if let objects = object.objects {
@@ -74,8 +74,8 @@ class SaveProcessor {
                                              value: value)
                                     let wrappers = attribute.compactMap({$0})
                                     await self.save(objects: wrappers,
-                                              withForeignKey: primaryValue,
-                                              withFieldNameLink: columnName)
+                                                    withForeignKey: primaryValue,
+                                                    withFieldNameLink: columnName)
                                 } else {
                                     throw SundeedQLiteError
                                         .primaryKeyError(tableName: firstAttribute.tableName)
@@ -156,8 +156,8 @@ class SaveProcessor {
                         }
                     }
                     let statement = insertStatement.build()
-                    await SundeedQLiteConnection.pool.execute(query: statement?.query,
-                                                              parameters: statement?.parameters)
+                    SundeedQLiteConnection.pool.execute(query: statement?.query,
+                                                        parameters: statement?.parameters)
                 }
             }
         } catch {
@@ -166,10 +166,10 @@ class SaveProcessor {
     }
     func saveArrayOfPrimitives<T>(tableName: String, objects: [T?], withForeignKey foreignKey: String,
                                   type: CreateTableStatement.ColumnType = .text) async {
-        await Processor().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName, type: type)
+        Processor().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName, type: type)
         let filter = SundeedColumn(Sundeed.shared.foreignKey) == foreignKey
         await self.deleteFromDB(tableName: tableName,
-                          withFilters: [filter])
+                                withFilters: [filter])
         for object in objects.compactMap({$0}) {
             let builder = StatementBuilder()
                 .insertStatement(tableName: tableName)
@@ -179,10 +179,10 @@ class SaveProcessor {
             } else {
                 builder.add(key: Sundeed.shared.valueColumnName, value: String(describing: object))
             }
-                
+            
             let insertStatement = builder.build()
-            await SundeedQLiteConnection.pool.execute(query: insertStatement?.query,
-                                                      parameters: insertStatement?.parameters)
+            SundeedQLiteConnection.pool.execute(query: insertStatement?.query,
+                                                parameters: insertStatement?.parameters)
         }
         
     }
@@ -192,6 +192,6 @@ class SaveProcessor {
             .deleteStatement(tableName: tableName)
             .withFilters(filters)
             .build()
-        await SundeedQLiteConnection.pool.execute(query: deleteStatement)
+        SundeedQLiteConnection.pool.execute(query: deleteStatement)
     }
 }

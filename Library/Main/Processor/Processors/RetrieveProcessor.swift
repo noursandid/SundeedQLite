@@ -117,7 +117,7 @@ class RetrieveProcessor {
     }
     func getPrimitiveValues(forTable table: String,
                             withFilter filter: SundeedExpression<Bool>?) -> [Any]? {
-        var database = SundeedQLiteConnection.pool.connection()
+        let database = SundeedQLiteConnection.pool.connection()
         var statement: OpaquePointer?
         let selectStatement = StatementBuilder()
             .selectStatement(tableName: table)
