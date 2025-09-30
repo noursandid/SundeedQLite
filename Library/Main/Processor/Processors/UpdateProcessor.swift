@@ -40,6 +40,8 @@ class UpdateProcessor {
                                                       column: column,
                                                       className: className,
                                                       updateStatement: updateStatement)
+                    } else {
+                        throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
                     }
                 } else if let attributes = attribute as? [ObjectWrapper?] {
                     if let firstAttribute = attributes.first as? ObjectWrapper,
@@ -51,6 +53,8 @@ class UpdateProcessor {
                                                           column: column,
                                                           className: className,
                                                           updateStatement: updateStatement)
+                        } else {
+                            throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
                         }
                     }
                 } else if let attribute = attribute as? UIImage {
@@ -60,12 +64,22 @@ class UpdateProcessor {
                             .add(key: column.value,
                                  value: attribute
                                 .dataTypeValue(forObjectID: primaryValue))
+                    } else {
+                        throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
                     }
                 } else if let attribute = attribute as? Date {
                     SundeedLogger.debug("Updating date found for \(objectWrapper.tableName) at property \(column)")
                     updateStatement.add(key: column.value,
                                         value: Sundeed.shared
                         .dateFormatter.string(from: attribute))
+                }  else if let attribute = attribute as? Data {
+                    if objects[Sundeed.shared.primaryKey] as? String != nil {
+                        SundeedLogger.debug("Updating data found for \(objectWrapper.tableName) at property \(column)")
+                        updateStatement.add(key: column.value,
+                                            value: attribute)
+                    } else {
+                        throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
+                    }
                 } else if let attributes = attribute as? [UIImage?] {
                     let attributes = attributes.compactMap({$0})
                     if !attributes.isEmpty {
@@ -76,6 +90,8 @@ class UpdateProcessor {
                                                          primaryValue: primaryValue,
                                                          column: column,
                                                          updateStatement: updateStatement)
+                        } else {
+                            throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
                         }
                     }
                 } else if let attributes = attribute as? [Any] {
@@ -93,6 +109,8 @@ class UpdateProcessor {
                                 .add(key: column.value,
                                      value: Sundeed.shared
                                     .sundeedPrimitiveForeignValue(tableName: column.value))
+                        } else {
+                            throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
                         }
                     }
                 } else {
