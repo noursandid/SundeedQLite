@@ -11,11 +11,15 @@ import Foundation
 class UpdateStatement: Statement {
     let queue = DispatchQueue(label: "thread-safe-update-statement", attributes: .concurrent)
     private var tableName: String
+    private var columns: [String: ParameterType]
     private var keyValues: [(String, Any?)] = []
     private var values: [ParameterType] = []
     private var filters: [SundeedExpression<Bool>] = []
     init(with tableName: String) {
         self.tableName = tableName
+        self.columns = Processor().getDatabaseColumns(forTable: tableName).reduce(into: [String: ParameterType]()) { result, element in
+            result[element.columnName] = element.columnType
+        }
     }
     @discardableResult
     func add(key: String, value: Any?) -> Self {
@@ -43,10 +47,10 @@ class UpdateStatement: Statement {
     }
     private func addKeyValues(toStatement statement: inout String) {
         queue.sync {
-            for (index, (key, value)) in keyValues.enumerated() {
-                let value = value ?? ""
+            for (index, (key, value)) in keyValues.enumerated() where self.columns[key] != nil {
                 statement.append("\(key) = ?")
-                values.append(getParameter(value))
+                let columnType = self.columns[key] ?? .text("")
+                values.append(columnType.withValue(value))
                 addSeparatorIfNeeded(separator: ", ",
                                      forStatement: &statement,
                                      needed: isLastIndex(index: index, in: keyValues))

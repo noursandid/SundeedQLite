@@ -14,6 +14,7 @@ class ObjectWrapper {
     private(set) var tableName: String
     private(set) var className: String?
     var objects: SundeedObject?
+    var types: [String: ParameterType]?
     var isOrdered: Bool
     var orderBy: String
     var asc: Bool
@@ -21,12 +22,14 @@ class ObjectWrapper {
     init(tableName: String,
          className: String?,
          objects: SundeedObject?,
+         types: [String: ParameterType]?,
          isOrdered: Bool = false,
          orderBy: String = "",
          asc: Bool = false,
          hasPrimaryKey: Bool = false) {
         self.tableName = tableName
         self.objects = objects
+        self.types = types
         self.className = className
         self.isOrdered = isOrdered
         self.orderBy = orderBy

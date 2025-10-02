@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SaveProcessor {
+class SaveProcessor: Processor {
     /** Checks if the object is of an acceptable type */
     func acceptDataType(forObject object: AnyObject?) -> Bool {
         if object != nil {
@@ -32,7 +32,7 @@ class SaveProcessor {
     func save(objects: [ObjectWrapper], withForeignKey foreignKey: String? = nil,
               withFieldNameLink fieldNameLink: String? = nil) async {
         do {
-            try Processor().createTableProcessor.createTableIfNeeded(for: objects.first)
+            try Processors().createTableProcessor.createTableIfNeeded(for: objects.first)
             for object in objects {
                 SundeedLogger.info("Saving \(object.tableName)")
                 if let objects = object.objects {
@@ -95,7 +95,7 @@ class SaveProcessor {
                         } else if let attribute = attribute as? Date {
                             if objects[Sundeed.shared.primaryKey] as? String != nil {
                                 SundeedLogger.debug("Saving date found for \(object.tableName) at property \(columnName): \(attribute)")
-                                let attributeValue = Sundeed.shared.dateFormatter.string(from: attribute)
+                                let attributeValue = attribute.timeIntervalSince1970*1000
                                 insertStatement.add(key: columnName,
                                                     value: attributeValue)
                             } else {
@@ -121,10 +121,12 @@ class SaveProcessor {
                                         let objectID = "\(primaryValue)\(columnName)\(indexString)"
                                         return $1.dataTypeValue(forObjectID: objectID)
                                     })
+                                let type = object.types?[columnName] ?? .text(nil)
+                                let primitiveForeignTableName = "\(columnName)\(type.rawValue)"
                                 let attributeValue = Sundeed.shared
-                                    .sundeedPrimitiveForeignValue(tableName: columnName)
+                                    .sundeedPrimitiveForeignValue(tableName: primitiveForeignTableName)
                                 insertStatement.add(key: columnName, value: attributeValue)
-                                await self.saveArrayOfPrimitives(tableName: columnName,
+                                await self.saveArrayOfPrimitives(tableName: primitiveForeignTableName,
                                                                  objects: attribute,
                                                                  withForeignKey: primaryValue)
                             } else {
@@ -135,12 +137,13 @@ class SaveProcessor {
                                 if self.acceptDataType(forObject: attribute.first as AnyObject)
                                     || attribute.first is Data {
                                     SundeedLogger.debug("Saving primitive datatype found for \(object.tableName) at property \(columnName): \(attribute)")
-                                    let type: CreateTableStatement.ColumnType = attribute.first is Data ? .blob : .text
+                                    let type = object.types?[columnName] ?? .text(nil)
+                                    let primitiveForeignTableName = "\(columnName)\(type.rawValue)"
                                     let attributeValue = Sundeed.shared
-                                        .sundeedPrimitiveForeignValue(tableName: columnName)
+                                        .sundeedPrimitiveForeignValue(tableName: primitiveForeignTableName)
                                     insertStatement.add(key: columnName, value: attributeValue)
                                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                                        await self.saveArrayOfPrimitives(tableName: columnName,
+                                        await self.saveArrayOfPrimitives(tableName: primitiveForeignTableName,
                                                                          objects: attribute,
                                                                          withForeignKey: primaryValue,
                                                                          type: type)
@@ -152,7 +155,7 @@ class SaveProcessor {
                                 insertStatement.add(key: columnName, value: nil)
                             }
                         } else if self.acceptDataType(forObject: attribute as AnyObject) {
-                            insertStatement.add(key: columnName, value: String(describing: attribute))
+                            insertStatement.add(key: columnName, value: attribute)
                         }
                     }
                     let statement = insertStatement.build()
@@ -165,8 +168,8 @@ class SaveProcessor {
         }
     }
     func saveArrayOfPrimitives<T>(tableName: String, objects: [T?], withForeignKey foreignKey: String,
-                                  type: CreateTableStatement.ColumnType = .text) async {
-        Processor().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName, type: type)
+                                  type: ParameterType = .text(nil)) async {
+        Processors().createTableProcessor.createTableForPrimitiveDataTypes(withTableName: tableName, type: type)
         let filter = SundeedColumn(Sundeed.shared.foreignKey) == foreignKey
         await self.deleteFromDB(tableName: tableName,
                                 withFilters: [filter])
@@ -174,12 +177,11 @@ class SaveProcessor {
             let builder = StatementBuilder()
                 .insertStatement(tableName: tableName)
                 .add(key: Sundeed.shared.foreignKey, value: foreignKey)
-            if let data = object as? Data {
-                builder.add(key: Sundeed.shared.valueColumnName, value: data)
-            } else {
+            if case .text = type {
                 builder.add(key: Sundeed.shared.valueColumnName, value: String(describing: object))
+            } else {
+                builder.add(key: Sundeed.shared.valueColumnName, value: object)
             }
-            
             let insertStatement = builder.build()
             SundeedQLiteConnection.pool.execute(query: insertStatement?.query,
                                                 parameters: insertStatement?.parameters)

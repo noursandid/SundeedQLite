@@ -19,7 +19,7 @@ public func <*> <T>(left: inout T?, right: (SundeedQLiteMap, SundeedQLiteConvert
         }
     } else {
         let attribute = right.1.toString(value: left)
-        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!)
+        right.0.addColumn(attribute: attribute, withColumnName: right.0.key!, type: .text(nil))
     }
 }
 public func <*> <T: SundeedQLiter>(left: inout T?, right: SundeedQLiteMap) {
@@ -53,7 +53,7 @@ public func <*> <T: SundeedQLiter>(left: inout T?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> <T: SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
@@ -89,7 +89,7 @@ public func <*> <T: SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> <T: SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
@@ -125,7 +125,7 @@ public func <*> <T: SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> (left: inout String?, right: SundeedQLiteMap) {
@@ -137,32 +137,31 @@ public func <*> (left: inout String?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> (left: inout Int?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = Int(rightValue) {
-            left = value
+        if let rightValue = right.currentValue as? NSNumber {
+            left = Int(truncating: rightValue)
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .integer(nil))
     }
 }
 public func <*> (left: inout Date?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String,
-            let value = Sundeed.shared.dateFormatter.date(from: rightValue) {
-            left = value
+        if let rightValue = right.currentValue as? NSNumber {
+            left = Date(timeIntervalSince1970: TimeInterval(truncating: NSNumber(floatLiteral: rightValue.doubleValue/1000)))
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .double(nil))
     }
 }
 public func <*> (left: inout [String]?, right: SundeedQLiteMap) {
@@ -174,7 +173,7 @@ public func <*> (left: inout [String]?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> (left: inout [String?]?, right: SundeedQLiteMap) {
@@ -186,79 +185,79 @@ public func <*> (left: inout [String?]?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> (left: inout [Int]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? [String] {
-            left = value.compactMap({Int($0)})
+        if let value = right.currentValue as? [NSNumber] {
+            left = value.compactMap({Int(truncating: $0)})
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .integer(nil))
     }
 }
 public func <*> (left: inout [Int?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? [String] {
-            left = value.compactMap({Int($0)})
+        if let value = right.currentValue as? [NSNumber] {
+            left = value.compactMap({Int(truncating: $0)})
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .integer(nil))
     }
 }
 public func <*> (left: inout [Double]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? [String] {
-            left = value.compactMap({Double($0)})
+        if let value = right.currentValue as? [NSNumber] {
+            left = value.compactMap({Double(truncating: $0)})
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .double(nil))
     }
 }
 public func <*> (left: inout [Double?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? [String] {
-            left = value.compactMap({Double($0)})
+        if let value = right.currentValue as? [NSNumber] {
+            left = value.compactMap({Double(truncating: $0)})
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .double(nil))
     }
 }
 public func <*> (left: inout [Float]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? [String] {
-            left = value.compactMap({Float($0)})
+        if let value = right.currentValue as? [NSNumber] {
+            left = value.compactMap({Float(truncating: $0)})
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .double(nil))
     }
 }
 public func <*> (left: inout [Float?]?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let value = right.currentValue as? [String] {
-            left = value.compactMap({Float($0)})
+        if let value = right.currentValue as? [NSNumber] {
+            left = value.compactMap({Float(truncating: $0)})
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .double(nil))
     }
 }
 public func <*> (left: inout [UIImage]?, right: SundeedQLiteMap) {
@@ -270,7 +269,7 @@ public func <*> (left: inout [UIImage]?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> (left: inout [UIImage?]?, right: SundeedQLiteMap) {
@@ -282,35 +281,35 @@ public func <*> (left: inout [UIImage?]?, right: SundeedQLiteMap) {
             right.isSafeToAdd = false
         }
     } else {
-        right.addColumn(attribute: left, withColumnName: right.key!)
+        right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
 public func <*> (left: inout Double?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = Double(rightValue) {
-            left = value
+        if let rightValue = right.currentValue as? NSNumber {
+            left = Double(truncating: rightValue)
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .double(nil))
         }
     }
 }
 
 public func <*> (left: inout Float?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-        if let rightValue = right.currentValue as? String, let value = Float(rightValue) {
-            left = value
+        if let rightValue = right.currentValue as? NSNumber {
+            left = Float(truncating: rightValue)
         }
         if left == nil && right.isSafeToAdd {
             right.isSafeToAdd = false
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .double(nil))
         }
     }
 }
@@ -324,7 +323,7 @@ public func <*> (left: inout UIImage?, right: SundeedQLiteMap) {
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .text(nil))
         }
     }
 }

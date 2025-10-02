@@ -9,10 +9,6 @@
 import UIKit
 import SQLite3
 
-/** Filter in local database */
-public func == (left: SundeedColumn, right: String) -> SundeedExpression<Bool> {
-return SundeedExpression(left.value, right)
-}
 infix operator <~
 /** Setting variables in global update statement in local database */
 public func <~ (left: SundeedColumn, right: String) -> SundeedUpdateSetStatement {
@@ -24,18 +20,6 @@ final public class SundeedColumn: Sendable {
         self.value = value
     }
     public typealias StringLiteralType = String
-}
-/** SundeedColumn("columnName") == "value" */
-public struct SundeedExpression<Bool>: Sendable {
-    public var template: String
-    public var bindings: String
-    public init(_ template: String, _ bindings: String) {
-        self.template = template
-        self.bindings = bindings
-    }
-    public func toQuery() -> String {
-        return "\(self.template) = \"\(self.bindings)\""
-    }
 }
 /** SundeedColumn("columnName") <~ "value" */
 public struct SundeedUpdateSetStatement {

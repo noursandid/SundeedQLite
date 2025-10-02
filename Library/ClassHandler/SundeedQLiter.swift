@@ -95,11 +95,12 @@ extension SundeedQLiter {
                 })
                 let wrapper = ObjectWrapper(tableName: sundeedObject.getTableName(),
                                             className: "\(sundeedObject)",
-                    objects: nestedColumns,
-                    isOrdered: map.isOrdered,
-                    orderBy: map.orderBy,
-                    asc: map.asc,
-                    hasPrimaryKey: map.hasPrimaryKey)
+                                            objects: nestedColumns,
+                                            types: map.types,
+                                            isOrdered: map.isOrdered,
+                                            orderBy: map.orderBy,
+                                            asc: map.asc,
+                                            hasPrimaryKey: map.hasPrimaryKey)
                 columns[columnName] = wrapper
             } else if let sundeedObjects = value as? [SundeedQLiter?] {
                 let dictionnaries = sundeedObjects.compactMap({$0?.toObjectWrapper()})
@@ -108,11 +109,12 @@ extension SundeedQLiter {
         }
         return ObjectWrapper(tableName: getTableName(),
                              className: "\(self)",
-            objects: columns,
-            isOrdered: map.isOrdered,
-            orderBy: map.orderBy,
-            asc: map.asc,
-            hasPrimaryKey: map.hasPrimaryKey)
+                             objects: columns,
+                             types: map.types,
+                             isOrdered: map.isOrdered,
+                             orderBy: map.orderBy,
+                             asc: map.asc,
+                             hasPrimaryKey: map.hasPrimaryKey)
     }
 }
 

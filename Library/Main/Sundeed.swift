@@ -10,11 +10,6 @@ import Foundation
 
 class Sundeed {
     static var shared: Sundeed = Sundeed()
-    final lazy var dateFormatter: DateFormatter = {
-        let dateFormatter: DateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        return dateFormatter
-    }()
     var tables: [String] = []
     final let backgroundQueue: DispatchQueue = DispatchQueue(
         label: "globalBackgroundSyncronizeSharedData")

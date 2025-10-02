@@ -11,6 +11,7 @@ import Foundation
 public class SundeedQLiteMap {
     var map: [String: Any] = [:]
     var columns: [String: AnyObject] = [:]
+    var types: [String: ParameterType] = [:]
     var fetchingColumns: Bool = false
     var key: String?
     var currentValue: Any?
@@ -32,8 +33,9 @@ public class SundeedQLiteMap {
         }
         return self
     }
-    func addColumn<T>(attribute: T, withColumnName columnName: String) {
+    func addColumn<T>(attribute: T, withColumnName columnName: String, type: ParameterType) {
         self.columns[columnName] = attribute as AnyObject
+        self.types[columnName] = type
         if hasPrimaryKey && columnName == primaryKey {
             self.columns[Sundeed.shared.primaryKey] = attribute as AnyObject
         }

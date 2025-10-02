@@ -8,13 +8,13 @@
 
 import UIKit
 
-class UpdateProcessor {
+class UpdateProcessor: Processor {
     func update(objectWrapper: ObjectWrapper,
                 columns: [SundeedColumn],
                 withFilters filters: [SundeedExpression<Bool>?]) async throws {
         SundeedLogger.info("Updating \(objectWrapper.tableName)")
         var depth: Int = 1
-        try Processor()
+        try Processors()
             .createTableProcessor
             .createTableIfNeeded(for: objectWrapper)
         guard objectWrapper.hasPrimaryKey else {
@@ -70,8 +70,7 @@ class UpdateProcessor {
                 } else if let attribute = attribute as? Date {
                     SundeedLogger.debug("Updating date found for \(objectWrapper.tableName) at property \(column)")
                     updateStatement.add(key: column.value,
-                                        value: Sundeed.shared
-                        .dateFormatter.string(from: attribute))
+                                        value: attribute.timeIntervalSince1970*1000)
                 }  else if let attribute = attribute as? Data {
                     if objects[Sundeed.shared.primaryKey] as? String != nil {
                         SundeedLogger.debug("Updating data found for \(objectWrapper.tableName) at property \(column)")
@@ -100,7 +99,7 @@ class UpdateProcessor {
                         if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
                             SundeedLogger.debug("Updating array of primitive datatype found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
                             depth += 1
-                            await Processor()
+                            await Processors()
                                 .saveProcessor
                                 .saveArrayOfPrimitives(tableName: column.value,
                                                        objects: attributes,
@@ -146,7 +145,7 @@ class UpdateProcessor {
                 let objectID = "\(primaryValue)\(column.value)\(indexString)"
                 return $1.dataTypeValue(forObjectID: objectID)
             })
-        await Processor()
+        await Processors()
             .saveProcessor
             .saveArrayOfPrimitives(tableName: column.value,
                                    objects: attributes,
@@ -163,7 +162,7 @@ class UpdateProcessor {
                             column: SundeedColumn,
                             className: String,
                             updateStatement: UpdateStatement) async {
-        await Processor()
+        await Processors()
             .saveProcessor
             .save(objects: attributes.compactMap({$0}),
                   withForeignKey: primaryValue,

@@ -11,7 +11,7 @@ import Foundation
 infix operator <**>
 public func <**> <T: SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
-            var array: [SundeedQLiter] = []
+        var array: [SundeedQLiter] = []
         if let values = right.currentValue as? NSArray {
             for value in values where value is [String: Any] {
                 if let value = value as? [String: Any] {
@@ -45,7 +45,7 @@ public func <**> <T: SundeedQLiter>(left: inout [T], right: SundeedQLiteMap) {
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .text(nil))
         }
     }
 }
@@ -86,7 +86,7 @@ public func <**> <T: SundeedQLiter>(left: inout [T]?, right: SundeedQLiteMap) {
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .text(nil))
         }
     }
 }
@@ -127,7 +127,7 @@ public func <**> <T: SundeedQLiter>(left: inout [T?]?, right: SundeedQLiteMap) {
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .text(nil))
         }
     }
 }
@@ -167,7 +167,7 @@ public func <**> <T: SundeedQLiter>(left: inout [T?], right: SundeedQLiteMap) {
         }
     } else {
         if let key = right.key {
-            right.addColumn(attribute: left, withColumnName: key)
+            right.addColumn(attribute: left, withColumnName: key, type: .text(nil))
         }
     }
 }

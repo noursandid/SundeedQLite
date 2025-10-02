@@ -9,7 +9,7 @@
 import Foundation
 import SQLite3
 
-class RetrieveProcessor {
+class RetrieveProcessor: Processor {
     func retrieve(objectWrapper: ObjectWrapper,
                   withFilter filters: SundeedExpression<Bool>?...,
                   excludeIfIsForeign: Bool = false,
@@ -52,11 +52,24 @@ class RetrieveProcessor {
             var dictionary: [String: Any] = [:]
             var primaryValue: String?
             for (index, column) in columns.enumerated() {
-                if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
+                if sqlite3_column_type(statement, Int32(index)) == SQLITE_NULL {
+                    let columnName = column.columnName
+                    dictionary[columnName] = nil
+                } else if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
                    let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
                     let size = Int(sqlite3_column_bytes(statement, Int32(index)))
                     let value: Data = Data(bytes: databaseValue, count: size)
                     dictionary[column.columnName] = value
+                } else if case .integer = column.columnType {
+                    let databaseValue = sqlite3_column_int(statement, Int32(index))
+                    let value: Int = Int(databaseValue)
+                    let columnName = column.columnName
+                    dictionary[columnName] = value
+                } else if case .double = column.columnType {
+                    let databaseValue = sqlite3_column_double(statement, Int32(index))
+                    let value: Double = Double(databaseValue)
+                    let columnName = column.columnName
+                    dictionary[columnName] = value
                 } else if let databaseValue = sqlite3_column_text(statement, Int32(index)) {
                     let value: String = normalizeColumnValue(databaseValue)
                     let columnName = column.columnName
@@ -133,6 +146,14 @@ class RetrieveProcessor {
                         let size = Int(sqlite3_column_bytes(statement, Int32(index)))
                         let value: Data = Data(bytes: databaseValue, count: size)
                         array.append(value)
+                    } else if case .double = column.columnType {
+                        let databaseValue = sqlite3_column_double(statement, Int32(index))
+                        let value: Double = Double(databaseValue)
+                        array.append(value)
+                    } else if case .integer = column.columnType {
+                        let databaseValue = sqlite3_column_int(statement, Int32(index))
+                        let value: Int = Int(databaseValue)
+                        array.append(value)
                     } else if let columnValue = sqlite3_column_text(statement, Int32(index)) {
                         let value: String = String(cString: columnValue)
                         if value != Sundeed.shared.databaseNull {
@@ -147,24 +168,6 @@ class RetrieveProcessor {
             SundeedQLiteConnection.pool.closeConnection(database)
         }
         return nil
-    }
-    func getDatabaseColumns(forTable table: String) -> [(columnName: String, columnType: ParameterType)] {
-        let database = SundeedQLiteConnection.pool.connection()
-        var columnsStatement: OpaquePointer?
-        var array: [(columnName: String, columnType: ParameterType)] = []
-        sqlite3_prepare_v2(database,
-                           "PRAGMA table_info(\(table));",-1,
-                           &columnsStatement, nil)
-        while sqlite3_step(columnsStatement) == SQLITE_ROW {
-            if let columnName = sqlite3_column_text(columnsStatement, 1),
-               let columnType = sqlite3_column_text(columnsStatement, 2) {
-                array.append((columnName: String(cString: columnName),
-                              columnType: ParameterType(typeString: String(cString: columnType))))
-            }
-        }
-        columnsStatement = nil
-        SundeedQLiteConnection.pool.closeConnection(database)
-        return array
     }
     func normalizeColumnValue(_ columnValue: UnsafePointer<UInt8>) -> String {
         String(cString: columnValue).replacingOccurrences(of: "\\\"", with: "\"")

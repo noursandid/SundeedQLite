@@ -11,10 +11,14 @@ import Foundation
 class InsertStatement: Statement {
     let queue = DispatchQueue(label: "thread-safe-insert-statement", attributes: .concurrent)
     private var tableName: String
+    private var columns: [String: ParameterType]
     private var keyValues: [(String, Any?)] = []
     private var values: [ParameterType] = []
     init(with tableName: String) {
         self.tableName = tableName
+        self.columns = Processor().getDatabaseColumns(forTable: tableName).reduce(into: [String: ParameterType]()) { result, element in
+            result[element.columnName] = element.columnType
+        }
     }
     @discardableResult
     func add(key: String, value: Any?) -> Self {
@@ -36,10 +40,10 @@ class InsertStatement: Statement {
         queue.sync {
             var valuesStatement: String = ") VALUES ("
             for (index, (key, value)) in keyValues.enumerated() {
-                let value = value ?? ""
                 statement.append(key)
                 valuesStatement.append("?")
-                values.append(getParameter(value))
+                let columnType = self.columns[key] ?? .text("")
+                values.append(columnType.withValue(value))
                 let needed = isLastIndex(index: index, in: keyValues)
                 addSeparatorIfNeeded(separator: ", ",
                                      forStatement: &statement,

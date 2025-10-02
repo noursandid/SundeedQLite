@@ -10,10 +10,6 @@ import Foundation
 
 class CreateTableStatement {
     let queue = DispatchQueue(label: "thread-safe-create-table-statement", attributes: .concurrent)
-    enum ColumnType: String {
-        case text = "TEXT"
-        case blob = "BLOB"
-    }
     private var tableName: String
     private var hasPrimaryKey: Bool = false
     private var columns: [(name: String, type: String)] = []
@@ -21,7 +17,7 @@ class CreateTableStatement {
         self.tableName = tableName
     }
     @discardableResult
-    func addColumn(with columnName: String, type: ColumnType) -> Self {
+    func addColumn(with columnName: String, type: ParameterType) -> Self {
         queue.sync {
             columns.append((name: columnName, type: type.rawValue))
             return self
