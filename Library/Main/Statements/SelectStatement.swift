@@ -65,7 +65,7 @@ class SelectStatement: Statement {
     func excludeIfIsForeign(_ exclude: Bool) -> Self {
         queue.sync {
             if exclude {
-                self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == ""]
+                self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == nil]
             }
             return self
         }
@@ -85,7 +85,7 @@ class SelectStatement: Statement {
             if !filters.isEmpty {
                 statement += " WHERE "
                 for (index, filter) in filters.enumerated() {
-                    let whereStatement = filterToQuery(filter: filter)
+                    let whereStatement = filter.toQuery()
                     statement.append(whereStatement)
                     addSeparatorIfNeeded(separator: " AND ",
                                          forStatement: &statement,
@@ -100,7 +100,7 @@ class SelectStatement: Statement {
             if isOrdered,
                let orderByColumnName = orderByColumnName {
                 let quoations = getQuotation(forValue: orderByColumnName)
-                let condition = "\(quoations)\(orderByColumnName)\(quoations)"
+                let condition = "\(orderByColumnName)"
                 statement.append(condition)
             } else {
                 statement.append("\'SUNDEED_OFFLINE_ID\'")
@@ -117,12 +117,12 @@ class SelectStatement: Statement {
             }
         }
     }
-    private func filterToQuery(filter: SundeedExpression<Bool>) -> String {
-        queue.sync {
-            let template = filter.template
-            let binding = filter.bindings
-            let quotation = getQuotation(forValue: binding)
-            return "\(template) = \(quotation)\(binding)\(quotation)"
-        }
-    }
+//    private func filterToQuery(filter: SundeedExpression<Bool>) -> String {
+//        queue.sync {
+//            let template = filter.template
+//            let binding = filter.bindings
+//            let quotation = getQuotation(forValue: binding)
+//            return "\(template) = \(quotation)\(binding)\(quotation)"
+//        }
+//    }
 }

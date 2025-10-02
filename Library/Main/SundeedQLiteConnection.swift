@@ -10,15 +10,55 @@ import Foundation
 import SQLite3
 
 enum ParameterType {
-    case text(String)
-    case blob(Data)
+    case text(String?)
+    case blob(Data?)
+    case integer(Int?)
+    case double(Double?)
     
-    init(typeString: String) {
+    var rawValue: String {
+        return switch self {
+        case .text: "TEXT"
+        case .blob: "BLOB"
+        case .integer: "INTEGER"
+        case .double: "DOUBLE"
+        }
+    }
+    
+    init(typeString: String, value: Any? = nil) {
         switch typeString {
         case "BLOB":
-            self = .blob(Data())
+            self = .blob((value as? Data) ?? Data())
+        case "INTEGER":
+            self = .integer((value as? Int) ?? 0)
+        case "DOUBLE":
+            self = .double((value as? Double) ?? 0)
         default:
-            self = .text("")
+            self = .text((value as? String) ?? "")
+        }
+    }
+    
+    func withValue(_ value: Any?) -> Self {
+        switch self {
+        case .blob:
+            return .blob((value as? Data))
+        case .integer:
+            if let value = value as? NSNumber {
+                return .integer(Int(truncating: value))
+            } else {
+                return .integer(nil)
+            }
+        case .double:
+            if let value = value as? NSNumber {
+                return .double(Double(truncating: value))
+            } else {
+                return .double(nil)
+            }
+        default:
+            if let value {
+                return .text(String(describing: value))
+            } else {
+                return .text(nil)
+            }
         }
     }
 }
@@ -55,7 +95,7 @@ class SundeedQLiteConnection {
             }
             
             var connection: OpaquePointer?
-            var flags = write ? (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX): (SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX)
+            let flags = write ? (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX): (SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX)
             let rc = sqlite3_open_v2(path, &connection, flags, nil)
             if rc != SQLITE_OK {
                 if let connection, let cmsg = sqlite3_errmsg(connection) {
@@ -118,11 +158,31 @@ class SundeedQLiteConnection {
                     parameters?.enumerated().forEach({ (index, value) in
                         switch value {
                         case .text(let value):
-                            sqlite3_bind_text(statement, Int32(index+1),
-                                              value, -1, self.SQLITE_TRANSIENT)
+                            if let value {
+                                sqlite3_bind_text(statement, Int32(index+1),
+                                                  value, -1, self.SQLITE_TRANSIENT)
+                            } else {
+                                sqlite3_bind_null(statement, Int32(index+1))
+                            }
+                        case .integer(let value):
+                            if let value {
+                                sqlite3_bind_int(statement, Int32(index+1), Int32(value))
+                            } else {
+                                sqlite3_bind_null(statement, Int32(index+1))
+                            }
+                        case .double(let value):
+                            if let value {
+                                sqlite3_bind_double(statement, Int32(index+1), value)
+                            } else {
+                                sqlite3_bind_null(statement, Int32(index+1))
+                            }
                         case .blob(let data):
-                            sqlite3_bind_blob(statement, Int32(index+1),
-                                              NSData(data: data).bytes, Int32(NSData(data: data).length), self.SQLITE_TRANSIENT)
+                            if let data {
+                                sqlite3_bind_blob(statement, Int32(index+1),
+                                                  NSData(data: data).bytes, Int32(NSData(data: data).length), self.SQLITE_TRANSIENT)
+                            } else {
+                                sqlite3_bind_null(statement, Int32(index+1))
+                            }
                         }
                     })
                     if sqlite3_step(statement) == SQLITE_DONE {

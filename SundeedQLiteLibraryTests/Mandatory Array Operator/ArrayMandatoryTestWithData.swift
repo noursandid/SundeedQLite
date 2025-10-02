@@ -23,6 +23,7 @@ class ArrayMandatoryTestWithData: XCTestCase {
             await ClassContainingAMandatoryOptionalArrayWithOptionalData.delete()
             await ClassContainingAMandatoryArrayWithOptionalData.delete()
             await ClassContainingParameterIndex.delete()
+            await ClassContainingAMandatoryOptionalArrayWithData.delete()
             completion(nil)
         }
     }
@@ -96,95 +97,93 @@ class ArrayMandatoryTestWithData: XCTestCase {
         let retrievedClasses = await ClassContainingAMandatoryArrayWithData
             .retrieve()
         XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingAMandatoryOptionalArrayWithData() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryOptionalArrayWithData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithData.retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingAMandatoryOptionalArrayWithOptionalData() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    func testClassContainingAMandatoryOptionalArrayWithData() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryOptionalArrayWithData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithData.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalData.retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingAMandatoryArrayWithOptionalData() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryArrayWithOptionalData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    func testClassContainingAMandatoryOptionalArrayWithOptionalData() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalData.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalData
-        .retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-
-
-func testClassContainingAMandatoryArrayWithDataWithReference() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryArrayWithData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    func testClassContainingAMandatoryArrayWithOptionalData() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryArrayWithOptionalData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalData
+            .retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryArrayWithData
-        .retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingAMandatoryOptionalArrayWithDataWithReference() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryOptionalArrayWithData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    func testClassContainingAMandatoryArrayWithDataWithReference() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryArrayWithData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithData
+            .retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithData.retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingAMandatoryOptionalArrayWithOptionalDataWithReference() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    func testClassContainingAMandatoryOptionalArrayWithDataWithReference() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryOptionalArrayWithData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithData.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalData.retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingAMandatoryArrayWithOptionalDataWithReference() async {
-    let mandatoryClass = MandatoryClass()
-    mandatoryClass.firstName = "Test"
-    let mainClass = ClassContainingAMandatoryArrayWithOptionalData()
-    mainClass.mandatoryClasses = [mandatoryClass]
+    func testClassContainingAMandatoryOptionalArrayWithOptionalDataWithReference() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryOptionalArrayWithOptionalData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryOptionalArrayWithOptionalData.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalData
-        .retrieve()
-    XCTAssertEqual(retrievedClasses.count, 1)
-}
-
-func testClassContainingParameterIndex() async {
-    let mainClass = ClassContainingParameterIndex()
+    func testClassContainingAMandatoryArrayWithOptionalDataWithReference() async {
+        let mandatoryClass = MandatoryClass()
+        mandatoryClass.firstName = "Test"
+        let mainClass = ClassContainingAMandatoryArrayWithOptionalData()
+        mainClass.mandatoryClasses = [mandatoryClass]
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingAMandatoryArrayWithOptionalData
+            .retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+    }
     
-    await mainClass.save()
-    let retrievedClasses = await ClassContainingParameterIndex.retrieve()
-    XCTAssertEqual(retrievedClasses.count, 0)
-}
+    func testClassContainingParameterIndex() async {
+        let mainClass = ClassContainingParameterIndex()
+        
+        await mainClass.save()
+        let retrievedClasses = await ClassContainingParameterIndex.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
+    }
 }

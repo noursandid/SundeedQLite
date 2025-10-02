@@ -116,7 +116,7 @@ final public class SundeedQLite: Sendable {
 extension SundeedQLite {
     func save(objects: [SundeedQLiter], withForeignKey foreignKey: String? = nil) async {
         let objectWrappers: [ObjectWrapper] = objects.compactMap({$0.toObjectWrapper()})
-        await Processor()
+        await Processors()
             .saveProcessor
             .save(objects: objectWrappers, withForeignKey: foreignKey)
     }
@@ -128,7 +128,7 @@ extension SundeedQLite {
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
         if let primaryValue = map.columns[Sundeed.shared.primaryKey] as? String {
-            try await Processor()
+            try await Processors()
                 .updateProcessor
                 .update(objectWrapper: object.toObjectWrapper(),
                         columns: columns,
@@ -151,7 +151,7 @@ extension SundeedQLite {
         for change in changes {
             wrapper.objects?[change.column.value] = change.value
         }
-        try await Processor()
+        try await Processors()
             .updateProcessor
             .update(objectWrapper: wrapper,
                     columns: columns,
@@ -171,7 +171,7 @@ extension SundeedQLite {
                 let map = SundeedQLiteMap(fetchingColumns: true)
                 let instance = sundeed.init()
                 instance.sundeedQLiterMapping(map: map)
-                let dictionnariesArray = Processor()
+                let dictionnariesArray = Processors()
                     .retrieveProcessor
                     .retrieve(objectWrapper: instance.toObjectWrapper(),
                               withFilter: filter,
@@ -207,29 +207,26 @@ extension SundeedQLite {
         if let order = order, objectsArray.count > 0 {
             objectsArray.sort { (object1, object2) -> Bool in
                 if !asc {
-                    if let obj1 = object1[order.value] as? String,
-                       let obj2 = object2[order.value] as? String {
-                        return obj1 > obj2
-                    } else if let obj1 = object1[order.value] as? Int,
+                    if let obj1 = object1[order.value] as? Int,
                               let obj2 = object2[order.value] as? Int {
                         return obj1 > obj2
                     } else if let obj1 = object1[order.value] as? Date,
                               let obj2 = object2[order.value] as? Date {
                         return obj1 > obj2
+                    } else {
+                        return String(describing: object1[order.value]) > String(describing: object2[order.value])
                     }
                 } else {
-                    if let obj1 = object1[order.value] as? String,
-                       let obj2 = object2[order.value] as? String {
-                        return obj1 < obj2
-                    } else if let obj1 = object1[order.value] as? Int,
+                    if let obj1 = object1[order.value] as? Int,
                               let obj2 = object2[order.value] as? Int {
                         return obj1 < obj2
                     } else if let obj1 = object1[order.value] as? Date,
                               let obj2 = object2[order.value] as? Date {
                         return obj1 < obj2
+                    } else {
+                        return String(describing: object1[order.value]) < String(describing: object2[order.value])
                     }
                 }
-                return false
             }
         }
     }
@@ -250,7 +247,7 @@ extension SundeedQLite {
         if deleteSubObjects {
             try await deleteSubObjectsRecursively(from: map, parentPrimaryValue: primaryValue)
         }
-        await Processor()
+        await Processors()
             .saveProcessor
             .deleteFromDB(tableName: object.getTableName(),
                           withFilters: [filter])
@@ -262,7 +259,7 @@ extension SundeedQLite {
         for value in map.columns.values {
             if let singleObject = value as? SundeedQLiter {
                 let filter = SundeedColumn(Sundeed.shared.foreignKey) == parentPrimaryValue
-                await Processor()
+                await Processors()
                     .saveProcessor
                     .deleteFromDB(tableName: singleObject.getTableName(),
                                   withFilters: [filter])
@@ -276,7 +273,7 @@ extension SundeedQLite {
                 for arrayElement in array  {
                     let filter = SundeedColumn(Sundeed.shared.foreignKey) == parentPrimaryValue
                     if let tableName = arrayElement?.getTableName() {
-                        await Processor()
+                        await Processors()
                             .saveProcessor
                             .deleteFromDB(tableName: tableName,
                                           withFilters: [filter])
@@ -296,7 +293,7 @@ extension SundeedQLite {
         let object = sundeedClass.init()
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
-        await Processor()
+        await Processors()
             .saveProcessor
             .deleteFromDB(tableName: object.getTableName(),
                           withFilters: filters)

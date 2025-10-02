@@ -10,18 +10,21 @@ import XCTest
 @testable import SundeedQLiteLibrary
 
 class SundeedQLiteLibraryTests: XCTestCase {
+    var employer: EmployerForTesting = EmployerForTesting()
+    
+    override func setUp() async throws {
+        employer.fillData()
+        await employer.save()
+    }
     override func tearDown(completion: @escaping ((any Error)?) -> Void) {
         Task {
-            await EmployerForTesting.delete()
-            await EmployeeForTesting.delete()
+            try await employer.delete(deleteSubObjects: true)
             completion(nil)
         }
     }
     
     func testSubscript() {
-        let employer = EmployerForTesting()
-        employer.string = "string"
-        guard let string = employer["string"] as? String else {
+        guard let string = self.employer["string"] as? String else {
             XCTFail("Employer is nil")
             return
         }
@@ -29,7 +32,6 @@ class SundeedQLiteLibraryTests: XCTestCase {
     }
     
     func testWrongSubscript() {
-        let employer = EmployerForTesting()
         let string = employer["wrong"] as? String
         XCTAssertNil(string)
     }
@@ -83,7 +85,8 @@ class SundeedQLiteLibraryTests: XCTestCase {
     func testRetrieveWithWrongTableName() {
         let objectWrapper = ObjectWrapper(tableName: "HHH",
                                           className: "HHH",
-                                          objects: [:])
+                                          objects: [:],
+                                          types: [:])
         let result = RetrieveProcessor().retrieve(objectWrapper: objectWrapper) { _ -> ObjectWrapper? in
             return nil
         }
@@ -97,14 +100,59 @@ class SundeedQLiteLibraryTests: XCTestCase {
     }
     
     func testUpdateWithNoFilter() {
-        let query = UpdateStatement(with: "table")
-            .add(key: "column1", value: "value1")
+        let query = UpdateStatement(with: "EmployerForTesting")
+            .add(key: "string", value: "value1")
             .build()
-        XCTAssertEqual(query?.query, "UPDATE table SET column1 = ? WHERE 1")
+        XCTAssertEqual(query?.query, "UPDATE EmployerForTesting SET string = ? WHERE 1")
         XCTAssertEqual(query?.parameters.count, 1)
         switch query?.parameters.first {
         case .text(let text):
             XCTAssertEqual(text, "value1")
+        case .integer:
+            XCTFail("UPDATE IS NOT INTEGER")
+        case .double:
+            XCTFail("UPDATE IS NOT DOUBLE")
+        case .blob:
+            XCTFail("UPDATE IS NOT BLOB")
+        case .none:
+            XCTFail("PARAMETERS SHOULDN'T BE NIL")
+        }
+    }
+    
+    func testUpdateIntegerWithNoFilter() {
+        let query = UpdateStatement(with: "EmployerForTesting")
+            .add(key: "integer", value: 1)
+            .build()
+        XCTAssertEqual(query?.query, "UPDATE EmployerForTesting SET integer = ? WHERE 1")
+        XCTAssertEqual(query?.parameters.count, 1)
+        switch query?.parameters.first {
+        case .text:
+            XCTFail("UPDATE IS NOT TEXT")
+        case .integer(let integer):
+            XCTAssertEqual(integer, 1)
+        case .double:
+            XCTFail("UPDATE IS NOT DOUBLE")
+        case .blob:
+            XCTFail("UPDATE IS NOT BLOB")
+        case .none:
+            XCTFail("PARAMETERS SHOULDN'T BE NIL")
+        }
+    }
+    
+    func testUpdateDoubleWithNoFilter() {
+        
+        let query = UpdateStatement(with: "EmployerForTesting")
+            .add(key: "double", value: 1)
+            .build()
+        XCTAssertEqual(query?.query, "UPDATE EmployerForTesting SET double = ? WHERE 1")
+        XCTAssertEqual(query?.parameters.count, 1)
+        switch query?.parameters.first {
+        case .text:
+            XCTFail("UPDATE IS NOT TEXT")
+        case .integer:
+            XCTFail("UPDATE IS NOT INTEGER")
+        case .double(let double):
+            XCTAssertEqual(double, 1)
         case .blob:
             XCTFail("UPDATE IS NOT BLOB")
         case .none:
@@ -113,16 +161,24 @@ class SundeedQLiteLibraryTests: XCTestCase {
     }
     
     func testUpdateDataWithNoFilter() {
-        let query = UpdateStatement(with: "table")
-            .add(key: "column1", value: "value1".data(using: .utf8))
+        let query = UpdateStatement(with: "EmployerForTesting")
+            .add(key: "data", value: "value1".data(using: .utf8))
             .build()
-        XCTAssertEqual(query?.query, "UPDATE table SET column1 = ? WHERE 1")
+        XCTAssertEqual(query?.query, "UPDATE EmployerForTesting SET data = ? WHERE 1")
         XCTAssertEqual(query?.parameters.count, 1)
         switch query?.parameters.first {
         case .text:
             XCTFail("UPDATE IS NOT TEXT")
+        case .integer:
+            XCTFail("UPDATE IS NOT INTEGER")
+        case .double:
+            XCTFail("UPDATE IS NOT DOUBLE")
         case .blob(let data):
-            XCTAssertEqual(String(data: data, encoding: .utf8), "value1")
+            if let data {
+                XCTAssertEqual(String(data: data, encoding: .utf8), "value1")
+            } else {
+                XCTFail("Data is nil")
+            }
         case .none:
             XCTFail("PARAMETERS SHOULDN'T BE NIL")
         }
@@ -162,7 +218,8 @@ class SundeedQLiteLibraryTests: XCTestCase {
     func testCreateTableWithNilObjectWrapper() async {
         let objectWrapper = ObjectWrapper(tableName: "Table",
                                           className: "Class",
-                                          objects: nil)
+                                          objects: nil,
+                                          types: nil)
         do {
             try CreateTableProcessor().createTableIfNeeded(for: objectWrapper)
             XCTFail("Weirdly it continued without throwing an error")
@@ -173,5 +230,12 @@ class SundeedQLiteLibraryTests: XCTestCase {
             }
             XCTAssertEqual(sundeedError.description, SundeedQLiteError.noObjectPassed.description)
         }
+    }
+    
+    func testDeleteDatabase() async {
+        await employer.save()
+        SundeedQLite.deleteDatabase()
+        let retrieved = await EmployerForTesting.retrieve()
+        XCTAssert(retrieved.isEmpty)
     }
 }

@@ -12,6 +12,7 @@ import XCTest
 class EmployeeForTesting: @unchecked Sendable, SundeedQLiter {
     var id: String!
     var firstName: String?
+    var integer: Int = 1
     var seniorEmployee: SeniorEmployeeForTesting?
     required init() {}
     init(id: String, seniorID: String, juniorID: String) {
@@ -20,7 +21,8 @@ class EmployeeForTesting: @unchecked Sendable, SundeedQLiter {
     }
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         id <~> map["id"]+
-        firstName <~> map["firstName"]
+        integer <~> map["integer"]<<
+            firstName <~> map["firstName"]
         seniorEmployee <~> map["seniorEmployee"]
     }
 }
@@ -44,7 +46,7 @@ class SeniorEmployeeForTesting: @unchecked Sendable, SundeedQLiter {
 class JuniorEmployeeForTesting: @unchecked Sendable, SundeedQLiter {
     var id: String!
     var firstName: String?
-
+    
     required init() {}
     init(id: String) {
         self.id = id
@@ -65,8 +67,8 @@ class TypeConverter: SundeedQLiteConverter {
 }
 
 enum Type {
-    case manager
-    case ceo
+case manager
+case ceo
     
     static func fromString(string: String) -> Self? {
         switch string {
@@ -363,6 +365,123 @@ class EmployerForTesting: @unchecked Sendable, SundeedQLiter {
         optionalArrayOfOptionalImages = [UIImage(named: "3"), nil]
     }
     
+    func check() {
+        XCTAssertEqual(self.type, .manager)
+        XCTAssertEqual(self.data, "Testing Data".data(using: .utf8))
+        XCTAssertEqual(self.mandatoryData, "Testing Mandatory Data".data(using: .utf8) ?? Data())
+        XCTAssertEqual(self.optionalData, "Testing Optional Data".data(using: .utf8))
+        XCTAssertEqual(self.mandatoryType, .ceo)
+        XCTAssertEqual(self.arrayOfTypes, [.manager, .ceo])
+        XCTAssertEqual(self.optionalArrayOfTypes, [.manager, .ceo])
+        XCTAssertEqual(self.optionalArrayOfOptionalTypes, [.manager, .ceo])
+        XCTAssertEqual(self.arrayOfOptionalTypes, [.manager, .ceo])
+        XCTAssertEqual(self.string, "string")
+        XCTAssertEqual(self.optionalString, "optionalString")
+        XCTAssertNotNil(self.object)
+        XCTAssertNotNil(self.optionalObject)
+        XCTAssertEqual(self.integer, 1)
+        XCTAssertEqual(self.optionalInteger, 2)
+        XCTAssertEqual(self.double, 3.0)
+        XCTAssertEqual(self.optionalDouble, 4.0)
+        XCTAssertEqual(self.float, 5.0)
+        XCTAssertEqual(self.optionalFloat, 6.0)
+        XCTAssertEqual(self.bool, true)
+        XCTAssertEqual(self.optionalBool, true)
+        XCTAssertNotNil(self.date)
+        XCTAssertNotNil(self.optionalDate)
+        XCTAssertEqual(self.image.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "1")?.jpegData(compressionQuality: 1)?.description)
+        XCTAssertEqual(self.optionalImage?.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "2")?.jpegData(compressionQuality: 1)?.description)
+        XCTAssertEqual(self.arrayOfStrings, ["string1", "string2"])
+        XCTAssertEqual(self.arrayOfOptionalStrings, ["string3"])
+        XCTAssertEqual(self.optionalArrayOfStrings, ["string4", "string6"])
+        XCTAssertEqual(self.optionalArrayOfOptionalStrings, ["string7"])
+        XCTAssertEqual(self.arrayOfData, ["Testing Array Of Data".data(using: .utf8)!])
+        XCTAssertEqual(self.arrayOfOptionalData, ["Testing Array Of Optional Data".data(using: .utf8)])
+        XCTAssertEqual(self.optionalArrayOfData, ["Testing Optional Array Of Data".data(using: .utf8)!])
+        XCTAssertEqual(self.optionalArrayOfOptionalData, ["Testing Optional Array Of Optional Data".data(using: .utf8)])
+        XCTAssertNotNil(self.arrayOfObjects)
+        XCTAssertFalse(self.arrayOfObjects.isEmpty)
+        XCTAssertNotNil(self.arrayOfOptionalObjects)
+        XCTAssertNotNil(self.optionalArrayOfObjects)
+        XCTAssertNotNil(self.optionalArrayOfOptionalObjects)
+        XCTAssertEqual(self.arrayOfIntegers[0], 1)
+        XCTAssertEqual(self.arrayOfIntegers[1], 2)
+        XCTAssertEqual(self.arrayOfOptionalIntegers[0], 2)
+        XCTAssertEqual(self.optionalArrayOfIntegers?[0], 1)
+        XCTAssertEqual(self.optionalArrayOfIntegers?[1], 2)
+        XCTAssertEqual(self.optionalArrayOfOptionalIntegers?[0], 2)
+        XCTAssertEqual(self.arrayOfDoubles[0], 3.0)
+        XCTAssertEqual(self.arrayOfDoubles[1], 4.0)
+        XCTAssertEqual(self.arrayOfOptionalDoubles[0], 4.0)
+        XCTAssertEqual(self.optionalArrayOfDoubles?[0], 3.0)
+        XCTAssertEqual(self.optionalArrayOfDoubles?[1], 4.0)
+        XCTAssertEqual(self.optionalArrayOfOptionalDoubles?[0], 4.0)
+        XCTAssertEqual(self.arrayOfFloats[0], 5.0)
+        XCTAssertEqual(self.arrayOfFloats[1], 6.0)
+        XCTAssertEqual(self.arrayOfOptionalFloats[0], 6.0)
+        XCTAssertEqual(self.optionalArrayOfFloats?[0], 5.0)
+        XCTAssertEqual(self.optionalArrayOfFloats?[1], 6.0)
+        XCTAssertEqual(self.optionalArrayOfOptionalFloats?[0], 6.0)
+        XCTAssertTrue(self.arrayOfBools[0])
+        XCTAssertFalse(self.arrayOfBools[1])
+        XCTAssertTrue(self.arrayOfOptionalBools[0] ?? false)
+        XCTAssertTrue(self.optionalArrayOfBools?[0] ?? false)
+        XCTAssertFalse(self.optionalArrayOfBools?[1] ?? true)
+        XCTAssertTrue(self.optionalArrayOfOptionalBools?[0] ?? false)
+        XCTAssertNotNil(self.arrayOfDates)
+        XCTAssertNotNil(self.arrayOfOptionalDates)
+        XCTAssertNotNil(self.optionalArrayOfDates)
+        XCTAssertNotNil(self.optionalArrayOfOptionalDates)
+        XCTAssertNotNil(self.arrayOfImages)
+        XCTAssertEqual(self.arrayOfImages.first?.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "3")?.jpegData(compressionQuality: 1)?.description)
+        XCTAssertNotNil(self.arrayOfOptionalImages)
+        
+        XCTAssertEqual(self.arrayOfOptionalImages
+            .first??.jpegData(compressionQuality: 1)?.description,
+                       UIImage(named: "5")?.jpegData(compressionQuality: 1)?.description)
+        XCTAssertNotNil(self.optionalArrayOfImages)
+        XCTAssertNotNil(self.optionalArrayOfOptionalImages)
+        XCTAssertNil(self.nilString)
+        XCTAssertNil(self.nilObject)
+        XCTAssertNil(self.nilInteger)
+        XCTAssertNil(self.nilDouble)
+        XCTAssertNil(self.nilFloat)
+        XCTAssertNil(self.nilBool)
+        XCTAssertNil(self.nilDate)
+        XCTAssertNil(self.nilImage)
+        XCTAssertNil(self.nilArrayOfStrings)
+        XCTAssertNil(self.nilArrayOfOptionalStrings)
+        XCTAssertNil(self.nilArrayOfObjects)
+        XCTAssertNil(self.nilArrayOfOptionalObjects)
+        XCTAssertNil(self.nilArrayOfDoubles)
+        XCTAssertNil(self.nilArrayOfOptionalDoubles)
+        XCTAssertNil(self.nilArrayOfFloats)
+        XCTAssertNil(self.nilArrayOfOptionalFloats)
+        XCTAssertNil(self.nilArrayOfBools)
+        XCTAssertNil(self.nilArrayOfOptionalBools)
+        XCTAssertNil(self.nilArrayOfDates)
+        XCTAssertNil(self.nilArrayOfOptionalDates)
+        XCTAssertNil(self.nilArrayOfImages)
+        XCTAssertNil(self.nilArrayOfOptionalImages)
+        XCTAssertEqual(self.emptyArrayOfStrings.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalStrings.count, 0)
+        XCTAssertEqual(self.emptyArrayOfObjects.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalObjects.count, 0)
+        XCTAssertEqual(self.emptyArrayOfDoubles.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalDoubles.count, 0)
+        XCTAssertEqual(self.emptyArrayOfFloats.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalFloats.count, 0)
+        XCTAssertEqual(self.emptyArrayOfBools.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalBools.count, 0)
+        XCTAssertEqual(self.emptyArrayOfDates.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalDates.count, 0)
+        XCTAssertEqual(self.emptyArrayOfImages.count, 0)
+        XCTAssertEqual(self.emptyArrayOfOptionalImages.count, 0)
+    }
+    
     func printEmployer() {
         let mirror = Mirror(reflecting: self)
         for (_, value) in mirror.children.enumerated() {
@@ -475,7 +594,7 @@ class EmployerWithNoPrimaryForTesting: @unchecked Sendable, SundeedQLiter {
         optionalString <~> map["optionalString"]
         object <~> map["object"]
         optionalObject <~> map["optionalObject"]
-        integer <~> map["integer"]<<
+        integer <~> map["integer"]>>
         optionalInteger <~> map["optionalInteger"]
         double <~> map["double"]
         optionalDouble <~> map["optionalDouble"]

@@ -10,17 +10,17 @@ import XCTest
 @testable import SundeedQLiteLibrary
 
 class UpdateTests: XCTestCase {
-    var employer: EmployerForTesting? = EmployerForTesting()
+    var employer: EmployerForTesting = EmployerForTesting()
     
     override func setUp() {
-        employer?.fillData()
+        employer.fillData()
     }
-    override func tearDown() {
-        SundeedQLite.deleteDatabase()
+    override func tearDown() async throws {
+        try await employer.delete(deleteSubObjects: true)
     }
     
     func testGlobalUpdate() async {
-        await employer?.save()
+        await employer.save()
         do {
             try await EmployerForTesting.update(changes: SundeedColumn("optionalString") <~ "test",
                                                 withFilter: SundeedColumn("string") == "string")
@@ -37,18 +37,18 @@ class UpdateTests: XCTestCase {
 
     
     func testUpdate() async {
-        await employer?.save()
+        await employer.save()
         do {
-            self.employer?.optionalString = "test"
-            self.employer?.object.firstName = "testtt"
-            self.employer?.arrayOfStrings.append("Hello")
-            self.employer?.arrayOfOptionalImages.append(UIImage(named: "1"))
-            self.employer?.arrayOfImages.append(UIImage(named: "5")!)
-            self.employer?.nilImage = UIImage(named: "3")!
-            self.employer?.nilDate = Date()
+            self.employer.optionalString = "test"
+            self.employer.object.firstName = "testtt"
+            self.employer.arrayOfStrings.append("Hello")
+            self.employer.arrayOfOptionalImages.append(UIImage(named: "1"))
+            self.employer.arrayOfImages.append(UIImage(named: "5")!)
+            self.employer.nilImage = UIImage(named: "3")!
+            self.employer.nilDate = Date()
             let employee = EmployeeForTesting(id: "LLLLLLL", seniorID: "TestID1", juniorID: "TestID2")
-            self.employer?.arrayOfObjects.append(employee)
-            try await self.employer?.update(columns: SundeedColumn("optionalString"),
+            self.employer.arrayOfObjects.append(employee)
+            try await self.employer.update(columns: SundeedColumn("optionalString"),
                                             SundeedColumn("object"),
                                             SundeedColumn("arrayOfStrings"),
                                             SundeedColumn("arrayOfOptionalImages"),
@@ -93,7 +93,7 @@ class UpdateTests: XCTestCase {
     
     func testWrongColumnNameUpdate() async {
         do {
-            try await self.employer?.update(columns: SundeedColumn("wrongColumnName"))
+            try await self.employer.update(columns: SundeedColumn("wrongColumnName"))
         } catch {
             guard let sundeedError = error as? SundeedQLiteError else {
                 XCTFail("Wrong Error")

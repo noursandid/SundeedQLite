@@ -14,18 +14,22 @@ public enum SundeedLogLevel: Int {
 
 class SundeedLogger {
     static var logLevel: SundeedLogLevel = .production
+    static var testingDidPrint: Bool = false
     static func debug(_ items: Any..., separator: String = " ", terminator: String = "\n") {
         if logLevel.rawValue <= SundeedLogLevel.verbose.rawValue {
+            testingDidPrint = true
             print(["SundeedQLiteDebug"] + items, separator: separator, terminator: terminator)
         }
     }
     static func info(_ items: Any..., separator: String = " ", terminator: String = "\n") {
         if logLevel.rawValue <= SundeedLogLevel.info.rawValue {
+            testingDidPrint = true
             print(["SundeedQLiteInfo"] + items, separator: separator, terminator: terminator)
         }
     }
     static func error(_ items: Any..., separator: String = " ", terminator: String = "\n") {
-        if logLevel.rawValue <= SundeedLogLevel.error.rawValue{
+        if logLevel.rawValue <= SundeedLogLevel.error.rawValue {
+            testingDidPrint = true
             print(["SundeedQLiteError"] + items, separator: separator, terminator: terminator)
         }
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CreateTableProcessor {
+class CreateTableProcessor: Processor {
     func createTableIfNeeded(for object: ObjectWrapper?) throws {
         guard let object = object,
               let objects = object.objects else {
@@ -27,17 +27,43 @@ class CreateTableProcessor {
                     }
                 } else if attribute is [Any] {
                     if let array = attribute as? [Any], let _ = array.first as? Data {
-                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .blob)
+                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .blob(nil))
+                    } else if let array = attribute as? [Any], let _ = array.first as? Date {
+                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .double(nil))
+                    } else if let array = attribute as? [Any], let attribute = array.first as? NSNumber, !CFNumberIsFloatType(attribute as CFNumber) {
+                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .integer(nil))
+                    } else if let array = attribute as? [Any], let _ = array.first as? Double {
+                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .double(nil))
+                    } else if let array = attribute as? [Any], let _ = array.first as? Float {
+                        createTableForPrimitiveDataTypes(withTableName: columnName, type: .double(nil))
                     } else {
                         createTableForPrimitiveDataTypes(withTableName: columnName)
                     }
                 }
-                
-                if attribute is Data {
-                    createTableStatement.addColumn(with: columnName, type: .blob)
+                let concreteType = object.types?[columnName]
+                if attribute is Array<AnyObject> {
+                    createTableStatement.addColumn(with: columnName, type: .text(nil))
                 } else {
-                    createTableStatement.addColumn(with: columnName, type: .text)
+                    switch concreteType {
+                    case .blob:
+                        createTableStatement.addColumn(with: columnName, type: .blob(nil))
+                    case .double:
+                        createTableStatement.addColumn(with: columnName, type: .double(nil))
+                    case .integer:
+                        createTableStatement.addColumn(with: columnName, type: .integer(nil))
+                    default:
+                        createTableStatement.addColumn(with: columnName, type: .text(nil))
+                    }
                 }
+//                if case .blob = concreteType {
+//                    createTableStatement.addColumn(with: columnName, type: .blob)
+//                } else if let attribute = attribute as? NSNumber, !CFNumberIsFloatType(attribute as CFNumber) {
+//                    createTableStatement.addColumn(with: columnName, type: .integer)
+//                } else if attribute is Double || attribute is Float || attribute is Date {
+//                    createTableStatement.addColumn(with: columnName, type: .double)
+//                } else {
+//                    createTableStatement.addColumn(with: columnName, type: .text)
+//                }
                 if columnName == "index" {
                     throw SundeedQLiteError.cantUseNameIndex(tableName: object.tableName)
                 }
@@ -53,7 +79,7 @@ class CreateTableProcessor {
     }
     /** Try to create table for primitive data types if not already exists */
     func createTableForPrimitiveDataTypes(withTableName tableName: String,
-                                          type: CreateTableStatement.ColumnType = .text) {
+                                          type: ParameterType = .text(nil)) {
         if  !Sundeed.shared.tables.contains(tableName) {
             let createTableStatement = StatementBuilder()
                 .createTableStatement(tableName: tableName)
