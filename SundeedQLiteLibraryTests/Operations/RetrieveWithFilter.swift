@@ -60,7 +60,7 @@ class RetrieveWithFilter: XCTestCase {
             XCTFail("Couldn't Retrieve From Database")
             return
         }
-        XCTAssertEqual(employer2ToBeFetched.date.timeIntervalSince1970, employer2.date.timeIntervalSince1970)
+        XCTAssertEqual(employer2ToBeFetched.string, employer2.string)
         _ = try? await self.employer?.delete(deleteSubObjects: true)
         _ = try? await employer1.delete(deleteSubObjects: true)
         _ = try? await employer2.delete(deleteSubObjects: true)
@@ -84,8 +84,8 @@ class RetrieveWithFilter: XCTestCase {
             return
         }
         employerToBeFetched.check()
-        XCTAssertEqual(employerToBeFetched.date.timeIntervalSince1970, employer.date.timeIntervalSince1970)
-        XCTAssertEqual(employer2ToBeFetched.date.timeIntervalSince1970, employer2.date.timeIntervalSince1970)
+        XCTAssertEqual(employerToBeFetched.string, employer.string)
+        XCTAssertEqual(employer2ToBeFetched.string, employer2.string)
         _ = try? await self.employer?.delete(deleteSubObjects: true)
         _ = try? await employer1.delete(deleteSubObjects: true)
         _ = try? await employer2.delete(deleteSubObjects: true)
@@ -107,7 +107,7 @@ class RetrieveWithFilter: XCTestCase {
             XCTFail("Couldn't Retrieve From Database")
             return
         }
-        XCTAssertEqual(employer1ToBeFetched.date.timeIntervalSince1970, employer1.date.timeIntervalSince1970)
+        XCTAssertEqual(employer1ToBeFetched.string, employer1.string)
         _ = try? await self.employer?.delete(deleteSubObjects: true)
         _ = try? await employer1.delete(deleteSubObjects: true)
         _ = try? await employer2.delete(deleteSubObjects: true)
@@ -129,7 +129,7 @@ class RetrieveWithFilter: XCTestCase {
             XCTFail("Couldn't Retrieve From Database")
             return
         }
-        XCTAssertEqual(employer1ToBeFetched.date.timeIntervalSince1970, employer1.date.timeIntervalSince1970)
+        XCTAssertEqual(employer1ToBeFetched.string, employer1.string)
         _ = try? await self.employer?.delete(deleteSubObjects: true)
         _ = try? await employer1.delete(deleteSubObjects: true)
         _ = try? await employer2.delete(deleteSubObjects: true)
@@ -153,7 +153,7 @@ class RetrieveWithFilter: XCTestCase {
             return
         }
         employerToBeFetched.check()
-        XCTAssertEqual(employer1ToBeFetched.date.timeIntervalSince1970, employer1.date.timeIntervalSince1970)
+        XCTAssertEqual(employer1ToBeFetched.string, employer1.string)
         _ = try? await self.employer?.delete(deleteSubObjects: true)
         _ = try? await employer1.delete(deleteSubObjects: true)
         _ = try? await employer2.delete(deleteSubObjects: true)
