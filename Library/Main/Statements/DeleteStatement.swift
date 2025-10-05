@@ -11,12 +11,12 @@ import Foundation
 class DeleteStatement: Statement {
     let queue = DispatchQueue(label: "thread-safe-delete-statement", attributes: .concurrent)
     private var tableName: String
-    private var filters: [SundeedExpression<Bool>] = []
+    private var filters: [SundeedExpression] = []
     init(with tableName: String) {
         self.tableName = tableName
     }
     @discardableResult
-    func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
+    func withFilters(_ filters: [SundeedExpression?]) -> Self {
         queue.sync {
             self.filters = filters.compactMap({$0})
             return self

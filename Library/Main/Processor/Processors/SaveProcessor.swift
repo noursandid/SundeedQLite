@@ -189,7 +189,7 @@ class SaveProcessor: Processor {
         
     }
     func deleteFromDB(tableName: String,
-                      withFilters filters: [SundeedExpression<Bool>?]) async {
+                      withFilters filters: [SundeedExpression?]) async {
         let deleteStatement = StatementBuilder()
             .deleteStatement(tableName: tableName)
             .withFilters(filters)

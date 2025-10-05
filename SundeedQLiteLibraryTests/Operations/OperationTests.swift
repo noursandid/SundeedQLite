@@ -30,7 +30,7 @@ class OperationTests: XCTestCase {
             try await self.employer?.delete()
             let allEmployers = await EmployerForTesting.retrieve()
             XCTAssert(allEmployers.isEmpty)
-            let allEmployees = await EmployeeForTesting.retrieve()
+            let allEmployees = await EmployeeForTesting.retrieve(excludeIfIsForeign: false)
             XCTAssertEqual(allEmployees.count, 6)
         } catch {
             XCTFail("Couldn't delete class")
@@ -43,7 +43,7 @@ class OperationTests: XCTestCase {
             try await self.employer?.delete(deleteSubObjects: false)
             let allEmployers = await EmployerForTesting.retrieve()
             XCTAssert(allEmployers.isEmpty)
-            let allEmployees = await EmployeeForTesting.retrieve()
+            let allEmployees = await EmployeeForTesting.retrieve(excludeIfIsForeign: false)
             XCTAssertEqual(allEmployees.count, 6)
         } catch {
             XCTFail("Couldn't delete class")
@@ -73,7 +73,7 @@ class OperationTests: XCTestCase {
         await EmployerForTesting.delete()
         let allEmployers = await EmployerForTesting.retrieve()
         XCTAssert(allEmployers.isEmpty)
-        let allEmployees = await EmployeeForTesting.retrieve()
+        let allEmployees = await EmployeeForTesting.retrieve(excludeIfIsForeign: false)
         XCTAssertEqual(allEmployees.count, 6)
     }
     

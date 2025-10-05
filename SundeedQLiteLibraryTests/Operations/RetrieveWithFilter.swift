@@ -32,6 +32,63 @@ class RetrieveWithFilter: XCTestCase {
         _ = try? await self.employer?.delete(deleteSubObjects: true)
     }
     
+    func testRetrieveWithComplexFilter() async {
+        guard let employer else { XCTFail("Employer is nil"); return }
+        await employer.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: (SundeedColumn("string") == "string" && SundeedColumn("date") >= Date()) || SundeedColumn("date") == employer.date)
+        guard let employer = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
+        }
+        employer.check()
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+    }
+    
+    func testRetrieveWithComplexFilter1() async {
+        guard let employer else { XCTFail("Employer is nil"); return }
+        await employer.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: (SundeedColumn("string") == "string" && SundeedColumn("date") >= employer.date) || SundeedColumn("date") == Date())
+        guard let employer = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
+        }
+        employer.check()
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+    }
+    
+    func testRetrieveWithComplexFilter2() async {
+        guard let employer else { XCTFail("Employer is nil"); return }
+        await employer.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("string") == "string" && (SundeedColumn("date") >= employer.date || SundeedColumn("date") == Date()))
+        guard let employer = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
+        }
+        employer.check()
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+    }
+    
+    func testRetrieveWithComplexFilter3() async {
+        guard let employer else { XCTFail("Employer is nil"); return }
+        await employer.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: (SundeedColumn("string") != "string" && SundeedColumn("date") == employer.date) || SundeedColumn("date") >= employer.date)
+        guard let employer = allEmployers.first else {
+            XCTFail("Couldn't Retrieve From Database")
+            return
+        }
+        employer.check()
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+    }
+    
+    func testRetrieveWithWrongComplexFilter() async {
+        guard let employer else { XCTFail("Employer is nil"); return }
+        await employer.save()
+        let allEmployers = await EmployerForTesting.retrieve(withFilter: (SundeedColumn("string") == "string" && SundeedColumn("date") >= Date()) || SundeedColumn("date") == Date())
+        XCTAssertEqual(allEmployers.count, 0)
+        XCTAssertNil(allEmployers.first)
+        _ = try? await self.employer?.delete(deleteSubObjects: true)
+    }
+    
     func testRetrieveWithDateFilter() async {
         guard let employer else { XCTFail("Employer is nil"); return }
         await employer.save()
@@ -71,15 +128,17 @@ class RetrieveWithFilter: XCTestCase {
         await employer.save()
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
+        employer1.integer = employer.integer - 1
         employer1.date = employer.date.addingTimeInterval(-100)
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.date = employer.date.addingTimeInterval(100)
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("date") >= employer.date)
         XCTAssertEqual(allEmployers.count, 2)
-        guard let employerToBeFetched = allEmployers.first, let employer2ToBeFetched = allEmployers.last else {
+        guard let employer2ToBeFetched = allEmployers.first, let employerToBeFetched = allEmployers.last else {
             XCTFail("Couldn't Retrieve From Database")
             return
         }
@@ -97,10 +156,12 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.date = employer.date.addingTimeInterval(-100)
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.date = employer.date.addingTimeInterval(100)
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("date") < employer.date)
         guard let employer1ToBeFetched = allEmployers.first else {
@@ -119,10 +180,12 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.date = employer.date.addingTimeInterval(-100)
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.date = employer.date.addingTimeInterval(100)
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("date") < employer.date)
         guard let employer1ToBeFetched = allEmployers.first else {
@@ -141,10 +204,12 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.date = employer.date.addingTimeInterval(-100)
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.date = employer.date.addingTimeInterval(100)
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("date") <= employer.date)
         XCTAssertEqual(allEmployers.count, 2)
@@ -326,14 +391,16 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.double = employer.double - 1
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.double = employer.double + 1
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("double") >= employer.double)
         XCTAssertEqual(allEmployers.count, 2)
-        guard let employerToBeFetched = allEmployers.first, let employer2ToBeFetched = allEmployers.last else {
+        guard let employer2ToBeFetched = allEmployers.first, let employerToBeFetched = allEmployers.last else {
             XCTFail("Couldn't Retrieve From Database")
             return
         }
@@ -351,10 +418,12 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.double = employer.double - 1
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.double = employer.double + 1
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("double") < employer.double)
         guard let employer1ToBeFetched = allEmployers.first else {
@@ -373,10 +442,12 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.double = employer.double - 1
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.double = employer.double + 1
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("double") < employer.double)
         guard let employer1ToBeFetched = allEmployers.first else {
@@ -395,10 +466,12 @@ class RetrieveWithFilter: XCTestCase {
         let employer1 = EmployerForTesting()
         employer1.string = "employer1"
         employer1.double = employer.double - 1
+        employer1.integer = employer.integer - 1
         await employer1.save()
         let employer2 = EmployerForTesting()
         employer2.string = "employer2"
         employer2.double = employer.double + 1
+        employer2.integer = employer.integer + 1
         await employer2.save()
         let allEmployers = await EmployerForTesting.retrieve(withFilter: SundeedColumn("double") <= employer.double)
         XCTAssertEqual(allEmployers.count, 2)

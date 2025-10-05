@@ -11,7 +11,7 @@ import UIKit
 class UpdateProcessor: Processor {
     func update(objectWrapper: ObjectWrapper,
                 columns: [SundeedColumn],
-                withFilters filters: [SundeedExpression<Bool>?]) async throws {
+                withFilters filters: [SundeedExpression?]) async throws {
         SundeedLogger.info("Updating \(objectWrapper.tableName)")
         var depth: Int = 1
         try Processors()

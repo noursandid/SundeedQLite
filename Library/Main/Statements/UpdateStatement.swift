@@ -14,7 +14,7 @@ class UpdateStatement: Statement {
     private var columns: [String: ParameterType]
     private var keyValues: [(String, Any?)] = []
     private var values: [ParameterType] = []
-    private var filters: [SundeedExpression<Bool>] = []
+    private var filters: [SundeedExpression] = []
     init(with tableName: String) {
         self.tableName = tableName
         self.columns = Processor().getDatabaseColumns(forTable: tableName).reduce(into: [String: ParameterType]()) { result, element in
@@ -29,7 +29,7 @@ class UpdateStatement: Statement {
         }
     }
     @discardableResult
-    func withFilters(_ filters: [SundeedExpression<Bool>?]) -> Self {
+    func withFilters(_ filters: [SundeedExpression?]) -> Self {
         queue.sync {
             self.filters = filters.compactMap({$0})
             return self

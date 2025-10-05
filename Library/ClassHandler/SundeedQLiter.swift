@@ -55,31 +55,33 @@ extension SundeedQLiter {
      - filter: (Optional) add a filter to get a specific result
      * e.g: SundeedColumn("id") == "A1B2C3"
      */
-    public static func retrieve(withFilter filter: SundeedExpression<Bool>? = nil,
+    public static func retrieve(withFilter filter: SundeedExpression?...,
                                 orderBy order: SundeedColumn? = nil,
-                                ascending asc: Bool = true,
-                                excludeIfIsForeign: Bool = false) async -> [Self] {
+                                ascending asc: Bool? = nil,
+                                limit: Int? = nil,
+                                excludeIfIsForeign: Bool = true) async -> [Self] {
         let objects = await SundeedQLite.instance.retrieve(forClass: self,
-                                           withFilter: filter,
-                                           orderBy: order,
-                                           ascending: asc,
-                                           excludeIfIsForeign: excludeIfIsForeign)
+                                                           withFilter: filter,
+                                                           orderBy: order,
+                                                           ascending: asc,
+                                                           limit: limit,
+                                                           excludeIfIsForeign: excludeIfIsForeign)
         SundeedQLite.notify(for: objects, operation: .retrieve)
         return objects
     }
     
     /** deletes all the objects of this type locally */
-    public static func delete(withFilter filters: SundeedExpression<Bool>...) async {
+    public static func delete(withFilter filters: SundeedExpression...) async {
         await SundeedQLite.instance.deleteAllFromDB(forClass: self,
-                                                  withFilters: filters)
+                                                    withFilters: filters)
     }
     
     /** updates specific columns of all objects of this class, or objects with a specific criteria */
     public static func update(changes: SundeedUpdateSetStatement...,
-                              withFilter filter: SundeedExpression<Bool>? = nil) async throws {
+                              withFilter filter: SundeedExpression? = nil) async throws {
         try await SundeedQLite.instance.update(forClass: self,
-                                                 changes: changes,
-                                                 withFilter: filter)
+                                               changes: changes,
+                                               withFilter: filter)
     }
     
     func toObjectWrapper() -> ObjectWrapper {
@@ -134,47 +136,47 @@ extension SundeedQLiter {
     }
     public static func onSaveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addListener(object: Self.self,
-                                 function: function,
-                                 operation: .save)
+                                        function: function,
+                                        operation: .save)
     }
     public static func onUpdateEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addListener(object: Self.self,
-                                 function: function,
-                                 operation: .update)
+                                        function: function,
+                                        operation: .update)
     }
     public static func onDeleteEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addListener(object: Self.self,
-                                 function: function,
-                                 operation: .delete)
+                                        function: function,
+                                        operation: .delete)
     }
     public static func onRetrieveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addListener(object: Self.self,
-                                 function: function,
-                                 operation: .retrieve)
+                                        function: function,
+                                        operation: .retrieve)
     }
     public func onAllEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addSpecificListener(object: self,
-                                         function: function,
-                                         operation: .any)
+                                                function: function,
+                                                operation: .any)
     }
     public func onSaveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addSpecificListener(object: self,
-                                         function: function,
-                                         operation: .save)
+                                                function: function,
+                                                operation: .save)
     }
     public func onUpdateEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addSpecificListener(object: self,
-                                         function: function,
-                                         operation: .update)
+                                                function: function,
+                                                operation: .update)
     }
     public func onDeleteEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addSpecificListener(object: self,
-                                         function: function,
-                                         operation: .delete)
+                                                function: function,
+                                                operation: .delete)
     }
     public func onRetrieveEvents(_ function: @escaping (_ object: Self) -> Void) -> Listener {
         return SundeedQLite.addSpecificListener(object: self,
-                                         function: function,
-                                         operation: .retrieve)
+                                                function: function,
+                                                operation: .retrieve)
     }
 }
