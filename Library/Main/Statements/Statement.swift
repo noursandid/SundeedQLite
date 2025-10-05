@@ -26,6 +26,8 @@ class Statement {
             return ""
         } else if let _ = value as? Float {
             return ""
+        } else if let _ = value as? Bool {
+          return ""
         } else {
             return "\""
         }
