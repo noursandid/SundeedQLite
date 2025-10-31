@@ -11,7 +11,11 @@ import SQLite3
 
 class RetrieveProcessor: Processor {
     func retrieve(objectWrapper: ObjectWrapper,
-                  withFilter filters: SundeedExpression<Bool>?...,
+                  orderBy order: SundeedColumn? = nil,
+                  ascending: Bool? = nil,
+                  withFilter filters: [SundeedExpression?] = [],
+                  limit: Int? = nil,
+                  skip: Int? = nil,
                   excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
         let database: OpaquePointer? = SundeedQLiteConnection.pool.connection()
@@ -21,11 +25,13 @@ class RetrieveProcessor: Processor {
             var statement: OpaquePointer?
             let query: String? = StatementBuilder()
                 .selectStatement(tableName: objectWrapper.tableName)
-                .isOrdered(objectWrapper.isOrdered)
-                .orderBy(columnName: objectWrapper.orderBy)
-                .isAscending(objectWrapper.asc)
+                .isOrdered(order != nil || objectWrapper.isOrdered)
+                .orderBy(columnName: order?.value ?? objectWrapper.orderBy)
+                .isAscending(ascending ?? objectWrapper.asc)
                 .isCaseInsensitive(true)
                 .withFilters(filters)
+                .limit(limit)
+                .skip(skip)
                 .excludeIfIsForeign(excludeIfIsForeign)
                 .build()
             
@@ -108,13 +114,13 @@ class RetrieveProcessor: Processor {
                     if let subObject = subObjectHandler(embededElementTable) {
                         let filter1 = SundeedColumn(Sundeed.shared.foreignKey) == primaryValue
                         let filter2 = SundeedColumn(Sundeed.shared.fieldNameLink) == embededElementFieldNameLink
-                        var filter3: SundeedExpression<Bool>?
+                        var filter3: SundeedExpression?
                         if let embededElementPrimaryKey = embededElementPrimaryKey {
                             filter3 = SundeedColumn(Sundeed.shared.primaryKey) == embededElementPrimaryKey
                         }
                         dictionary[row.key] = self
                             .retrieve(objectWrapper: subObject,
-                                      withFilter: filter1, filter2, filter3,
+                                      withFilter: [filter1, filter2, filter3],
                                       excludeIfIsForeign: false,
                                       subObjectHandler: subObjectHandler)
                     }
@@ -129,7 +135,7 @@ class RetrieveProcessor: Processor {
         }
     }
     func getPrimitiveValues(forTable table: String,
-                            withFilter filter: SundeedExpression<Bool>?) -> [Any]? {
+                            withFilter filter: SundeedExpression?) -> [Any]? {
         let database = SundeedQLiteConnection.pool.connection()
         var statement: OpaquePointer?
         let selectStatement = StatementBuilder()

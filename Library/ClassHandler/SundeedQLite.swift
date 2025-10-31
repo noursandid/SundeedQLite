@@ -139,7 +139,7 @@ extension SundeedQLite {
     }
     func update<T: SundeedQLiter>(forClass sundeedClass: T.Type,
                                   changes: [SundeedUpdateSetStatement],
-                                  withFilter filters: SundeedExpression<Bool>?...) async throws {
+                                  withFilter filters: SundeedExpression?...) async throws {
         let map = SundeedQLiteMap(fetchingColumns: true)
         let object = sundeedClass.init()
         object.sundeedQLiterMapping(map: map)
@@ -162,10 +162,12 @@ extension SundeedQLite {
 // Retrieve
 extension SundeedQLite {
     func retrieve<T: SundeedQLiter>(forClass sundeed: T.Type,
-                                    withFilter filter: SundeedExpression<Bool>? = nil,
+                                    withFilter filter: [SundeedExpression?],
                                     orderBy order: SundeedColumn? = nil,
-                                    ascending asc: Bool = true,
-                                    excludeIfIsForeign: Bool = false) async -> [T] {
+                                    ascending asc: Bool? = nil,
+                                    limit: Int? = nil,
+                                    skip: Int? = nil,
+                                    excludeIfIsForeign: Bool = true) async -> [T] {
         await withCheckedContinuation { continuation in
             Sundeed.shared.backgroundQueue.async {
                 let map = SundeedQLiteMap(fetchingColumns: true)
@@ -174,7 +176,11 @@ extension SundeedQLite {
                 let dictionnariesArray = Processors()
                     .retrieveProcessor
                     .retrieve(objectWrapper: instance.toObjectWrapper(),
+                              orderBy: order,
+                              ascending: asc,
                               withFilter: filter,
+                              limit: limit,
+                              skip: skip,
                               excludeIfIsForeign: excludeIfIsForeign,
                               subObjectHandler: self.classToObjectWrapper)
                 var objectsArray: [T] = []
@@ -186,7 +192,6 @@ extension SundeedQLite {
                         objectsArray.append(object)
                     }
                 }
-                self.sort(&objectsArray, order: order, asc: asc)
                 continuation.resume(returning: objectsArray)
             }
         }
@@ -200,35 +205,6 @@ extension SundeedQLite {
             return instance.toObjectWrapper()
         }
         return nil
-    }
-    private func sort<T: SundeedQLiter>(_ objectsArray: inout [T],
-                                        order: SundeedColumn?,
-                                        asc: Bool) {
-        if let order = order, objectsArray.count > 0 {
-            objectsArray.sort { (object1, object2) -> Bool in
-                if !asc {
-                    if let obj1 = object1[order.value] as? Int,
-                              let obj2 = object2[order.value] as? Int {
-                        return obj1 > obj2
-                    } else if let obj1 = object1[order.value] as? Date,
-                              let obj2 = object2[order.value] as? Date {
-                        return obj1 > obj2
-                    } else {
-                        return String(describing: object1[order.value]) > String(describing: object2[order.value])
-                    }
-                } else {
-                    if let obj1 = object1[order.value] as? Int,
-                              let obj2 = object2[order.value] as? Int {
-                        return obj1 < obj2
-                    } else if let obj1 = object1[order.value] as? Date,
-                              let obj2 = object2[order.value] as? Date {
-                        return obj1 < obj2
-                    } else {
-                        return String(describing: object1[order.value]) < String(describing: object2[order.value])
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -289,7 +265,7 @@ extension SundeedQLite {
         }
     }
     func deleteAllFromDB<T: SundeedQLiter>(forClass sundeedClass: T.Type,
-                                           withFilters filters: [SundeedExpression<Bool>?]) async {
+                                           withFilters filters: [SundeedExpression?]) async {
         let object = sundeedClass.init()
         let map = SundeedQLiteMap(fetchingColumns: true)
         object.sundeedQLiterMapping(map: map)
