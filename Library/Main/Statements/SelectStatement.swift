@@ -138,6 +138,9 @@ class SelectStatement: Statement {
     private func addSkip(toStatement statement: inout String) {
         queue.sync {
             if let skip {
+                if limit == nil {
+                    statement.append(" LIMIT -1")
+                }
                 statement.append(" OFFSET \(skip)")
             }
         }
