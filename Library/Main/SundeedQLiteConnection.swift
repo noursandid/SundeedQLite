@@ -73,6 +73,10 @@ class SundeedQLiteConnection {
     private let backgroundQueue = DispatchQueue(label: "thread-safe-background-statements", attributes: .concurrent)
     private var connections: [OpaquePointer] = []
     
+    init() {
+        try? createDatabaseIfNeeded()
+    }
+    
     lazy var fullDestPath: URL? = {
         do {
             return try FileManager
@@ -197,6 +201,9 @@ class SundeedQLiteConnection {
                     if prepare != SQLITE_ERROR {
                         sqlite3_finalize(statement)
                         self.insertStatement(query, parameters)
+                    } else {
+                        let error = String(cString: sqlite3_errmsg(writeConnection))
+                        SundeedLogger.debug(error)
                     }
                 }
                 let combination = self.popStatement()

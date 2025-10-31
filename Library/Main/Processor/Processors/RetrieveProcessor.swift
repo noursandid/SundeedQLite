@@ -15,6 +15,7 @@ class RetrieveProcessor: Processor {
                   ascending: Bool? = nil,
                   withFilter filters: [SundeedExpression?] = [],
                   limit: Int? = nil,
+                  skip: Int? = nil,
                   excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
         let database: OpaquePointer? = SundeedQLiteConnection.pool.connection()
@@ -30,6 +31,7 @@ class RetrieveProcessor: Processor {
                 .isCaseInsensitive(true)
                 .withFilters(filters)
                 .limit(limit)
+                .skip(skip)
                 .excludeIfIsForeign(excludeIfIsForeign)
                 .build()
             

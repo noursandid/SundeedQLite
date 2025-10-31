@@ -59,12 +59,14 @@ extension SundeedQLiter {
                                 orderBy order: SundeedColumn? = nil,
                                 ascending asc: Bool? = nil,
                                 limit: Int? = nil,
+                                skip: Int? = nil,
                                 excludeIfIsForeign: Bool = true) async -> [Self] {
         let objects = await SundeedQLite.instance.retrieve(forClass: self,
                                                            withFilter: filter,
                                                            orderBy: order,
                                                            ascending: asc,
                                                            limit: limit,
+                                                           skip: skip,
                                                            excludeIfIsForeign: excludeIfIsForeign)
         SundeedQLite.notify(for: objects, operation: .retrieve)
         return objects

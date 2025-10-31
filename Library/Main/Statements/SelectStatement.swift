@@ -17,6 +17,7 @@ class SelectStatement: Statement {
     private var isOrdered: Bool = false
     private var ascending: Bool = true
     private var limit: Int?
+    private var skip: Int?
     
     init(with tableName: String) {
         self.tableName = tableName
@@ -57,6 +58,13 @@ class SelectStatement: Statement {
         }
     }
     @discardableResult
+    func skip(_ skip: Int?) -> Self {
+        queue.sync {
+            self.skip = skip
+            return self
+        }
+    }
+    @discardableResult
     func withFilters(_ filters: SundeedExpression?...) -> Self {
         queue.sync {
             self.filters = filters.compactMap({$0})
@@ -85,6 +93,7 @@ class SelectStatement: Statement {
             addFilters(toStatement: &statement)
             addOrderBy(toStatement: &statement)
             addLimit(toStatement: &statement)
+            addSkip(toStatement: &statement)
             statement.append(";")
             SundeedLogger.debug("Select Statement: \(statement)")
             return statement
@@ -106,13 +115,13 @@ class SelectStatement: Statement {
     }
     private func addOrderBy(toStatement statement: inout String) {
         queue.sync {
-            statement.append(" ORDER BY ")
+            statement.append(" ORDER BY")
             if isOrdered,
                let orderByColumnName = orderByColumnName {
-                let condition = "\(orderByColumnName)"
+                let condition = " \(orderByColumnName)"
                 statement.append(condition)
             } else {
-                statement.append("\'SUNDEED_OFFLINE_ID\'")
+                statement.append(" SUNDEED_OFFLINE_ID")
             }
             addCaseInsensitive(toStatement: &statement)
             let sorting = ascending ? " ASC" : " DESC"
@@ -122,7 +131,14 @@ class SelectStatement: Statement {
     private func addLimit(toStatement statement: inout String) {
         queue.sync {
             if let limit {
-                statement.append(" LIMIT \(limit) ")
+                statement.append(" LIMIT \(limit)")
+            }
+        }
+    }
+    private func addSkip(toStatement statement: inout String) {
+        queue.sync {
+            if let skip {
+                statement.append(" OFFSET \(skip)")
             }
         }
     }

@@ -166,6 +166,7 @@ extension SundeedQLite {
                                     orderBy order: SundeedColumn? = nil,
                                     ascending asc: Bool? = nil,
                                     limit: Int? = nil,
+                                    skip: Int? = nil,
                                     excludeIfIsForeign: Bool = true) async -> [T] {
         await withCheckedContinuation { continuation in
             Sundeed.shared.backgroundQueue.async {
@@ -179,6 +180,7 @@ extension SundeedQLite {
                               ascending: asc,
                               withFilter: filter,
                               limit: limit,
+                              skip: skip,
                               excludeIfIsForeign: excludeIfIsForeign,
                               subObjectHandler: self.classToObjectWrapper)
                 var objectsArray: [T] = []
