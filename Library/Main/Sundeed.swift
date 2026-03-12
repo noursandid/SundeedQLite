@@ -31,6 +31,13 @@ class Sundeed {
     final let foreignPrimitivePrefix: String = "SUNDEED_PRIMITIVE_FOREIGN|"
     /// SQLiteDB.sqlite
     final let databaseFileName: String = "SQLiteDB.sqlite"
+    /// Empty string used in place of NULL for top-level objects' foreign key
+    /// and field name link columns. SQLite treats NULLs as distinct in UNIQUE
+    /// constraints, so REPLACE INTO never fires a conflict when these columns
+    /// are NULL. Using a non-NULL sentinel ensures the composite UNIQUE
+    /// constraint (foreignKey, primaryKey, fieldNameLink) works correctly for
+    /// top-level objects, allowing REPLACE INTO to deduplicate as intended.
+    final let topLevelSentinel: String = ""
     /// SUNDEED_FOREIGN|#tableName#|#foreignKey#
     final func sundeedForeignValue(tableName: Any,
                                    fieldNameLink: String,

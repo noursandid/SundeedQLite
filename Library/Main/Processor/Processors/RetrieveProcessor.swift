@@ -35,14 +35,18 @@ class RetrieveProcessor: Processor {
                 .excludeIfIsForeign(excludeIfIsForeign)
                 .build()
             
-            sqlite3_prepare_v2(database, query, -1, &statement, nil)
-            let array: [[String: Any]] = fetchStatementResult(statement: statement,
-                                                              columns: columns,
-                                                              objectWrapper: objectWrapper,
-                                                              subObjectHandler: subObjectHandler)
-            SundeedLogger.debug("Found for \(objectWrapper.tableName): \(array)")
+            if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+                let array: [[String: Any]] = fetchStatementResult(statement: statement,
+                                                                  columns: columns,
+                                                                  objectWrapper: objectWrapper,
+                                                                  subObjectHandler: subObjectHandler)
+                SundeedLogger.debug("Found for \(objectWrapper.tableName): \(array)")
+                sqlite3_finalize(statement)
+                SundeedQLiteConnection.pool.closeConnection(database)
+                return array
+            }
+            sqlite3_finalize(statement)
             SundeedQLiteConnection.pool.closeConnection(database)
-            return array
         } else {
             SundeedQLiteConnection.pool.closeConnection(database)
         }
@@ -168,9 +172,11 @@ class RetrieveProcessor: Processor {
                     }
                 }
             }
+            sqlite3_finalize(statement)
             SundeedQLiteConnection.pool.closeConnection(database)
             return array
         } else {
+            sqlite3_finalize(statement)
             SundeedQLiteConnection.pool.closeConnection(database)
         }
         return nil

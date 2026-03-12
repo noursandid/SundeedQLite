@@ -82,7 +82,7 @@ class SelectStatement: Statement {
     func excludeIfIsForeign(_ exclude: Bool) -> Self {
         queue.sync {
             if exclude {
-                self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == nil]
+                self.filters = self.filters + [SundeedColumn(Sundeed.shared.foreignKey) == Sundeed.shared.topLevelSentinel]
             }
             return self
         }

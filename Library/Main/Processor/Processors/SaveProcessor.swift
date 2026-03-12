@@ -38,8 +38,8 @@ class SaveProcessor: Processor {
                 if let objects = object.objects {
                     let insertStatement = StatementBuilder()
                         .insertStatement(tableName: object.tableName)
-                        .add(key: Sundeed.shared.foreignKey, value: foreignKey)
-                        .add(key: Sundeed.shared.fieldNameLink, value: fieldNameLink)
+                        .add(key: Sundeed.shared.foreignKey, value: foreignKey ?? Sundeed.shared.topLevelSentinel)
+                        .add(key: Sundeed.shared.fieldNameLink, value: fieldNameLink ?? Sundeed.shared.topLevelSentinel)
                     for (columnName, attribute) in objects {
                         if let attribute = attribute as? ObjectWrapper {
                             if let className = attribute.className {

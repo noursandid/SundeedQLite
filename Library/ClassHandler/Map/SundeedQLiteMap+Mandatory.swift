@@ -313,6 +313,34 @@ public func <*> (left: inout Float?, right: SundeedQLiteMap) {
         }
     }
 }
+public func <*> (left: inout Bool?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? NSNumber {
+            left = Bool(truncating: rightValue)
+        }
+        if left == nil && right.isSafeToAdd {
+            right.isSafeToAdd = false
+        }
+    } else {
+        if let key = right.key {
+            right.addColumn(attribute: left, withColumnName: key, type: .integer(nil))
+        }
+    }
+}
+public func <*> (left: inout Data?, right: SundeedQLiteMap) {
+    if !right.fetchingColumns {
+        if let rightValue = right.currentValue as? Data {
+            left = rightValue
+        }
+        if left == nil && right.isSafeToAdd {
+            right.isSafeToAdd = false
+        }
+    } else {
+        if let key = right.key {
+            right.addColumn(attribute: left, withColumnName: key, type: .blob(nil))
+        }
+    }
+}
 public func <*> (left: inout UIImage?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? String {

@@ -55,27 +55,77 @@ class CreateTableProcessor: Processor {
                         createTableStatement.addColumn(with: columnName, type: .text(nil))
                     }
                 }
-//                if case .blob = concreteType {
-//                    createTableStatement.addColumn(with: columnName, type: .blob)
-//                } else if let attribute = attribute as? NSNumber, !CFNumberIsFloatType(attribute as CFNumber) {
-//                    createTableStatement.addColumn(with: columnName, type: .integer)
-//                } else if attribute is Double || attribute is Float || attribute is Date {
-//                    createTableStatement.addColumn(with: columnName, type: .double)
-//                } else {
-//                    createTableStatement.addColumn(with: columnName, type: .text)
-//                }
                 if columnName == "index" {
                     throw SundeedQLiteError.cantUseNameIndex(tableName: object.tableName)
                 }
             }
-            if objects[Sundeed.shared.primaryKey] != nil {
+            let hasPrimaryKey = objects[Sundeed.shared.primaryKey] != nil
+            if hasPrimaryKey {
                 createTableStatement.withPrimaryKey()
             }
             let statement: String? = createTableStatement.build()
             SundeedQLiteConnection.pool.execute(query: statement,
                                                 parameters: nil)
+            // Only migrate tables with a primary key — they're the ones with
+            // the UNIQUE constraint where the NULL-uniqueness bug manifests.
+            if hasPrimaryKey {
+                migrateNullSentinels(tableName: object.tableName)
+            }
             Sundeed.shared.tables.append(object.tableName)
         }
+    }
+    /// Migrates pre-existing rows that used NULL for top-level objects'
+    /// `SUNDEED_FOREIGN_KEY` and `SUNDEED_FIELD_NAME_LINK` columns to the
+    /// non-NULL sentinel value. This is necessary because SQLite treats NULLs
+    /// as distinct in UNIQUE constraints, which caused `REPLACE INTO` to
+    /// accumulate duplicate rows for top-level objects.
+    ///
+    /// The migration:
+    /// 1. Removes duplicate top-level rows, keeping only the most recent
+    ///    (highest `SUNDEED_OFFLINE_ID`) per primary key.
+    /// 2. Converts remaining NULL values to the sentinel so the UNIQUE
+    ///    constraint works correctly going forward.
+    ///
+    /// This is idempotent — once NULLs are converted, subsequent runs are
+    /// no-ops because the WHERE clauses no longer match any rows.
+    ///
+    /// - TODO: Remove this migration after a sufficient number of major
+    ///   versions have passed (e.g. 2 major releases) so that all
+    ///   consumers have had a chance to run it at least once.
+    private func migrateNullSentinels(tableName: String) {
+        let offlineID = Sundeed.shared.offlineID
+        let foreignKey = Sundeed.shared.foreignKey
+        let primaryKey = Sundeed.shared.primaryKey
+        let fieldNameLink = Sundeed.shared.fieldNameLink
+        let sentinel = Sundeed.shared.topLevelSentinel
+        // Step 1: Remove duplicate top-level rows, keeping only the latest
+        // per primary key. This cleans up databases where the NULL-uniqueness
+        // bug caused duplicate accumulation.
+        let dedup = """
+            DELETE FROM \(tableName)
+            WHERE \(foreignKey) IS NULL
+              AND \(offlineID) NOT IN (
+                SELECT MAX(\(offlineID))
+                FROM \(tableName)
+                WHERE \(foreignKey) IS NULL
+                GROUP BY \(primaryKey)
+              );
+            """
+        SundeedQLiteConnection.pool.execute(query: dedup, parameters: nil)
+        // Step 2: Convert remaining NULLs to the sentinel value so the
+        // UNIQUE constraint can enforce deduplication going forward.
+        let migrateForeignKey = """
+            UPDATE \(tableName)
+            SET \(foreignKey) = '\(sentinel)'
+            WHERE \(foreignKey) IS NULL;
+            """
+        SundeedQLiteConnection.pool.execute(query: migrateForeignKey, parameters: nil)
+        let migrateFieldNameLink = """
+            UPDATE \(tableName)
+            SET \(fieldNameLink) = '\(sentinel)'
+            WHERE \(fieldNameLink) IS NULL;
+            """
+        SundeedQLiteConnection.pool.execute(query: migrateFieldNameLink, parameters: nil)
     }
     /** Try to create table for primitive data types if not already exists */
     func createTableForPrimitiveDataTypes(withTableName tableName: String,
