@@ -6,8 +6,8 @@
 ##### SundeedQLite is the easiest offline database integration, built using Swift language
 # Requirements
 - ##### iOS 13.0+
-- ##### XCode 10.3+
-- ##### Swift 5+
+- ##### Xcode 15.0+
+- ##### Swift 5.9+
 ### Installation
 ----
 
@@ -17,7 +17,7 @@ To install SundeedQLite using SPM,
 dependencies: [
   .package(
     url: "https://github.com/noursandid/SundeedQLite.git",
-    from: "3.0.0"
+    from: "5.2.0"
   ),
 ]
 ```
@@ -33,6 +33,7 @@ dependencies: [
 *N.B:*
 - Primary keys should always be strings.
 - To create a nested object (**e.g: Employee**), both **Employer** and **Employee** should have primary keys.
+- If you prefer a declarative approach, see the **Prepare (Using Macros)** section below for the `@SundeedQLiteModel` macro which replaces these operators with annotations like `@Primary`, `@Ordered`, etc.
 
 # Supported Types
 - SundeedQLiter Objects
@@ -105,9 +106,57 @@ class Employee: SundeedQLiter {
 }
 ```
 
+### Prepare (Using Macros)
+As an alternative to manual mapping, you can use the `@SundeedQLiteModel` macro to generate the `SundeedQLiter` conformance, `required init()`, and `sundeedQLiterMapping(map:)` automatically from property annotations. This is fully compatible with the manual approach — both produce the same runtime behavior.
+
+```swift
+import SundeedQLite
+
+@SundeedQLiteModel
+class Employer {
+    @Primary var id: String!
+    @Ordered(.ascending) var fullName: String?
+    var employees: [Employee]?
+}
+
+@SundeedQLiteModel
+class Employee {
+    @Primary var id: String!
+    var firstName: String?
+}
+```
+
+#### Macro Annotations
+
+| Annotation | Equivalent Sign | Description |
+|---|---|---|
+| `@Primary` | `+` | Marks the primary key. Only one per class. |
+| `@Ordered(.ascending)` | `<<` | Marks the ascending sort column. Only one per class. |
+| `@Ordered(.descending)` | `>>` | Marks the descending sort column. Only one per class. |
+| `@Mandatory` | `<*>` | If this property is nil from the database, the parent object is dropped. |
+| `@MandatoryArray` | `<**>` | If this array is empty, the parent object is dropped. Only valid on arrays of `SundeedQLiter` types. |
+| `@Column("name")` | — | Overrides the default column name (which is the property name). |
+| `@Converted(ConverterType.self)` | — | Specifies a `SundeedQLiteConverter` for custom type bridging. |
+| `@Ignore` | — | Excludes the property from database persistence entirely. |
+
+Annotations can be combined on a single property. For example:
+```swift
+@SundeedQLiteModel
+class Employee {
+    @Primary @Ordered(.descending) var id: String!
+    @Mandatory @Converted(TypeConverter.self) var type: Type?
+    @Converted(TypeConverter.self) @Column("employee_type") var role: Type?
+    @Ignore var transientValue: Int = 0
+}
+```
+
+*N.B:*
+- `@SundeedQLiteModel` can only be applied to classes (not structs or enums).
+- `@MandatoryArray` cannot be applied to primitive arrays (e.g., `[String]`). Use it only on arrays of `SundeedQLiter`-conforming types.
+- `@Mandatory` and `@MandatoryArray` cannot be applied to the same property.
+
 ### Save
 
-To save an instance of a Model, you just need to call `.save(withForeignKey foreignKey: String? = nil)` function on the instance itself and it should be sufficient to create the table with the right columns and propagate the data, and of course call the right listeners (mentioned at a later stage in this documentation).
 To save an instance of a Model, you just need to call `.save(withForeignKey foreignKey: String? = nil)` function on the instance itself and it should be sufficient to create the table with the right columns and propagate the data, and of course call the right listeners (mentioned at a later stage in this documentation).
 The foreign key gives the ability to save a specific instance and link it to another one.
 
@@ -115,7 +164,7 @@ The foreign key gives the ability to save a specific instance and link it to ano
 let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
 employer.fullName = "Nour Sandid"
-employer.save()
+await employer.save()
 
 let employee = Employee()
 employee.firstName = "Nour"
@@ -144,7 +193,7 @@ To update an instance of a Model, you need to update the value in that instance,
 let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
 employer.fullName = "Nour Sandid"
-employer.save()
+await employer.save()
 
 employer.fullName = "Test"
 await employer.update(columns: SundeedColumn("fullName")) // this string should be exactly as the one in the `sundeedQLiterMapping` function.
@@ -177,7 +226,7 @@ employer.fullName = "Nour Sandid"
 await employer.save()
 
 // time to delete
-await employer.delete()
+try await employer.delete()
 ```
 
 To delete all the instances of the same type from the database, you can call the static function `delete(withFilter filters: SundeedExpression<Bool>...)`, you can also pass filters to be more specific.
@@ -188,7 +237,7 @@ employer.fullName = "Nour Sandid"
 await employer.save()
 
 // time to delete
-await employer.delete(withFilter: SundeedColumn("fullName") == "Nour Sandid") 
+await Employer.delete(withFilter: SundeedColumn("fullName") == "Nour Sandid")
 ```
 
 ### Retrieve
@@ -202,7 +251,7 @@ let employer = Employer()
 employer.id = "ABCD-1234-EFGH-5678"
 employer.fullName = "Nour Sandid"
 employer.employees = [employee]
-employer.save()
+await employer.save()
 
 let data = await Employee.retrieve()
 print(data) // [Employee(firstName: "Nour")]
@@ -211,11 +260,8 @@ print(data) // [Employee(firstName: "Nour")]
 let data = await Employee.retrieve(excludeIfIsForeign: true)
 print(data) // []
 
-let data = await Employee.retrieve(withFilter: SundeedColumn("firstName") == "Nour", excludeIfIsForeign: true)
-print(data) // [Employee(firstName: "Nour")]
-
-let data = await Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid", orderBy: SundeedColumn("fullName"), ascending: false, excludeIfIsForeign: true)
-print(data) // [Employer(id: "ABCD-1234-EFGH-5678", firstName: "Nour", employees: [Employee(firstName: "Nour")])]
+let data = await Employer.retrieve(withFilter: SundeedColumn("fullName") == "Nour Sandid", orderBy: SundeedColumn("fullName"), ascending: false)
+print(data) // [Employer(id: "ABCD-1234-EFGH-5678", fullName: "Nour Sandid", employees: [Employee(firstName: "Nour")])]
 ```
 
 ### Add Listeners
@@ -310,10 +356,18 @@ enum Type: String {
 
 class Employer: SundeedQLiter {
     var type: Type?
-    
+
     func sundeedQLiterMapping(map: SundeedQLiteMap) {
         type <~> (map["type"], TypeConverter())
     }
+}
+```
+
+Or using the macro approach:
+```swift
+@SundeedQLiteModel
+class Employer {
+    @Converted(TypeConverter.self) var type: Type?
 }
 ```
 # CheatSheet
