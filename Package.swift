@@ -18,7 +18,7 @@ let package = Package(
         // Supports Swift 5.9 (509.x) through Swift 6.x (600.x/601.x)
         .package(
             url: "https://github.com/swiftlang/swift-syntax.git",
-            "509.0.0"..<"602.0.0"
+            from: "509.0.0"
         ),
     ],
     targets: [
