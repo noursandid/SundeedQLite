@@ -32,7 +32,7 @@ class Statement {
             return "\""
         }
     }
-    final func isLastIndex<T>(index: Int, in array: [T]) -> Bool {
+    final func needsSeparator<T>(at index: Int, in array: [T]) -> Bool {
         index != array.count - 1
     }
 }

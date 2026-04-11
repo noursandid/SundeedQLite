@@ -15,7 +15,12 @@ public class SundeedQLiteMap {
     var fetchingColumns: Bool = false
     var key: String?
     var currentValue: Any?
-    static var references: [String: [String: SundeedQLiter]] = [:]
+    private static let referencesQueue = DispatchQueue(label: "com.sundeed.references", attributes: .concurrent)
+    private static var _references: [String: [String: SundeedQLiter]] = [:]
+    static var references: [String: [String: SundeedQLiter]] {
+        get { referencesQueue.sync { _references } }
+        set { referencesQueue.sync(flags: .barrier) { _references = newValue } }
+    }
     var primaryKey: String = ""
     var orderBy: String = ""
     var asc: Bool = true
@@ -50,22 +55,30 @@ public class SundeedQLiteMap {
     static func addReference(object: SundeedQLiter,
                              andValue value: AnyObject,
                              andClassName className: String) {
-        if SundeedQLiteMap.references[className] == nil {
-            SundeedQLiteMap.references[className] = [:]
-        }
-        if SundeedQLiteMap.references[className]?["\(value)"] == nil {
-            SundeedQLiteMap.references[className]?["\(value)"] = object
+        referencesQueue.sync(flags: .barrier) {
+            if _references[className] == nil {
+                _references[className] = [:]
+            }
+            if _references[className]?["\(value)"] == nil {
+                _references[className]?["\(value)"] = object
+            }
         }
     }
     static func getReference(andValue value: AnyObject,
                              andClassName name: String) -> SundeedQLiter? {
-        if SundeedQLiteMap.references[name] == nil {
-            SundeedQLiteMap.references[name] = [:]
+        referencesQueue.sync {
+            return _references[name]?["\(value)"]
         }
-        return SundeedQLiteMap.references[name]?["\(value)"]
     }
     static func removeReference(value: AnyObject,
                                 andClassName className: String) {
-        SundeedQLiteMap.references[className]?["\(value)"] = nil
+        referencesQueue.sync(flags: .barrier) {
+            _references[className]?["\(value)"] = nil
+        }
+    }
+    public static func clearReferences() {
+        referencesQueue.sync(flags: .barrier) {
+            _references.removeAll()
+        }
     }
 }

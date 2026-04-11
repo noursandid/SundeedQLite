@@ -43,6 +43,7 @@ public class Listener: Equatable {
 
 final public class SundeedQLite: Sendable {
     public static var instance: SundeedQLite = SundeedQLite()
+    private static let listenersQueue = DispatchQueue(label: "com.sundeed.listeners", attributes: .concurrent)
     private static var listeners: [Listener] = []
     static func addListener<T>(object: Any?,
                                function: @escaping (_ object: T) -> Void,
@@ -55,7 +56,9 @@ final public class SundeedQLite: Sendable {
                                 function: functionWrapper,
                                 operation: operation,
                                 specific: false)
-        listeners.append(listener)
+        listenersQueue.sync(flags: .barrier) {
+            listeners.append(listener)
+        }
         return listener
     }
     static func addSpecificListener<T>(object: Any?,
@@ -69,31 +72,36 @@ final public class SundeedQLite: Sendable {
                                 function: functionWrapper,
                                 operation: operation,
                                 specific: true)
-        listeners.append(listener)
+        listenersQueue.sync(flags: .barrier) {
+            listeners.append(listener)
+        }
         return listener
     }
     static func notify<T: SundeedQLiter>(for object: T,
                                          operation: Operation) {
-        listeners.filter({
-            if $0.specific {
-                if let listenerObject = $0.object as? SundeedQLiter {
-                    let map = SundeedQLiteMap(fetchingColumns: true)
-                    object.sundeedQLiterMapping(map: map)
-                    if let primaryValue = map.columns[map.primaryKey] as? String {
+        let matchingListeners: [Listener] = listenersQueue.sync {
+            listeners.filter({
+                if $0.specific {
+                    if let listenerObject = $0.object as? SundeedQLiter {
                         let map = SundeedQLiteMap(fetchingColumns: true)
-                        listenerObject.sundeedQLiterMapping(map: map)
-                        if let listenerPrimaryValue = map.columns[map.primaryKey] as? String {
-                            return primaryValue == listenerPrimaryValue
-                            && ($0.operation == operation || $0.operation == .any)
+                        object.sundeedQLiterMapping(map: map)
+                        if let primaryValue = map.columns[map.primaryKey] as? String {
+                            let map = SundeedQLiteMap(fetchingColumns: true)
+                            listenerObject.sundeedQLiterMapping(map: map)
+                            if let listenerPrimaryValue = map.columns[map.primaryKey] as? String {
+                                return primaryValue == listenerPrimaryValue
+                                && ($0.operation == operation || $0.operation == .any)
+                            }
                         }
                     }
+                    return false
+                } else {
+                    return ($0.object is T.Type || $0.object == nil)
+                    && ($0.operation == operation || $0.operation == .any)
                 }
-                return false
-            } else {
-                return ($0.object is T.Type || $0.object == nil)
-                && ($0.operation == operation || $0.operation == .any)
-            }
-        }).forEach({
+            })
+        }
+        matchingListeners.forEach({
             $0.function(object)
         })
     }
@@ -101,10 +109,12 @@ final public class SundeedQLite: Sendable {
                                          operation: Operation) {
         objects.forEach({notify(for: $0, operation: operation)})
     }
-    
+
     static func removeListener(listener: Listener) {
-        listeners.removeAll { (listenerInstance) -> Bool in
-            return listener == listenerInstance
+        listenersQueue.sync(flags: .barrier) {
+            listeners.removeAll { (listenerInstance) -> Bool in
+                return listener == listenerInstance
+            }
         }
     }
     public static func setLogLevel(_ logLevel: SundeedLogLevel) {

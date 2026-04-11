@@ -70,7 +70,7 @@ final class SundeedExpressionTests: XCTestCase {
         XCTAssertEqual((SundeedColumn("score") >= 3.14 as Float).toQuery(), "score >= 3.14")
         XCTAssertEqual((SundeedColumn("score") > 3.14 as Float).toQuery(), "score > 3.14")
         XCTAssertEqual((SundeedColumn("score") <= 3.14 as Float).toQuery(), "score <= 3.14")
-        XCTAssertEqual((SundeedColumn("score") < 3.14 as Float).toQuery(), "score <= 3.14")
+        XCTAssertEqual((SundeedColumn("score") < 3.14 as Float).toQuery(), "score < 3.14")
     }
     
     func testDateOperators() {

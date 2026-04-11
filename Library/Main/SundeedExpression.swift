@@ -142,7 +142,7 @@ public func <= (left: SundeedColumn, right: Float) -> SundeedExpression {
     return SundeedExpression(left.value, right, comparison: .lessThanOrEqual)
 }
 public func < (left: SundeedColumn, right: Float) -> SundeedExpression {
-    return SundeedExpression(left.value, right, comparison: .lessThanOrEqual)
+    return SundeedExpression(left.value, right, comparison: .lessThan)
 }
 public func != (left: SundeedColumn, right: Date) -> SundeedExpression {
     return SundeedExpression(left.value, right.timeIntervalSince1970*1000, comparison: .notEqual, positive: false)

@@ -37,7 +37,7 @@ class DeleteStatement: Statement {
                     statement.append(filter.toQuery())
                     addSeparatorIfNeeded(separator: " AND ",
                                          forStatement: &statement,
-                                         needed: isLastIndex(index: index, in: filters))
+                                         needed: needsSeparator(at: index, in: filters))
                 }
             } else {
                 statement.append("1")

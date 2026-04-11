@@ -8,7 +8,7 @@ import XCTest
 
 final class SundeedQLiteMapTests: XCTestCase {
     override func tearDown() {
-        SundeedQLiteMap.references.removeAll()
+        SundeedQLiteMap.clearReferences()
     }
 
     // MARK: - Subscript

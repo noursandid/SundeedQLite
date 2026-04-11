@@ -20,9 +20,9 @@ final class StatementHelpersTests: XCTestCase {
     
     func testIsLastIndex() {
         let s = Statement()
-        XCTAssertFalse(s.isLastIndex(index: 0, in: [1]))
-        XCTAssertTrue(s.isLastIndex(index: 0, in: [1,2]))
-        XCTAssertFalse(s.isLastIndex(index: 1, in: [1,2]))
+        XCTAssertFalse(s.needsSeparator(at: 0, in: [1]))
+        XCTAssertTrue(s.needsSeparator(at: 0, in: [1,2]))
+        XCTAssertFalse(s.needsSeparator(at: 1, in: [1,2]))
     }
 }
 
