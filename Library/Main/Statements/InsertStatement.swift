@@ -44,7 +44,7 @@ class InsertStatement: Statement {
                 valuesStatement.append("?")
                 let columnType = self.columns[key] ?? .text("")
                 values.append(columnType.withValue(value))
-                let needed = isLastIndex(index: index, in: keyValues)
+                let needed = needsSeparator(at: index, in: keyValues)
                 addSeparatorIfNeeded(separator: ", ",
                                      forStatement: &statement,
                                      needed: needed)

@@ -108,7 +108,7 @@ class SelectStatement: Statement {
                     statement.append(whereStatement)
                     addSeparatorIfNeeded(separator: " AND ",
                                          forStatement: &statement,
-                                         needed: isLastIndex(index: index, in: filters))
+                                         needed: needsSeparator(at: index, in: filters))
                 }
             }
         }

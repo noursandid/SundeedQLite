@@ -19,38 +19,34 @@ class RetrieveProcessor: Processor {
                   excludeIfIsForeign: Bool = false,
                   subObjectHandler: (_ objectType: String) -> ObjectWrapper?) -> [SundeedObject] {
         let database: OpaquePointer? = SundeedQLiteConnection.pool.connection()
+        defer { SundeedQLiteConnection.pool.closeConnection(database) }
         let columns = getDatabaseColumns(forTable: objectWrapper.tableName)
         SundeedLogger.info("Retrieving \(objectWrapper.tableName)")
-        if !columns.isEmpty {
-            var statement: OpaquePointer?
-            let query: String? = StatementBuilder()
-                .selectStatement(tableName: objectWrapper.tableName)
-                .isOrdered(order != nil || objectWrapper.isOrdered)
-                .orderBy(columnName: order?.value ?? objectWrapper.orderBy)
-                .isAscending(ascending ?? objectWrapper.asc)
-                .isCaseInsensitive(true)
-                .withFilters(filters)
-                .limit(limit)
-                .skip(skip)
-                .excludeIfIsForeign(excludeIfIsForeign)
-                .build()
-            
-            if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
-                let array: [[String: Any]] = fetchStatementResult(statement: statement,
-                                                                  columns: columns,
-                                                                  objectWrapper: objectWrapper,
-                                                                  subObjectHandler: subObjectHandler)
-                SundeedLogger.debug("Found for \(objectWrapper.tableName): \(array)")
-                sqlite3_finalize(statement)
-                SundeedQLiteConnection.pool.closeConnection(database)
-                return array
-            }
+        guard !columns.isEmpty else { return [] }
+        var statement: OpaquePointer?
+        let query: String? = StatementBuilder()
+            .selectStatement(tableName: objectWrapper.tableName)
+            .isOrdered(order != nil || objectWrapper.isOrdered)
+            .orderBy(columnName: order?.value ?? objectWrapper.orderBy)
+            .isAscending(ascending ?? objectWrapper.asc)
+            .isCaseInsensitive(true)
+            .withFilters(filters)
+            .limit(limit)
+            .skip(skip)
+            .excludeIfIsForeign(excludeIfIsForeign)
+            .build()
+
+        guard sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK else {
             sqlite3_finalize(statement)
-            SundeedQLiteConnection.pool.closeConnection(database)
-        } else {
-            SundeedQLiteConnection.pool.closeConnection(database)
+            return []
         }
-        return []
+        defer { sqlite3_finalize(statement) }
+        let array: [[String: Any]] = fetchStatementResult(statement: statement,
+                                                          columns: columns,
+                                                          objectWrapper: objectWrapper,
+                                                          subObjectHandler: subObjectHandler)
+        SundeedLogger.debug("Found for \(objectWrapper.tableName): \(array)")
+        return array
     }
     
     func fetchStatementResult(statement: OpaquePointer?,
@@ -141,45 +137,43 @@ class RetrieveProcessor: Processor {
     func getPrimitiveValues(forTable table: String,
                             withFilter filter: SundeedExpression?) -> [Any]? {
         let database = SundeedQLiteConnection.pool.connection()
+        defer { SundeedQLiteConnection.pool.closeConnection(database) }
         var statement: OpaquePointer?
         let selectStatement = StatementBuilder()
             .selectStatement(tableName: table)
             .withFilters(filter)
             .build()
-        if sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK {
-            let columns = getDatabaseColumns(forTable: table)
-            var array: [Any] = []
-            while sqlite3_step(statement) == SQLITE_ROW {
-                for (index, column) in columns.enumerated() where column.columnName == Sundeed.shared.valueColumnName {
-                    if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
-                       let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
-                        let size = Int(sqlite3_column_bytes(statement, Int32(index)))
-                        let value: Data = Data(bytes: databaseValue, count: size)
-                        array.append(value)
-                    } else if case .double = column.columnType {
-                        let databaseValue = sqlite3_column_double(statement, Int32(index))
-                        let value: Double = Double(databaseValue)
-                        array.append(value)
-                    } else if case .integer = column.columnType {
-                        let databaseValue = sqlite3_column_int(statement, Int32(index))
-                        let value: Int = Int(databaseValue)
-                        array.append(value)
-                    } else if let columnValue = sqlite3_column_text(statement, Int32(index)) {
-                        let value: String = String(cString: columnValue)
-                        if value != Sundeed.shared.databaseNull {
-                            array.append(value.replacingOccurrences(of: "\\\"", with: "\""))
-                        }
+        guard sqlite3_prepare_v2(database, selectStatement, -1, &statement, nil) == SQLITE_OK else {
+            sqlite3_finalize(statement)
+            return nil
+        }
+        defer { sqlite3_finalize(statement) }
+        let columns = getDatabaseColumns(forTable: table)
+        var array: [Any] = []
+        while sqlite3_step(statement) == SQLITE_ROW {
+            for (index, column) in columns.enumerated() where column.columnName == Sundeed.shared.valueColumnName {
+                if SQLITE_BLOB == sqlite3_column_type(statement, Int32(index)),
+                   let databaseValue = sqlite3_column_blob(statement, Int32(index)) {
+                    let size = Int(sqlite3_column_bytes(statement, Int32(index)))
+                    let value: Data = Data(bytes: databaseValue, count: size)
+                    array.append(value)
+                } else if case .double = column.columnType {
+                    let databaseValue = sqlite3_column_double(statement, Int32(index))
+                    let value: Double = Double(databaseValue)
+                    array.append(value)
+                } else if case .integer = column.columnType {
+                    let databaseValue = sqlite3_column_int(statement, Int32(index))
+                    let value: Int = Int(databaseValue)
+                    array.append(value)
+                } else if let columnValue = sqlite3_column_text(statement, Int32(index)) {
+                    let value: String = String(cString: columnValue)
+                    if value != Sundeed.shared.databaseNull {
+                        array.append(value.replacingOccurrences(of: "\\\"", with: "\""))
                     }
                 }
             }
-            sqlite3_finalize(statement)
-            SundeedQLiteConnection.pool.closeConnection(database)
-            return array
-        } else {
-            sqlite3_finalize(statement)
-            SundeedQLiteConnection.pool.closeConnection(database)
         }
-        return nil
+        return array
     }
     func normalizeColumnValue(_ columnValue: UnsafePointer<UInt8>) -> String {
         String(cString: columnValue).replacingOccurrences(of: "\\\"", with: "\"")
