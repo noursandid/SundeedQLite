@@ -6,12 +6,16 @@
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
 
+import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 
 class SaveProcessor: Processor {
     /** Checks if the object is of an acceptable type */
     func acceptDataType(forObject object: AnyObject?) -> Bool {
         if object != nil {
+            #if canImport(UIKit)
             return object is String
             || object is String?
             || object is Int
@@ -26,6 +30,20 @@ class SaveProcessor: Processor {
             || object is Date?
             || object is UIImage
             || object is UIImage?
+            #else
+            return object is String
+            || object is String?
+            || object is Int
+            || object is Int?
+            || object is Double
+            || object is Double?
+            || object is Float
+            || object is Float?
+            || object is Bool
+            || object is Bool?
+            || object is Date
+            || object is Date?
+            #endif
         }
         return false
     }
@@ -41,6 +59,44 @@ class SaveProcessor: Processor {
                         .add(key: Sundeed.shared.foreignKey, value: foreignKey ?? Sundeed.shared.topLevelSentinel)
                         .add(key: Sundeed.shared.fieldNameLink, value: fieldNameLink ?? Sundeed.shared.topLevelSentinel)
                     for (columnName, attribute) in objects {
+                        #if canImport(UIKit)
+                        if let attribute = attribute as? UIImage {
+                            if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                                SundeedLogger.debug("Saving image found for \(object.tableName) at property \(columnName) with Primary/foreign key: \(primaryValue)")
+                                let objectID = "\(primaryValue)\(columnName)"
+                                let attributeValue = attribute.dataTypeValue(forObjectID: objectID)
+                                insertStatement.add(key: columnName, value: attributeValue)
+                            } else {
+                                throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
+                            }
+                            continue
+                        }
+                        if let attribute = attribute as? [UIImage?] {
+                            let compactAttribute = attribute.compactMap({$0})
+                            if compactAttribute.count > 0,
+                               let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                                SundeedLogger.debug("Saving array of images found for \(object.tableName) at property \(columnName) with Primary/foreign key: \(primaryValue)")
+                                let attribute: [String] = compactAttribute
+                                    .enumerated()
+                                    .compactMap({
+                                        let indexString = String(describing: $0)
+                                        let objectID = "\(primaryValue)\(columnName)\(indexString)"
+                                        return $1.dataTypeValue(forObjectID: objectID)
+                                    })
+                                let type = object.types?[columnName] ?? .text(nil)
+                                let primitiveForeignTableName = "\(columnName)\(type.rawValue)"
+                                let attributeValue = Sundeed.shared
+                                    .sundeedPrimitiveForeignValue(tableName: primitiveForeignTableName)
+                                insertStatement.add(key: columnName, value: attributeValue)
+                                await self.saveArrayOfPrimitives(tableName: primitiveForeignTableName,
+                                                                 objects: attribute,
+                                                                 withForeignKey: primaryValue)
+                            } else {
+                                insertStatement.add(key: columnName, value: nil)
+                            }
+                            continue
+                        }
+                        #endif
                         if let attribute = attribute as? ObjectWrapper {
                             if let className = attribute.className {
                                 let subObjectPrimaryKey = attribute.objects?[Sundeed.shared.primaryKey] as? String
@@ -83,15 +139,6 @@ class SaveProcessor: Processor {
                             } else {
                                 insertStatement.add(key: columnName, value: nil)
                             }
-                        } else if let attribute = attribute as? UIImage {
-                            if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                                SundeedLogger.debug("Saving image found for \(object.tableName) at property \(columnName) with Primary/foreign key: \(primaryValue)")
-                                let objectID = "\(primaryValue)\(columnName)"
-                                let attributeValue = attribute.dataTypeValue(forObjectID: objectID)
-                                insertStatement.add(key: columnName, value: attributeValue)
-                            } else {
-                                throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
-                            }
                         } else if let attribute = attribute as? Date {
                             if objects[Sundeed.shared.primaryKey] as? String != nil {
                                 SundeedLogger.debug("Saving date found for \(object.tableName) at property \(columnName): \(attribute)")
@@ -108,29 +155,6 @@ class SaveProcessor: Processor {
                                                     value: attribute)
                             } else {
                                 throw SundeedQLiteError.primaryKeyError(tableName: object.tableName)
-                            }
-                        } else if let attribute = attribute as? [UIImage?] {
-                            let compactAttribute = attribute.compactMap({$0})
-                            if compactAttribute.count > 0,
-                               let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                                SundeedLogger.debug("Saving array of images found for \(object.tableName) at property \(columnName) with Primary/foreign key: \(primaryValue)")
-                                let attribute: [String] = compactAttribute
-                                    .enumerated()
-                                    .compactMap({
-                                        let indexString = String(describing: $0)
-                                        let objectID = "\(primaryValue)\(columnName)\(indexString)"
-                                        return $1.dataTypeValue(forObjectID: objectID)
-                                    })
-                                let type = object.types?[columnName] ?? .text(nil)
-                                let primitiveForeignTableName = "\(columnName)\(type.rawValue)"
-                                let attributeValue = Sundeed.shared
-                                    .sundeedPrimitiveForeignValue(tableName: primitiveForeignTableName)
-                                insertStatement.add(key: columnName, value: attributeValue)
-                                await self.saveArrayOfPrimitives(tableName: primitiveForeignTableName,
-                                                                 objects: attribute,
-                                                                 withForeignKey: primaryValue)
-                            } else {
-                                insertStatement.add(key: columnName, value: nil)
                             }
                         } else if let attribute = attribute as? [Any] {
                             if attribute.compactMap({$0}).count > 0 {
@@ -186,7 +210,7 @@ class SaveProcessor: Processor {
             SundeedQLiteConnection.pool.execute(query: insertStatement?.query,
                                                 parameters: insertStatement?.parameters)
         }
-        
+
     }
     func deleteFromDB(tableName: String,
                       withFilters filters: [SundeedExpression?]) async {

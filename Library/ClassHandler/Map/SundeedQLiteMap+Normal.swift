@@ -6,7 +6,10 @@
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
 
+import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 
 infix operator <~>
 public func <~> <T>(left: inout T, right: (SundeedQLiteMap, SundeedQLiteConverter)) {
@@ -477,6 +480,7 @@ public func <~> (left: inout [Data?]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!, type: .blob(nil))
     }
 }
+#if canImport(UIKit)
 public func <~> (left: inout [UIImage], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let value = right.currentValue as? [String] {
@@ -513,6 +517,7 @@ public func <~> (left: inout [UIImage?]?, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
+#endif
 public func <~> (left: inout [Bool], right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? [NSNumber] {
@@ -709,6 +714,7 @@ public func <~> (left: inout Data, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!, type: .blob(nil))
     }
 }
+#if canImport(UIKit)
 public func <~> (left: inout UIImage?, right: SundeedQLiteMap) {
     if !right.fetchingColumns {
         if let rightValue = right.currentValue as? String {
@@ -728,3 +734,4 @@ public func <~> (left: inout UIImage, right: SundeedQLiteMap) {
         right.addColumn(attribute: left, withColumnName: right.key!, type: .text(nil))
     }
 }
+#endif

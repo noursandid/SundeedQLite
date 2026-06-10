@@ -6,7 +6,10 @@
 //  Copyright © 2020 LUMBERCODE. All rights reserved.
 //
 
+import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 
 class UpdateProcessor: Processor {
     func update(objectWrapper: ObjectWrapper,
@@ -30,6 +33,36 @@ class UpdateProcessor: Processor {
                    return key == column.value
                }) {
                 let attribute = objects[column.value]
+                #if canImport(UIKit)
+                if let attribute = attribute as? UIImage {
+                    if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                        SundeedLogger.debug("Updating image found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
+                        updateStatement
+                            .add(key: column.value,
+                                 value: attribute
+                                .dataTypeValue(forObjectID: primaryValue))
+                    } else {
+                        throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
+                    }
+                    continue
+                }
+                if let attributes = attribute as? [UIImage?] {
+                    let attributes = attributes.compactMap({$0})
+                    if !attributes.isEmpty {
+                        if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
+                            SundeedLogger.debug("Updating array of images found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
+                            depth += 1
+                            await self.saveArrayOfImages(attributes: attributes,
+                                                         primaryValue: primaryValue,
+                                                         column: column,
+                                                         updateStatement: updateStatement)
+                        } else {
+                            throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
+                        }
+                    }
+                    continue
+                }
+                #endif
                 if let attribute = attribute as? ObjectWrapper,
                    let className = attribute.className {
                     if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
@@ -57,16 +90,6 @@ class UpdateProcessor: Processor {
                             throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
                         }
                     }
-                } else if let attribute = attribute as? UIImage {
-                    if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                        SundeedLogger.debug("Updating image found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
-                        updateStatement
-                            .add(key: column.value,
-                                 value: attribute
-                                .dataTypeValue(forObjectID: primaryValue))
-                    } else {
-                        throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
-                    }
                 } else if let attribute = attribute as? Date {
                     SundeedLogger.debug("Updating date found for \(objectWrapper.tableName) at property \(column)")
                     updateStatement.add(key: column.value,
@@ -78,20 +101,6 @@ class UpdateProcessor: Processor {
                                             value: attribute)
                     } else {
                         throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
-                    }
-                } else if let attributes = attribute as? [UIImage?] {
-                    let attributes = attributes.compactMap({$0})
-                    if !attributes.isEmpty {
-                        if let primaryValue = objects[Sundeed.shared.primaryKey] as? String {
-                            SundeedLogger.debug("Updating array of images found for \(objectWrapper.tableName) at property \(column) with Primary/foreign key: \(primaryValue)")
-                            depth += 1
-                            await self.saveArrayOfImages(attributes: attributes,
-                                                         primaryValue: primaryValue,
-                                                         column: column,
-                                                         updateStatement: updateStatement)
-                        } else {
-                            throw SundeedQLiteError.primaryKeyError(tableName: objectWrapper.tableName)
-                        }
                     }
                 } else if let attributes = attribute as? [Any] {
                     let attributes = attributes.compactMap({$0})
@@ -133,7 +142,8 @@ class UpdateProcessor: Processor {
         SundeedQLiteConnection.pool.execute(query: statement?.query,
                                             parameters: statement?.parameters)
     }
-    
+
+    #if canImport(UIKit)
     func saveArrayOfImages(attributes: [UIImage],
                            primaryValue: String,
                            column: SundeedColumn,
@@ -155,8 +165,9 @@ class UpdateProcessor: Processor {
                  value: Sundeed.shared
                 .sundeedPrimitiveForeignValue(tableName: column.value))
     }
-    
-    
+    #endif
+
+
     func saveForeignObjects(attributes: [ObjectWrapper?],
                             primaryValue: String,
                             column: SundeedColumn,
@@ -167,7 +178,7 @@ class UpdateProcessor: Processor {
             .save(objects: attributes.compactMap({$0}),
                   withForeignKey: primaryValue,
                   withFieldNameLink: column.value)
-        
+
         updateStatement
             .add(key: column.value,
                  value: Sundeed.shared

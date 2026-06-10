@@ -6,7 +6,8 @@ let package = Package(
     name: "SundeedQLite",
     platforms: [
         .iOS(.v13),
-        .macOS(.v10_15)
+        .macOS(.v10_15),
+        .watchOS(.v6)
     ],
     products: [
         .library(
@@ -18,7 +19,7 @@ let package = Package(
         // Supports Swift 5.9 (509.x) through Swift 6.x (600.x/601.x)
         .package(
             url: "https://github.com/swiftlang/swift-syntax.git",
-            from: "509.0.0"
+            "509.0.0"..<"602.0.0"
         ),
     ],
     targets: [

@@ -120,7 +120,19 @@ extension SundeedQLiteModelMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        // Only add conformance if not already declared
+        // Skip conformance when the declaration is invalid; the MemberMacro
+        // role emits the corresponding diagnostics, so don't re-diagnose here.
+        guard declaration.is(ClassDeclSyntax.self) else { return [] }
+
+        var primaryCount = 0
+        var orderedCount = 0
+        for member in declaration.memberBlock.members {
+            guard let varDecl = member.decl.as(VariableDeclSyntax.self) else { continue }
+            if hasAttribute(named: "Primary", in: varDecl.attributes) { primaryCount += 1 }
+            if hasAttribute(named: "Ordered", in: varDecl.attributes) { orderedCount += 1 }
+        }
+        guard primaryCount <= 1, orderedCount <= 1 else { return [] }
+
         let ext: DeclSyntax = """
         extension \(type.trimmed): SundeedQLiter {}
         """
@@ -381,12 +393,12 @@ extension SundeedQLiteModelMacro {
             lines.append(line)
         }
 
-        let body = lines.joined(separator: "\n        ")
+        let body = lines.joined(separator: "\n    ")
 
         return """
         func sundeedQLiterMapping(map: SundeedQLiteMap) {
-                \(raw: body)
-            }
+            \(raw: body)
+        }
         """
     }
 
