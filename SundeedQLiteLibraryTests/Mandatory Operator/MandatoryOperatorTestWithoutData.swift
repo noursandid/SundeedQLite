@@ -34,10 +34,43 @@ class MandatoryOperatorTestWithoutData: XCTestCase {
             await ClassWithMandatoryOptionalArrayOfOptionalObjects.delete()
             await ClassWithMandatoryOptionalObjects.delete()
             await MandatoryClass.delete()
+            await ClassWithMandatoryOptionalBool.delete()
+            await ClassWithMandatoryOptionalData.delete()
+            await ClassWithMandatoryOptionalConvertedType.delete()
             completion(nil)
         }
     }
-    
+
+    func testClassWithMandatoryOptionalBool() async {
+        let mainClass = ClassWithMandatoryOptionalBool()
+
+        await mainClass.save()
+        let retrievedClasses = await ClassWithMandatoryOptionalBool.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
+    }
+
+    func testClassWithMandatoryOptionalData() async {
+        let mainClass = ClassWithMandatoryOptionalData()
+
+        await mainClass.save()
+        let retrievedClasses = await ClassWithMandatoryOptionalData.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
+    }
+
+    func testClassWithMandatoryOptionalConvertedTypeWithInvalidValue() async {
+        let mainClass = ClassWithMandatoryOptionalConvertedType()
+        mainClass.mandatory = .manager
+        await mainClass.save()
+        do {
+            try await ClassWithMandatoryOptionalConvertedType
+                .update(changes: SundeedColumn("mandatory") <~ "invalidValue")
+        } catch {
+            XCTFail("It should be able to update the converted value: \(error)")
+        }
+        let retrievedClasses = await ClassWithMandatoryOptionalConvertedType.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 0)
+    }
+
     func testClassWithMandatoryOptionalString() async {
         let mainClass = ClassWithMandatoryOptionalString()
         

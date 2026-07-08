@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - '**'
-env:
-  DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
 jobs:
   build:
     runs-on: macOS-latest
@@ -17,7 +15,9 @@ jobs:
         echo 'export PATH="/usr/bin:$PATH"' >> $GITHUB_PATH
     - name: Build and Test
       run: |
-        xcodebuild clean build test -project "SundeedQLiteLibrary.xcodeproj" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,OS=26.0.1,name=iPhone 17 Pro" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+        DEVICE=$(xcrun simctl list devices available | grep "iPhone" | head -1 | sed -E 's/ \([0-9A-Fa-f-]{36}\).*//' | xargs)
+        echo "Using simulator: $DEVICE"
+        xcodebuild clean build test -project "SundeedQLiteLibrary.xcodeproj" -scheme "SundeedQLiteLibrary" -destination "platform=iOS Simulator,name=$DEVICE" -enableCodeCoverage YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
     - name: Install Slather
       run: gem install slather
     - name: Convert .xcresult to .lcov

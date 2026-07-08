@@ -6,7 +6,10 @@
 //  Copyright © 2018 LUMBERCODE. All rights reserved.
 //
 
+import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 import SQLite3
 
 infix operator <~
@@ -31,6 +34,7 @@ public struct SundeedUpdateSetStatement {
     }
 }
 
+#if canImport(UIKit)
 extension UIImage {
     static func fromDatatypeValue(filePath: String) -> UIImage? {
         if let documentsDirectoryURL = FileManager
@@ -75,3 +79,4 @@ extension UIImage {
         return fileURL.lastPathComponent
     }
 }
+#endif
