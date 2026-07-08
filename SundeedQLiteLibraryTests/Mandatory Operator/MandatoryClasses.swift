@@ -75,6 +75,39 @@ class ClassWithMandatoryOptionalFloat: @unchecked Sendable, SundeedQLiter {
     }
 }
 
+class ClassWithMandatoryOptionalBool: @unchecked Sendable, SundeedQLiter {
+    var id: String = "qwe30"
+    var mandatory: Bool?
+    required init() {}
+
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        id <~> map["id"]+
+        mandatory <*> map["mandatory"]
+    }
+}
+
+class ClassWithMandatoryOptionalData: @unchecked Sendable, SundeedQLiter {
+    var id: String = "qwe31"
+    var mandatory: Data?
+    required init() {}
+
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        id <~> map["id"]+
+        mandatory <*> map["mandatory"]
+    }
+}
+
+class ClassWithMandatoryOptionalConvertedType: @unchecked Sendable, SundeedQLiter {
+    var id: String = "qwe32"
+    var mandatory: Type?
+    required init() {}
+
+    func sundeedQLiterMapping(map: SundeedQLiteMap) {
+        id <~> map["id"]+
+        mandatory <*> (map["mandatory"], TypeConverter())
+    }
+}
+
 class ClassWithMandatoryOptionalArrayOfFloats: @unchecked Sendable, SundeedQLiter {
     var id: String = "qwe7"
     var mandatory: [Float]?

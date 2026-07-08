@@ -34,10 +34,46 @@ class MandatoryOperatorTestWithData: XCTestCase {
             await ClassWithMandatoryOptionalArrayOfOptionalObjects.delete()
             await ClassWithMandatoryOptionalObjects.delete()
             await MandatoryClass.delete()
+            await ClassWithMandatoryOptionalBool.delete()
+            await ClassWithMandatoryOptionalData.delete()
+            await ClassWithMandatoryOptionalConvertedType.delete()
             completion(nil)
         }
     }
-    
+
+    func testClassWithMandatoryOptionalBool() async {
+        let mainClass = ClassWithMandatoryOptionalBool()
+        mainClass.mandatory = true
+
+        await mainClass.save()
+        let retrievedClasses = await ClassWithMandatoryOptionalBool.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+        XCTAssertEqual(retrievedClasses.first?.mandatory,
+                       mainClass.mandatory)
+    }
+
+    func testClassWithMandatoryOptionalData() async {
+        let mainClass = ClassWithMandatoryOptionalData()
+        mainClass.mandatory = "Mandatory Data".data(using: .utf8)
+
+        await mainClass.save()
+        let retrievedClasses = await ClassWithMandatoryOptionalData.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+        XCTAssertEqual(retrievedClasses.first?.mandatory,
+                       mainClass.mandatory)
+    }
+
+    func testClassWithMandatoryOptionalConvertedType() async {
+        let mainClass = ClassWithMandatoryOptionalConvertedType()
+        mainClass.mandatory = .ceo
+
+        await mainClass.save()
+        let retrievedClasses = await ClassWithMandatoryOptionalConvertedType.retrieve()
+        XCTAssertEqual(retrievedClasses.count, 1)
+        XCTAssertEqual(retrievedClasses.first?.mandatory,
+                       mainClass.mandatory)
+    }
+
     func testClassWithMandatoryOptionalString() async {
         let mainClass = ClassWithMandatoryOptionalString()
         mainClass.mandatory = "test"
